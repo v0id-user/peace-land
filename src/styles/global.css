@@ -40,6 +40,13 @@ a:hover {
   font-size: 13px;
   font-weight: bold;
   padding: 0 6px 8px 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.avatar {
+  border-radius: 0;
   text-decoration: none;
   color: #000;
 }
