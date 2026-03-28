@@ -1,10 +1,8 @@
 ---
-title: Starting with Data structures. Basics, pro.
+title: Big O and Why I Finally Stopped Ignoring It
 date: 2026-03-29
-slug: starting-with-data-structures
+slug: big-o-and-why-i-finally-stopped-ignoring-it
 ---
-
-# Big O and Why I Finally Stopped Ignoring It
 
 I'll be real with you: I landed and held a job at a respected company without a CS degree, purely on raw experience. I'm proud of that. But there's always been this nagging cultural gap, the kind that shows up in code reviews, system design conversations, or just reading other engineers' reasoning. Algorithm complexity was one of those gaps.
 
@@ -35,7 +33,6 @@ No matter how large the input is, the operation takes the same amount of time. T
 ```plain
 def add_items(n):
     return n + n + n
-
 ```
 
 Calling this with `n = 10` or `n = 10,000,000` takes the same time. That's the dream. Flat line on a graph. You want this wherever possible.
@@ -50,7 +47,6 @@ The operation scales directly with the input. Double the input, double the time.
 def print_items(n: int):
     for i in range(n):
         print(i)
-
 ```
 
 This is a straight diagonal line on a graph. Totally acceptable in most cases. It's honest, predictable, and easy to reason about.
@@ -66,7 +62,6 @@ def print_items(n: int):
     for i in range(n):
         for j in range(n):
             print(i, j)
-
 ```
 
 **Fact-check note:** This is called _quadratic_ complexity, not exponential. Easy mistake to make. Exponential would be O(2ⁿ), which is a completely different (and much scarier) beast where the time doubles with every single added element. Quadratic means the time grows with the _square_ of the input. Still bad, just not apocalyptically bad.
@@ -86,7 +81,6 @@ def print_items(a: int, b: int):
 
     for i in range(b):
         print(i)
-
 ```
 
 This isn't O(n) or O(2n) (which simplifies to O(n) anyway). It's **O(a + b)** because `a` and `b` are independent variables. If those were nested loops instead of sequential ones, it would be O(a × b). The distinction matters when inputs can grow at different rates.
