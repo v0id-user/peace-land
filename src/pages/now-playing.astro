@@ -1,8 +1,10 @@
 ---
 export const prerender = false;
 import { getNowPlaying } from '../lib/spotify';
+import { env as cfEnv } from 'cloudflare:workers';
 
-const np = await getNowPlaying(import.meta.env);
+const mergedEnv = { ...import.meta.env, ...cfEnv };
+const np = await getNowPlaying(mergedEnv);
 const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_ms * 100) : 0;
 const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_ms - np.progress_ms) / 1000) : 0;
 ---
@@ -10,7 +12,7 @@ const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_m
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="30" />
+    <meta http-equiv="refresh" content="10" />
     <style>
       * { margin: 0; padding: 0; }
       body {
