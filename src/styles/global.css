@@ -417,3 +417,30 @@ a:hover {
     padding: 10px;
   }
 }
+
+/* --- Error Pages --- */
+.error-page {
+  padding-top: 60px;
+  text-align: left;
+}
+.error-art {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.2;
+  color: #000;
+  margin-bottom: 20px;
+}
+.error-msg {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+.error-sub {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.error-page a {
+  font-size: 12px;
+}
