@@ -7,6 +7,7 @@ const mergedEnv = { ...import.meta.env, ...cfEnv };
 const np = await getNowPlaying(mergedEnv);
 const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_ms * 100) : 0;
 const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_ms - np.progress_ms) / 1000) : 0;
+const hasTrack = !!np.title;
 ---
 
 <html lang="en">
@@ -22,9 +23,8 @@ const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_m
         background: #fff;
         overflow: hidden;
       }
-      .np {
-        padding: 2px 0;
-      }
+      a { color: inherit; text-decoration: none; }
+      .np { padding: 2px 0; }
       .np-track {
         display: flex;
         align-items: flex-start;
@@ -44,6 +44,13 @@ const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_m
         padding-right: 50px;
         animation: marquee 20s linear infinite;
       }
+      .np-title.paused span {
+        animation: none;
+        padding-right: 0;
+      }
+      .np-title.paused span.dup {
+        display: none;
+      }
       @keyframes marquee {
         0%, 30% { transform: translateX(0); }
         70%, 100% { transform: translateX(-50%); }
@@ -56,7 +63,8 @@ const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_m
         color: #555;
       }
       .np-bar { height: 2px; background: #ddd; margin-top: 3px; }
-      .np-fill { height: 100%; background: #000; animation: progress linear forwards; }
+      .np-fill { height: 100%; background: #000; }
+      .np-fill.playing { animation: progress linear forwards; }
       @keyframes progress { to { width: 100%; } }
       .np-idle { color: #999; font-style: italic; }
       .np-label {
@@ -66,18 +74,30 @@ const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_m
         font-size: 8px;
         margin-top: 2px;
       }
+      .pause-icon {
+        color: #999;
+        margin-right: 2px;
+        font-size: 8px;
+      }
     </style>
   </head>
   <body>
     <div class="np">
       <div class="np-track">
         <img src="/spotify-pixle-logo-black.svg" alt="" width="12" height="12" class="np-icon" />
-        {np.is_playing && np.title ? (
+        {hasTrack ? (
           <div class="np-info">
-            <span class="np-title"><span>{np.title}</span><span>{np.title}</span></span>
-            <span class="np-artist">{np.artist}</span>
+            <a href={np.url} target="_blank" rel="noopener">
+              <span class:list={["np-title", { paused: !np.is_playing }]}>
+                {!np.is_playing && <span class="pause-icon">paused</span>}{!np.is_playing && " "}<span>{np.title}</span><span class="dup">{np.title}</span>
+              </span>
+              <span class="np-artist">{np.artist}</span>
+            </a>
             <div class="np-bar">
-              <div class="np-fill" style={`width:${pct}%;animation-duration:${remainSec}s`}></div>
+              <div
+                class:list={["np-fill", { playing: np.is_playing }]}
+                style={np.is_playing ? `width:${pct}%;animation-duration:${remainSec}s` : `width:${pct}%`}
+              ></div>
             </div>
           </div>
         ) : (
