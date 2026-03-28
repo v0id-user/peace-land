@@ -2,8 +2,6 @@ backend:
   name: github
   repo: v0id-user/peace-land
   branch: main
-  auth_type: pkce
-  app_id: Ov23li9gnuXAbwoHn5ra
 
 media_folder: "public/images"
 public_folder: "/images"
