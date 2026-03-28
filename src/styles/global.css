@@ -304,6 +304,99 @@ a:hover {
   outline-offset: -1px;
 }
 
+/* --- Directives --- */
+
+.directive {
+  margin: 16px 0;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.directive p {
+  margin: 0;
+}
+
+.directive-note {
+  border-left: 2px solid #999;
+  background: #f7f7f7;
+}
+
+.directive-warning {
+  border-left: 2px solid #c00;
+  background: #fdf5f5;
+}
+
+.directive-tldr {
+  border-left: 2px solid #000;
+  background: #f5f5f5;
+}
+
+.directive-tldr-label {
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.directive-codelabel {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: -12px;
+  margin-top: 16px;
+}
+
+.directive-diagram {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 14px 16px 12px;
+}
+
+.diagram-label {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: #888;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.diagram-flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+
+.diagram-box {
+  display: inline-block;
+  border: 1px solid #999;
+  padding: 4px 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  background: #fff;
+  white-space: nowrap;
+}
+
+.diagram-arrow {
+  display: inline-block;
+  padding: 0 6px;
+  color: #999;
+  font-size: 13px;
+}
+
+.directive-sep {
+  text-align: center;
+  color: #ccc;
+  letter-spacing: 0.3em;
+  margin: 28px 0;
+  font-size: 12px;
+}
+
 /* --- Responsive --- */
 
 @media (max-width: 480px) {
