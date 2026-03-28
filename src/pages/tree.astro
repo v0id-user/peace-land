@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+
+const links = [
+  { name: 'GitHub', url: 'https://github.com/v0id-user' },
+  { name: 'X (Twitter)', url: 'https://x.com/v0id_user' },
+  { name: 'LinkedIn', url: 'https://linkedin.com/in/v0id-user' },
+  { name: 'Bluesky', url: 'https://bsky.app/profile/v0id.me' },
+  { name: 'Reddit', url: 'https://reddit.com/u/v0id_user' },
+  { name: 'Instagram', url: 'https://instagram.com/v0id_user' },
+  { name: 'Email', url: 'mailto:hey@v0id.me' },
+  { name: 'GPG Key', url: 'https://gpg.v0id.me' },
+  { name: 'Book a Call', url: 'https://cal.com/v0id-user/30min' },
+];
+---
+
+<Base title="Tree">
+  <div class="tree-page">
+    <h1>Links</h1>
+    <ul class="tree-links">
+      {links.map((link) => (
+        <li><a href={link.url} target="_blank" rel="noopener">{link.name}</a></li>
+      ))}
+    </ul>
+    <p class="tree-note">
+      Mostly inactive on socials.<br />
+      Email has the highest chance of a response.<br />
+      LinkedIn works too.
+    </p>
+  </div>
+</Base>

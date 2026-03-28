@@ -3,6 +3,8 @@ backend:
   repo: v0id-user/peace-land
   branch: main
   base_url: https://sveltia-cms-auth.cloudflare-c49.workers.dev
+  allowed_users:
+    - v0id-user
 
 media_folder: "public/images"
 public_folder: "/images"
