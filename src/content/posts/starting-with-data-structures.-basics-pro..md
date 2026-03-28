@@ -6,7 +6,7 @@ slug: big-o-and-why-i-finally-stopped-ignoring-it
 
 I landed and held a job at a respected company without a CS degree, purely on raw experience. I'm proud of that. But there's always been this nagging cultural gap, the kind that shows up in code reviews, system design conversations, or just reading other engineers' reasoning. Algorithm complexity was one of those gaps.
 
-It's not that it comes up constantly. It's that when it does, not knowing it is embarrassing. And on the rare occasion you're actually optimizing a hot path (think Cloudflare-scale problems), it genuinely matters. That was enough motivation to pick up a Udemy course on Data Structures and Algorithms in Python and start documenting what I learn.
+It's not that it comes up constantly. It's that when it does, not knowing it is embarrassing. And on the rare occasion you're actually optimizing a hot path (think Cloudflare-scale problems), it genuinely matters. That was enough motivation to pick up a Udemy course on [Data Structures and Algorithms in Python](https://www.udemy.com/course/data-structures-algorithms-python/) and start documenting what I learn.
 
 This is that documentation.
 
