@@ -64,27 +64,17 @@ First, let's orient ourselves with the source tree.
 
 Source Tree
 
-\`\`\`
-
+```
 src/workerd/
-
   jsg/       ← The "magic glue" — C++ ↔ V8 binding framework (macros, type mappings)
-
   api/       ← All the JS APIs (fetch, crypto, KV, DO, WebSocket, etc.) — implemented in C++
-
   io/        ← I/O layer: worker lifecycle, event delivery, network I/O
-
   server/    ← The top-level server binary — the actual entry point
-
   util/      ← Random helpers
-
   tools/     ← Tooling (TypeScript type extractor)
-
 types/       ← TypeScript type generator (reads RTTI → produces .d.ts)
-
 samples/     ← Working examples: helloworld, durable-objects-chat, wasm, etc.
-
-\`\`\`
+```
 
 The two directories that matter most for understanding the startup chain are jsg/ (where C++ becomes JavaScript) and io/ (where the worker lifecycle lives). The server/ directory is the entry point, but it mostly wires things together. The real work happens in io/ and jsg/.
 
@@ -92,59 +82,33 @@ How It Starts
 
 After you compile the server and run “workerd serve config.capnp”, this is the full chain of what happens inside the binary.
 
-\`\`\`
-
+```
 workerd serve config.capnp
-
   │
-
   ├─ Parse capnp config
-
   │    └─ workerd.capnp schema defines serviceWorkerScript field
-
   │
-
   ├─ extractSource()                          [workerd-api.c++]
-
   │    └─ conf.getServiceWorkerScript()
-
   │    └─ builds ScriptSource struct          [worker-source.h]
-
   │
-
   ├─ Worker::Script constructor               [worker.c++:1453]
-
   │    └─ compileServiceWorkerGlobals()        (WASM, data bindings)
-
   │    └─ NonModuleScript::compile()           [script.c++:17]
-
   │         └─ v8::ScriptCompiler::Source()
-
   │         └─ v8::ScriptCompiler::CompileUnboundScript()
-
   │         └─ stores as v8::Global<v8::UnboundScript>
-
   │
-
   ├─ Worker startup                            [worker.c++:1946]
-
   │    └─ unboundScript.run(lock)              [script.c++:12]
-
   │         └─ UnboundScript::BindToCurrentContext()
-
   │         └─ BoundScript::Run()              ← YOUR JS RUNS
-
   │    └─ lock.runMicrotasks()                 ← promises flushed
-
   │
-
   └─ addEventListener('fetch', handler) is now registered
-
        └─ workerd listens on port 8080
-
        └─ HTTP request arrives → handler invoked
-
-\`\`\`
+```
 
 Let's walk through each step.
 
@@ -152,13 +116,10 @@ Let's walk through each step.
 
 The capnp config file is the wiring diagram. It tells workerd what code to run and where to listen. The schema in workerd.capnp defines two ways to provide JavaScript:
 
-\`\`\`
-
+```
 serviceWorkerScript @1 :Text;   # single script with addEventListener()
-
 modules @6 :List(Module);        # ES modules with import/export
-
-\`\`\`
+```
 
 In the samples folder. The helloworld sample uses serviceWorkerScript with embed "worker.js". Cap'n Proto reads the file contents into that text field. The config is type-checked at compile time. If a field is wrong, it fails before anything runs.
 
@@ -170,21 +131,14 @@ conf.getServiceWorkerScript()
 
 This builds a ScriptSource struct defined in worker-source.h:
 
-\`\`\`
-
+```
 struct ScriptSource {
-
   kj::StringPtr mainScript;            // your actual JavaScript code
-
   kj::StringPtr mainScriptName;  // script name for stack traces
-
   kj::Array<Module> globals;       // injected WASM/data bindings
-
   capnp::List<capnp::schema::Node>::Reader capnpSchemas;
-
 };
-
-\`\`\`
+```
 
 At this point your JavaScript is just a string being carried through the system.
 
@@ -192,47 +146,29 @@ At this point your JavaScript is just a string being carried through the system.
 
 The “Worker::Script” constructor in “worker.c++” receives the ScriptSource and compiles it:
 
-\`\`\`
-
+```
 KJ_CASE_ONEOF(script, ScriptSource) {
-
   impl->globals = isolate->getApi()
-
       .compileServiceWorkerGlobals(lock, script, \*isolate);
-
   auto limitScope = isolate->getLimitEnforcer()
-
       .enterStartupJs(lock, limitErrorOrTime);
-
   impl->unboundScriptOrMainModule =
-
       jsg::NonModuleScript::compile(lock, script.mainScript, script.mainScriptName);
-
 }
-
-\`\`\`
+```
 
 The compile call lands in “script.c++”, which is surprisingly small:
 
-\`\`\`
-
+```
 NonModuleScript NonModuleScript::compile(
-
     jsg::Lock& js, kj::StringPtr code, kj::StringPtr name) {
-
   auto isolate = js.v8Isolate;
-
   v8::ScriptOrigin origin(js.str(name));
-
   v8::ScriptCompiler::Source source(js.str(code), origin);
-
   return NonModuleScript(js,
-
       check(v8::ScriptCompiler::CompileUnboundScript(isolate, &source)));
-
 }
-
-\`\`\`
+```
 
 Three V8 calls. ScriptOrigin sets up the filename for stack traces. “ScriptCompiler::Source” wraps your code. “CompileUnboundScript” parses and compiles it into V8 bytecode. The result is an UnboundScript, meaning compiled bytecode that is not yet tied to any V8 context. It doesn't know what “Response” or “addEventListener” are yet. That comes next.
 
@@ -242,39 +178,25 @@ A note on “NonModuleScript”:  this is the old Service Worker syntax, the�
 
 In “worker.c++”, the compiled script is bound to a context and executed:
 
-\`\`\`
-
+```
 KJ_SWITCH_ONEOF(script->impl->unboundScriptOrMainModule) {
-
   KJ_CASE_ONEOF(unboundScript, jsg::NonModuleScript) {
-
     auto limitScope = script->isolate->getLimitEnforcer()
-
         .enterStartupJs(lock, limitErrorOrTime);
-
     unboundScript.run(lock);
-
     lock.runMicrotasks();
-
   }
-
 }
-
-\`\`\`
+```
 
 The “run” method in script.c++:
 
-\`\`\`
-
+```
 void NonModuleScript::run(jsg::Lock& js) const {
-
   auto boundScript = unboundScript.Get(js.v8Isolate)->BindToCurrentContext();
-
   check(boundScript->Run(js.v8Context()));
-
 }
-
-\`\`\`
+```
 
 “BindToCurrentContext” takes the unbound bytecode and connects it to the current V8 context. That context has all the “JSG”-exposed APIs wired into it: (addEventListener, fetch, Response, Request, crypto, everything.) 
 
@@ -304,79 +226,59 @@ Kenton Varda wrote the full breakdown here: [Mitigating Spectre and Other Secur
 
 # Adding your own stuff
 
-To build your own API is actually straightforward. You navigate to \`src/workerd/api/\` and create your header file, define your class using JSG macros, and wire it up.
+To build your own API is actually straightforward. You navigate to `src/workerd/api/` and create your header file, define your class using JSG macros, and wire it up.
 
-Here's the minimal C++ you need to know. A header file (.h) is where you declare your class. \`#pragma once\` at the top means "only include this file once." \`namespace workerd::api\` is just a folder for your code so names don't collide.
+Here's the minimal C++ you need to know. A header file (.h) is where you declare your class. `#pragma once` at the top means "only include this file once." `namespace workerd::api` is just a folder for your code so names don't collide.
 
 JSG is the binding layer that turns your C++ into JavaScript. You don't need to understand V8's C++ API. JSG handles all of that. You just use its macros:
 
-\`JSG_RESOURCE_TYPE(YourClass)\` registers the class as something JavaScript can see.
+`JSG_RESOURCE_TYPE(YourClass)` registers the class as something JavaScript can see.
 
-\`JSG_METHOD(name)\` exposes a C++ method as \`obj.name()\` in JavaScript.
+`JSG_METHOD(name)` exposes a C++ method as `obj.name()` in JavaScript.
 
-\`JSG_READONLY_INSTANCE_PROPERTY(name, getter)\` exposes a read-only property as obj.name.
+`JSG_READONLY_INSTANCE_PROPERTY(name, getter)` exposes a read-only property as obj.name.
 
-\`JSG_LAZY_INSTANCE_PROPERTY(name, getter)\` same thing but created on first access, used for globals.
+`JSG_LAZY_INSTANCE_PROPERTY(name, getter)` same thing but created on first access, used for globals.
 
-KJ is Kenton Varda's utility library. It replaces parts of the C++ standard library. The main thing you'll use for now is \`kj::String\` (an owned string) and \`kj::str()\` which builds one. When you write \`kj::str("Hello from inside workerd")\`, that's KJ creating a string that maps directly to a JavaScript string through JSG.
+KJ is Kenton Varda's utility library. It replaces parts of the C++ standard library. The main thing you'll use for now is `kj::String` (an owned string) and `kj::str()` which builds one. When you write `kj::str("Hello from inside workerd")`, that's KJ creating a string that maps directly to a JavaScript string through JSG.
 
-Here's the full file, \`src/workerd/api/v0id.h\`:
+Here's the full file, `src/workerd/api/v0id.h`:
 
-\`\`\`
-
+```
 #pragma once
-
 #include "basics.h"
-
 #include <workerd/jsg/jsg.h>
-
 namespace workerd::api {
-
 class V0idFunction final : public jsg::Object {
-
 public:
-
   kj::String hello() { return kj::str("Hello from inside workerd"); }
-
   JSG_RESOURCE_TYPE(V0idFunction) {
-
     JSG_METHOD(hello);
-
   }
-
 };
-
 #define EW_V0ID_ISOLATE_TYPES api::V0idFunction
-
 }
-
-\`\`\`
+```
 
 That's it for the code. One class, one method, one macro block. JSG does the rest.
 
 To wire it into workerd you touch three more files:
 
-\`src/workerd/api/BUILD.bazel\`: add v0id.h to the hdrs list so Bazel knows the file exists
+`src/workerd/api/BUILD.bazel`: add v0id.h to the hdrs list so Bazel knows the file exists
 
-\`src/workerd/server/workerd-api.c++\`: add \`#include <workerd/api/v0id.h>\` at the top and \`EW_V0ID_ISOLATE_TYPES\`, to the isolate types list so the type gets registered with V8
+`src/workerd/server/workerd-api.c++`: add `#include <workerd/api/v0id.h>` at the top and `EW_V0ID_ISOLATE_TYPES`, to the isolate types list so the type gets registered with V8
 
-\`src/workerd/api/global-scope.h\`: add a getter and a \`JSG_LAZY_INSTANCE_PROPERTY\` so it shows up on the global scope, the same way crypto, scheduler, and caches are exposed
+`src/workerd/api/global-scope.h`: add a getter and a `JSG_LAZY_INSTANCE_PROPERTY` so it shows up on the global scope, the same way crypto, scheduler, and caches are exposed
 
-Rebuild with \`bazel build //src/workerd/server:workerd\`, write a worker that calls v0idFunction.hello(), and you get back "Hello from inside workerd." A string that traveled from C++ through JSG into V8 and out as an HTTP response.
+Rebuild with `bazel build //src/workerd/server:workerd`, write a worker that calls v0idFunction.hello(), and you get back "Hello from inside workerd." A string that traveled from C++ through JSG into V8 and out as an HTTP response.
 
-\`\`\`
-
+```
 export default {
-
   async fetch(request) {
-
     return new Response(v0idFunction.hello());
-
   }
-
 };
-
-\`\`\`
+```
 
 Every API in workerd follows this exact same pattern. fetch, crypto, caches, Durable Objects, all of them. A C++ class, JSG macros, type registration, global scope wiring. That's how the entire Workers API surface was built, one type at a time.
 
