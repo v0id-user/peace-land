@@ -1,0 +1,40 @@
+---
+import '../styles/global.css';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const { title } = Astro.props;
+const pageTitle = title ? `${title} — #V0ID` : '#V0ID';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <a href="/" class="brand">#V0ID</a>
+        <nav>
+          {posts.map((post) => (
+            <a
+              href={`/posts/${post.data.slug}`}
+              class={Astro.url.pathname.includes(post.data.slug) ? 'active' : ''}
+            >
+              {post.data.title.length > 24 ? post.data.title.slice(0, 22) + '..' : post.data.title}
+            </a>
+          ))}
+        </nav>
+      </aside>
+
+      <main class="content">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>
