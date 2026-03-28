@@ -19,4 +19,13 @@ const human = defineCollection({
   }),
 });
 
-export const collections = { posts, human };
+const test = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/test' }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    slug: z.string(),
+  }),
+});
+
+export const collections = { posts, human, test };

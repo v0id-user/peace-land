@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('test');
+  return entries.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Base title={entry.data.title}>
+  <a href="/test" class="back-link">&larr; back</a>
+  <article>
+    <header class="post-header">
+      <h1>{entry.data.title}</h1>
+      <time>{entry.data.date.toISOString().slice(0, 10)}</time>
+    </header>
+    <div class="post-content">
+      <Content />
+    </div>
+  </article>
+</Base>

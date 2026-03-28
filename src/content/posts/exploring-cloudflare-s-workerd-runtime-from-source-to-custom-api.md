@@ -116,7 +116,7 @@ Let's walk through each step.
 
 The capnp config file is the wiring diagram. It tells workerd what code to run and where to listen. The schema in workerd.capnp defines two ways to provide JavaScript:
 
-```
+```capnp
 serviceWorkerScript @1 :Text;   # single script with addEventListener()
 modules @6 :List(Module);        # ES modules with import/export
 ```
@@ -131,7 +131,7 @@ conf.getServiceWorkerScript()
 
 This builds a ScriptSource struct defined in worker-source.h:
 
-```
+```cpp
 struct ScriptSource {
   kj::StringPtr mainScript;            // your actual JavaScript code
   kj::StringPtr mainScriptName;  // script name for stack traces
@@ -146,7 +146,7 @@ At this point your JavaScript is just a string being carried through the system.
 
 The “Worker::Script” constructor in “worker.c++” receives the ScriptSource and compiles it:
 
-```
+```cpp
 KJ_CASE_ONEOF(script, ScriptSource) {
   impl->globals = isolate->getApi()
       .compileServiceWorkerGlobals(lock, script, \*isolate);
@@ -159,7 +159,7 @@ KJ_CASE_ONEOF(script, ScriptSource) {
 
 The compile call lands in “script.c++”, which is surprisingly small:
 
-```
+```cpp
 NonModuleScript NonModuleScript::compile(
     jsg::Lock& js, kj::StringPtr code, kj::StringPtr name) {
   auto isolate = js.v8Isolate;
@@ -178,7 +178,7 @@ A note on “NonModuleScript”:  this is the old Service Worker syntax, the�
 
 In “worker.c++”, the compiled script is bound to a context and executed:
 
-```
+```cpp
 KJ_SWITCH_ONEOF(script->impl->unboundScriptOrMainModule) {
   KJ_CASE_ONEOF(unboundScript, jsg::NonModuleScript) {
     auto limitScope = script->isolate->getLimitEnforcer()
@@ -191,7 +191,7 @@ KJ_SWITCH_ONEOF(script->impl->unboundScriptOrMainModule) {
 
 The “run” method in script.c++:
 
-```
+```cpp
 void NonModuleScript::run(jsg::Lock& js) const {
   auto boundScript = unboundScript.Get(js.v8Isolate)->BindToCurrentContext();
   check(boundScript->Run(js.v8Context()));
@@ -244,7 +244,7 @@ KJ is Kenton Varda's utility library. It replaces parts of the C++ standard libr
 
 Here's the full file, `src/workerd/api/v0id.h`:
 
-```
+```cpp
 #pragma once
 #include "basics.h"
 #include <workerd/jsg/jsg.h>
@@ -272,7 +272,7 @@ To wire it into workerd you touch three more files:
 
 Rebuild with `bazel build //src/workerd/server:workerd`, write a worker that calls v0idFunction.hello(), and you get back "Hello from inside workerd." A string that traveled from C++ through JSG into V8 and out as an HTTP response.
 
-```
+```javascript
 export default {
   async fetch(request) {
     return new Response(v0idFunction.hello());
