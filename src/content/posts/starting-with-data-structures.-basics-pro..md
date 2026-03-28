@@ -93,4 +93,4 @@ Honestly, most of the time you won't be hand-tuning complexity in day-to-day pro
 
 And if you ever do work at a scale where milliseconds matter? You'll be glad you know this.
 
-More notes coming as I work through the course.
+This is just the surface of the course. As I work through the data structures material, I'll put out a dedicated post with notes on each structure as I learn them.
