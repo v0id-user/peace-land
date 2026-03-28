@@ -48,12 +48,6 @@ const fullText = hasTrack ? `${np.title} — ${np.artist}` : '';
         text-overflow: ellipsis;
         color: #555;
       }
-      .np-info:hover .np-title {
-        overflow: visible;
-        position: relative;
-        z-index: 10;
-        background: #fff;
-      }
       .np-bar { height: 2px; background: #ddd; margin-top: 3px; }
       .np-fill { height: 100%; background: #000; }
       .np-fill.playing { animation: progress linear forwards; }
@@ -79,7 +73,7 @@ const fullText = hasTrack ? `${np.title} — ${np.artist}` : '';
         <img src="/spotify-pixle-logo-black.svg" alt="" width="12" height="12" class="np-icon" />
         {hasTrack ? (
           <div class="np-info">
-            <a href={np.url} target="_blank" rel="noopener">
+            <a href={np.url} target="_blank" rel="noopener" title={`${np.title} — ${np.artist}`}>
               <span class="np-title">
                 {!np.is_playing && <span class="pause-label">paused</span>}{np.title}
               </span>
