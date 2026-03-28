@@ -2,6 +2,7 @@ backend:
   name: github
   repo: v0id-user/peace-land
   branch: main
+  base_url: https://sveltia-cms-auth.cloudflare-c49.workers.dev
 
 media_folder: "public/images"
 public_folder: "/images"
