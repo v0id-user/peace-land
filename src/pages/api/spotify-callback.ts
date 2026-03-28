@@ -8,7 +8,7 @@ export const GET: APIRoute = async ({ url }) => {
 
   const clientId = import.meta.env.SPOTIFY_CLIENT_ID;
   const clientSecret = import.meta.env.SPOTIFY_CLIENT_SECRET;
-  const redirectUri = "https://www.v0id.me/api/spotify-callback";
+  const redirectUri = "https://peace-land.cloudflare-c49.workers.dev/api/spotify-callback";
 
   const response = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
