@@ -30,7 +30,8 @@ const pageTitle = title ? `${title} — #V0ID` : '#V0ID';
               {post.data.title.length > 24 ? post.data.title.slice(0, 22) + '..' : post.data.title}
             </a>
           ))}
-          <a href="/tree" class={Astro.url.pathname.startsWith('/tree') ? 'active' : ''} style="margin-top: 6px;">tree</a>
+          <a href="/about" class={Astro.url.pathname.startsWith('/about') ? 'active' : ''} style="margin-top: 6px;">about</a>
+          <a href="/tree" class={Astro.url.pathname.startsWith('/tree') ? 'active' : ''}>tree</a>
         </nav>
       </aside>
 
