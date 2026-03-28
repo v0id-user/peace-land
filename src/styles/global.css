@@ -252,6 +252,29 @@ a:hover {
   line-height: 1.6;
 }
 
+/* --- Human warning pages --- */
+
+.human-warning {
+  max-width: 400px;
+}
+
+.human-warning h1 {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.human-warning p {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.warning-btn {
+  font-size: 11px;
+}
+
 /* --- Easter eggs (CSS only, no JS required) --- */
 
 /* Brand text inverts on hover sometimes — pure CSS coin flip via animation delay */
