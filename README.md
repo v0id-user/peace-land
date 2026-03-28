@@ -1,43 +1,72 @@
-# Astro Starter Kit: Minimal
+<div align="center">
+
+[![MADE BY #V0ID](https://img.shields.io/badge/MADE%20BY%20%23V0ID-F3EEE1.svg?style=for-the-badge)](https://github.com/v0id-user)
+
+# peace-land
+
+My personal blog. Static, serverless, ~$0/month.
+
+Built with [Astro](https://astro.build) and deployed on [Cloudflare Workers](https://workers.cloudflare.com).
+
+Editing handled by [Sveltia CMS](https://github.com/sveltia/sveltia-cms) at `/admin`.
+
+---
+
+### Stack
+
+**Astro** — static site generator, ships zero JavaScript to readers.
+
+**Cloudflare Workers** — serverless hosting with native Git CI/CD on push to `main`.
+
+**Sveltia CMS** — open-source Git-backed CMS, drop-in Decap CMS replacement. Lives at `/admin`, authenticates via GitHub OAuth.
+
+**sveltia-cms-auth** — a separate [Cloudflare Worker](https://github.com/sveltia/sveltia-cms-auth) that handles the GitHub OAuth handshake for the CMS.
+
+---
+
+### Structure
+
+```
+src/content/posts/    ← blog posts as markdown files
+src/layouts/          ← base HTML layout
+src/pages/            ← index + post routes
+src/styles/           ← plain CSS, no frameworks
+public/admin/         ← Sveltia CMS config + entry point
+```
+
+---
+
+### Writing a post
+
+**Option A** — go to `/admin`, log in with GitHub, write in the browser. It commits to this repo automatically.
+
+**Option B** — create a `.md` file in `src/content/posts/`:
+
+```markdown
+---
+title: "Post Title"
+date: 2026-01-01
+slug: post-title
+---
+
+Your content here.
+```
+
+Push to `main`. Cloudflare builds and deploys automatically.
+
+---
+
+### Local development
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+---
 
-## 🚀 Project Structure
+### Design
 
-Inside of your Astro project, you'll see the following folders and files:
+System default fonts. Solid white background, solid black text. Sidebar navigation. No JavaScript. Inspired by the web circa 2003.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+</div>
