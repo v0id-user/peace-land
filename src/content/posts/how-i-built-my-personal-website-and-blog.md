@@ -1,5 +1,5 @@
 ---
-title: How I Built My Personal Website and Blog
+title: How I Built My Personal Website and Blog | Old site
 date: 2025-01-15
 slug: how-i-built-my-personal-website-and-blog
 ---
