@@ -1,0 +1,87 @@
+---
+import { getNowPlaying } from '../lib/spotify';
+
+const np = await getNowPlaying(import.meta.env);
+const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_ms * 100) : 0;
+const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_ms - np.progress_ms) / 1000) : 0;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="30" />
+    <style>
+      * { margin: 0; padding: 0; }
+      body {
+        font-family: Verdana, Geneva, sans-serif;
+        font-size: 9px;
+        color: #555;
+        background: #fff;
+        overflow: hidden;
+      }
+      .np {
+        padding: 2px 0;
+      }
+      .np-track {
+        display: flex;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      .np-icon { flex-shrink: 0; margin-top: 1px; }
+      .np-info { min-width: 0; overflow: hidden; }
+      .np-title {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        font-weight: bold;
+        color: #000;
+      }
+      .np-title span {
+        display: inline-block;
+        padding-right: 50px;
+        animation: marquee 20s linear infinite;
+      }
+      @keyframes marquee {
+        0%, 30% { transform: translateX(0); }
+        70%, 100% { transform: translateX(-50%); }
+      }
+      .np-artist {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: #555;
+      }
+      .np-bar { height: 2px; background: #ddd; margin-top: 3px; }
+      .np-fill { height: 100%; background: #000; animation: progress linear forwards; }
+      @keyframes progress { to { width: 100%; } }
+      .np-idle { color: #999; font-style: italic; }
+      .np-label {
+        display: block;
+        font-style: italic;
+        color: #999;
+        font-size: 8px;
+        margin-top: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="np">
+      <div class="np-track">
+        <img src="/spotify-pixle-logo-black.svg" alt="" width="12" height="12" class="np-icon" />
+        {np.is_playing && np.title ? (
+          <div class="np-info">
+            <span class="np-title"><span>{np.title}</span><span>{np.title}</span></span>
+            <span class="np-artist">{np.artist}</span>
+            <div class="np-bar">
+              <div class="np-fill" style={`width:${pct}%;animation-duration:${remainSec}s`}></div>
+            </div>
+          </div>
+        ) : (
+          <span class="np-idle">silence.</span>
+        )}
+      </div>
+      <span class="np-label">currently listening to...</span>
+    </div>
+  </body>
+</html>

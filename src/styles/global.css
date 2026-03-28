@@ -203,82 +203,13 @@ a:hover {
   border: 1px solid #ddd;
 }
 
-/* --- Now Playing --- */
+/* --- Now Playing (iframe) --- */
 
-.now-playing {
-  padding: 4px 6px;
-  margin-bottom: 6px;
-  font-size: 9px;
-  color: #555;
-  max-width: 140px;
-  overflow: hidden;
-}
-
-.np-track {
-  display: flex;
-  align-items: flex-start;
-  gap: 4px;
-}
-
-.spotify-icon {
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-.np-info {
-  min-width: 0;
-  overflow: hidden;
-}
-
-.np-label {
-  display: block;
-  font-style: italic;
-  color: #999;
-  font-size: 8px;
-  margin-bottom: 2px;
-}
-
-.np-idle {
-  color: #999;
-  font-style: italic;
-}
-
-.np-title {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  font-weight: bold;
-  color: #000;
-}
-
-.np-title span {
-  display: inline-block;
-  padding-right: 50px;
-  animation: marquee 20s linear infinite;
-}
-
-.np-artist {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: #555;
-}
-
-@keyframes marquee {
-  0%, 30% { transform: translateX(0); }
-  70%, 100% { transform: translateX(-50%); }
-}
-
-.np-bar {
-  height: 2px;
-  background: #ddd;
-  margin-top: 3px;
-}
-
-.np-fill {
-  height: 100%;
-  background: #000;
+.np-frame {
+  width: 150px;
+  height: 58px;
+  border: none;
+  margin-bottom: 4px;
 }
 
 /* --- Tree page --- */
