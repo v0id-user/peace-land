@@ -1,9 +1,14 @@
 import type { APIRoute } from "astro";
 
-export const GET: APIRoute = async ({ url }) => {
-  const code = url.searchParams.get("code");
+export const GET: APIRoute = async ({ request }) => {
+  const reqUrl = new URL(request.url);
+  const code = reqUrl.searchParams.get("code");
+
   if (!code) {
-    return new Response("Missing code parameter", { status: 400 });
+    return new Response(
+      `Missing code. Debug: request.url=${request.url} searchParams=${reqUrl.search}`,
+      { status: 400 }
+    );
   }
 
   const clientId = import.meta.env.SPOTIFY_CLIENT_ID;
@@ -25,8 +30,6 @@ export const GET: APIRoute = async ({ url }) => {
 
   const data = await response.json();
 
-  // Show the refresh token so we can store it as a secret
-  // This page is only used once during setup
   return new Response(
     `<html><body style="font-family:monospace;padding:40px">
       <h2>Spotify Auth Complete</h2>
