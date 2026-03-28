@@ -1,5 +1,5 @@
 ---
-title: "From int to u32: How Rust Changed My Perspective on Low-Level"
+title: 'From int to u32: How Rust Changed My Perspective on Low-Level'
 date: 2025-06-04
 slug: from-int-to-u32-how-rust-changed-my-perspective-on-low-level
 ---
@@ -34,7 +34,7 @@ Whether on Windows, Mac, or Linux, if you want bytes of a fixed size, your best 
 
 So how do you model the protocol above in a (relatively) safe way?
 
-You'll also notice I replaced "char" with "uint8\_t", which actually means "unsigned char." This is a standard that lets you work with bytes in a clear and consistent way — instead of ranging from -127 to 127, it goes from 0 to 255, exactly as protocols and files expect.
+You'll also notice I replaced "char" with "uint8_t", which actually means "unsigned char." This is a standard that lets you work with bytes in a clear and consistent way — instead of ranging from -127 to 127, it goes from 0 to 255, exactly as protocols and files expect.
 
 Think it's over? Of course not. Now think: you're building a protocol and want to send it over a network. You need to deal with a new concept — little endian and big endian — with helper functions like ntoh, hton, and others, plus how to serialize and deserialize, and so on.
 
@@ -68,4 +68,4 @@ Rust? It writes code that doesn't make mistakes even if I'm not paying full atte
 
 And of course, this isn't the end — there are still many more benefits I've found from using Rust that I'll cover in future posts.
 
-This English version of the article was translated with the help of AI. Because the original post was written in Arabic, some nuances and details may not have carried over perfectly into the translation. For the most accurate version, you may prefer reading the original Arabic post.
+_This English version of the article was translated with the help of AI. Because the original post was written in Arabic, some nuances and details may not have carried over perfectly into the translation. For the most accurate version, you may prefer reading the original Arabic post._
