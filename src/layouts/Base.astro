@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { getCollection } from 'astro:content';
+import { getNowPlaying } from '../lib/spotify';
 
 const posts = (await getCollection('posts')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
@@ -8,6 +9,11 @@ const posts = (await getCollection('posts')).sort(
 
 const { title } = Astro.props;
 const pageTitle = title ? `${title} — #V0ID` : '#V0ID';
+
+// SSR: fetch Spotify data server-side
+const np = await getNowPlaying(import.meta.env);
+const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_ms * 100) : 0;
+const remainSec = (np.duration_ms && np.progress_ms) ? ((np.duration_ms - np.progress_ms) / 1000) : 0;
 ---
 
 <html lang="en">
@@ -20,6 +26,23 @@ const pageTitle = title ? `${title} — #V0ID` : '#V0ID';
     <div class="layout">
       <aside class="sidebar">
         <a href="/" class="brand">#V0ID</a>
+        <div class="now-playing">
+          <div class="np-track">
+            <img src="/spotify-pixle-logo-black.svg" alt="" width="12" height="12" class="spotify-icon" />
+            {np.is_playing && np.title ? (
+              <div class="np-info">
+                <span class="np-title"><span>{np.title}</span><span>{np.title}</span></span>
+                <span class="np-artist">{np.artist}</span>
+                <div class="np-bar">
+                  <div class="np-fill" style={`width:${pct}%`}></div>
+                </div>
+              </div>
+            ) : (
+              <span class="np-idle">silence.</span>
+            )}
+          </div>
+          <span class="np-label">currently listening to...</span>
+        </div>
         <nav>
           {posts.map((post) => (
             <a
