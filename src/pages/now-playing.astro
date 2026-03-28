@@ -8,12 +8,13 @@ const np = await getNowPlaying(mergedEnv);
 const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_ms * 100) : 0;
 const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_ms - np.progress_ms) / 1000) : 0;
 const hasTrack = !!np.title;
+const marqueeOffset = -(Math.floor(Date.now() / 1000) % 30);
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="10" />
+    <meta http-equiv="refresh" content="30" />
     <style>
       * { margin: 0; padding: 0; }
       body {
@@ -46,11 +47,11 @@ const hasTrack = !!np.title;
       .np-title-inner span {
         display: inline-block;
         padding-right: 50px;
-        animation: marquee 20s linear infinite;
+        animation: marquee 30s linear infinite;
       }
       @keyframes marquee {
-        0%, 30% { transform: translateX(0); }
-        70%, 100% { transform: translateX(-50%); }
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
       }
       .np-artist {
         display: block;
@@ -83,7 +84,7 @@ const hasTrack = !!np.title;
         margin-right: 4px;
       }
       .np-paused-row .np-title-inner span {
-        animation: marquee 20s linear infinite;
+        animation: marquee 30s linear infinite;
       }
     </style>
   </head>
@@ -96,13 +97,13 @@ const hasTrack = !!np.title;
             <a href={np.url} target="_blank" rel="noopener">
               {np.is_playing ? (
                 <span class="np-title">
-                  <span class="np-title-inner"><span>{np.title}</span><span>{np.title}</span></span>
+                  <span class="np-title-inner"><span style={`animation-delay:${marqueeOffset}s`}>{np.title}</span><span style={`animation-delay:${marqueeOffset}s`}>{np.title}</span></span>
                 </span>
               ) : (
                 <div class="np-paused-row">
                   <span class="pause-label">paused</span>
                   <span class="np-title">
-                    <span class="np-title-inner"><span>{np.title}</span><span>{np.title}</span></span>
+                    <span class="np-title-inner"><span style={`animation-delay:${marqueeOffset}s`}>{np.title}</span><span style={`animation-delay:${marqueeOffset}s`}>{np.title}</span></span>
                   </span>
                 </div>
               )}
