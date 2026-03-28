@@ -1,0 +1,19 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('human')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<Base title="Human">
+  <div class="tree-page">
+    <h1>Human</h1>
+    <ul class="tree-links">
+      {entries.map((entry) => (
+        <li><a href={`/human/${entry.data.slug}`}>{entry.data.title}</a></li>
+      ))}
+    </ul>
+  </div>
+</Base>
