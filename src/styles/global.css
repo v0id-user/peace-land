@@ -275,19 +275,6 @@ a:hover {
   font-size: 11px;
 }
 
-/* --- Easter eggs (CSS only, no JS required) --- */
-
-/* Brand text inverts on hover sometimes — pure CSS coin flip via animation delay */
-.sidebar .brand:hover {
-  animation: glitch 0.1s steps(2) 1;
-}
-
-@keyframes glitch {
-  0% { letter-spacing: 2px; }
-  50% { letter-spacing: -1px; opacity: 0.8; }
-  100% { letter-spacing: 0; }
-}
-
 /* Secret cursor on post dates */
 .post-list .post-date:hover {
   cursor: crosshair;
