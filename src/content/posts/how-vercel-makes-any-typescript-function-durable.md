@@ -7,7 +7,7 @@ slug: how-vercel-makes-any-typescript-function-durable
 ***
 
 :::note
-this is an old deleted X post that turned into blog, most of these stuff are deleted and best esitemate replicated, the idea still holds
+This started as an old, now-deleted X post. Most of the original content is gone and I've reconstructed the details as accurately as possible, but the core ideas remain solid.
 :::
 
 A 7-hour spelunk through the `use workflow` source code: SWC plugins, durable state machines, HTTP orchestration loops, and the surprisingly elegant engine underneath it all.
