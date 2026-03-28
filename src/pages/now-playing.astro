@@ -39,17 +39,14 @@ const hasTrack = !!np.title;
         font-weight: bold;
         color: #000;
       }
-      .np-title span {
+      .np-title-inner {
+        display: inline-block;
+        white-space: nowrap;
+      }
+      .np-title-inner span {
         display: inline-block;
         padding-right: 50px;
         animation: marquee 20s linear infinite;
-      }
-      .np-title.paused span {
-        animation: none;
-        padding-right: 0;
-      }
-      .np-title.paused span.dup {
-        display: none;
       }
       @keyframes marquee {
         0%, 30% { transform: translateX(0); }
@@ -74,10 +71,19 @@ const hasTrack = !!np.title;
         font-size: 8px;
         margin-top: 2px;
       }
-      .pause-icon {
+      .np-paused-row {
+        display: flex;
+        align-items: baseline;
+        overflow: hidden;
+      }
+      .pause-label {
+        flex-shrink: 0;
         color: #999;
-        margin-right: 2px;
         font-size: 8px;
+        margin-right: 4px;
+      }
+      .np-paused-row .np-title-inner span {
+        animation: marquee 20s linear infinite;
       }
     </style>
   </head>
@@ -88,9 +94,18 @@ const hasTrack = !!np.title;
         {hasTrack ? (
           <div class="np-info">
             <a href={np.url} target="_blank" rel="noopener">
-              <span class:list={["np-title", { paused: !np.is_playing }]}>
-                {!np.is_playing && <span class="pause-icon">paused</span>}{!np.is_playing && " "}<span>{np.title}</span><span class="dup">{np.title}</span>
-              </span>
+              {np.is_playing ? (
+                <span class="np-title">
+                  <span class="np-title-inner"><span>{np.title}</span><span>{np.title}</span></span>
+                </span>
+              ) : (
+                <div class="np-paused-row">
+                  <span class="pause-label">paused</span>
+                  <span class="np-title">
+                    <span class="np-title-inner"><span>{np.title}</span><span>{np.title}</span></span>
+                  </span>
+                </div>
+              )}
               <span class="np-artist">{np.artist}</span>
             </a>
             <div class="np-bar">
