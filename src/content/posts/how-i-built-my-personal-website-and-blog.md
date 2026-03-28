@@ -1,5 +1,5 @@
 ---
-title: "How I Built My Personal Website and Blog"
+title: How I Built My Personal Website and Blog
 date: 2025-01-15
 slug: how-i-built-my-personal-website-and-blog
 ---
@@ -100,4 +100,6 @@ Thank you for your time, and I hope you found something useful in this article.
 
 If you encounter any issues while reading the article, such as unclear text or other problems, I would be very happy to hear about it.
 
-*This English version of the article was translated with the help of AI. Because the original post was written in Arabic, some nuances and details may not have carried over perfectly into the translation. For the most accurate version, you may prefer reading the original Arabic post.*
+_This English version of the article was translated with the help of AI. Because the original post was written in Arabic, some nuances and details may not have carried over perfectly into the translation. For the most accurate version, you may prefer reading the original Arabic post._
+
+_- This post is about my old blog_
