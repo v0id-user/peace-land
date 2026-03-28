@@ -21,5 +21,11 @@ How it works:
     Token goes back to the CMS in your browser.
     Now you can read/write to this repo through the editor.
 
+  Spotify:
+    Sidebar shows what I'm currently listening to.
+    SSR iframe with meta refresh — no client JS.
+    Fetches from Spotify API server-side every 30s.
+    Progress bar animates with pure CSS.
+
   Posts live in:
     src/content/posts/*.md
