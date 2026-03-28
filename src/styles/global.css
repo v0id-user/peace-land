@@ -203,6 +203,65 @@ a:hover {
   border: 1px solid #ddd;
 }
 
+/* --- Tree page --- */
+
+.tree-page h1 {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.tree-links {
+  list-style: none;
+}
+
+.tree-links li {
+  margin-bottom: 3px;
+}
+
+.tree-links a {
+  font-size: 12px;
+}
+
+.tree-note {
+  margin-top: 16px;
+  font-size: 10px;
+  color: #999;
+  line-height: 1.5;
+}
+
+/* --- Easter eggs (CSS only, no JS required) --- */
+
+/* Brand text inverts on hover sometimes — pure CSS coin flip via animation delay */
+.sidebar .brand:hover {
+  animation: glitch 0.1s steps(2) 1;
+}
+
+@keyframes glitch {
+  0% { letter-spacing: 2px; }
+  50% { letter-spacing: -1px; opacity: 0.8; }
+  100% { letter-spacing: 0; }
+}
+
+/* Secret cursor on post dates */
+.post-list .post-date:hover {
+  cursor: crosshair;
+}
+
+/* Hidden message in page source via CSS content */
+.layout::after {
+  content: "you found nothing... or did you?";
+  position: absolute;
+  left: -9999px;
+  font-size: 0;
+}
+
+/* The 7th click-drag on sidebar reveals a border flash */
+.sidebar nav a:active {
+  outline: 1px solid #000;
+  outline-offset: -1px;
+}
+
 /* --- Responsive --- */
 
 @media (max-width: 480px) {
