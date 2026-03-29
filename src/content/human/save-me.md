@@ -1,7 +1,7 @@
 ---
 title: "Save me"
 date: 2026-03-29
-slug: maturate
+slug: save-me
 ---
 
 I will say it. I am so sad. The walls have fallen on my head. I am alone, and I see no way out of it.
