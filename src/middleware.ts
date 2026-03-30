@@ -3,16 +3,27 @@ import { PGP_PUBLIC_KEY_ARMORED } from './lib/pgpKey';
 
 /**
  * Subdomain routing in dev (prod: worker entry in pgp-subdomain-worker-entry integration).
- * tree.* / -> same as /tree. pgp/gpg / -> raw armored key.
+ * tree/pgp/gpg non-root -> www. tree / -> /tree. pgp/gpg / -> raw key.
  */
 const RAW_KEY_HOSTS = new Set(['pgp.v0id.me', 'gpg.v0id.me']);
 const TREE_HOST = 'tree.v0id.me';
+const SUBDOMAIN_HOSTS = new Set(['tree.v0id.me', 'pgp.v0id.me', 'gpg.v0id.me']);
+const CANONICAL_WWW = 'https://www.v0id.me';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const host = context.request.headers.get('host')?.split(':')[0]?.toLowerCase();
+  const url = new URL(context.request.url);
+
+  if (host && SUBDOMAIN_HOSTS.has(host)) {
+    if (url.pathname !== '/' && url.pathname !== '') {
+      const dest = new URL(CANONICAL_WWW);
+      dest.pathname = url.pathname;
+      dest.search = url.search;
+      return Response.redirect(dest.toString(), 301);
+    }
+  }
 
   if (host === TREE_HOST && context.request.method === 'GET') {
-    const url = new URL(context.request.url);
     if (url.pathname === '/' || url.pathname === '') {
       return next(new URL('/tree', context.url));
     }
@@ -29,7 +40,6 @@ export const onRequest = defineMiddleware(async (context, next) => {
     });
   }
 
-  const url = new URL(context.request.url);
   if (url.pathname === '/' || url.pathname === '') {
     return new Response(PGP_PUBLIC_KEY_ARMORED, {
       headers: {
@@ -39,8 +49,5 @@ export const onRequest = defineMiddleware(async (context, next) => {
     });
   }
 
-  return new Response('Not Found', {
-    status: 404,
-    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-  });
+  return next();
 });
