@@ -6,6 +6,11 @@ import { remarkCallouts } from './src/plugins/remark-callouts.ts';
 
 export default defineConfig({
   adapter: cloudflare(),
+  vite: {
+    server: {
+      allowedHosts: ['pgp.v0id.me', 'gpg.v0id.me'],
+    },
+  },
   markdown: {
     shikiConfig: {
       theme: 'github-light',
