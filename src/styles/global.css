@@ -255,6 +255,11 @@ a:hover {
   overflow-x: auto;
 }
 
+.pgp-before em {
+  display: block;
+  margin-top: 4px;
+}
+
 /* --- About page --- */
 
 .about-page h1 {
