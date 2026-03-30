@@ -6,7 +6,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const MARKER = 'SUBDOMAIN_WORKER_WRAPPED_V3';
+const MARKER = 'SUBDOMAIN_WORKER_WRAPPED_V4';
 
 export default function pgpSubdomainWorkerEntry() {
   return {
@@ -51,6 +51,18 @@ const RAW_KEY_HOSTS = new Set(["pgp.v0id.me", "gpg.v0id.me"]);
 const TREE_HOST = "tree.v0id.me";
 const SUBDOMAIN_HOSTS = new Set(["tree.v0id.me", "pgp.v0id.me", "gpg.v0id.me"]);
 const CANONICAL_WWW = "https://www.v0id.me";
+const HASHED_RE = /^\\/_astro\\//;
+const STATIC_EXT_RE = /\\.(?:svg|ico|webp|png|jpg|jpeg|gif|woff2?|ttf|otf|avif|mp4|webm)$/i;
+function applyCacheAndClean(response, pathname) {
+  const h = new Headers(response.headers);
+  h.delete("Speculation-Rules");
+  if (HASHED_RE.test(pathname)) {
+    h.set("Cache-Control", "public, max-age=31536000, immutable");
+  } else if (STATIC_EXT_RE.test(pathname)) {
+    h.set("Cache-Control", "public, max-age=86400, stale-while-revalidate=604800");
+  }
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers: h });
+}
 export default {
   async fetch(request, env, ctx) {
     const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
@@ -66,7 +78,8 @@ export default {
     }
     if (host === TREE_HOST && request.method === "GET" && (url.pathname === "/" || url.pathname === "")) {
       url.pathname = "/tree";
-      return w.fetch(new Request(url.toString(), request), env, ctx);
+      const r = await w.fetch(new Request(url.toString(), request), env, ctx);
+      return applyCacheAndClean(r, "/tree");
     }
     if (host && RAW_KEY_HOSTS.has(host) && request.method === "GET") {
       if (url.pathname === "/" || url.pathname === "") {
@@ -78,7 +91,8 @@ export default {
         });
       }
     }
-    return w.fetch(request, env, ctx);
+    const r = await w.fetch(request, env, ctx);
+    return applyCacheAndClean(r, url.pathname);
   },
 };
 `;
