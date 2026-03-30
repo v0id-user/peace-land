@@ -1,7 +1,10 @@
 import { defineMiddleware } from 'astro:middleware';
 import { PGP_PUBLIC_KEY_ARMORED } from './lib/pgpKey';
 
-/** Raw armored key on either host (prefer pgp in site links). */
+/**
+ * Raw armored key on pgp.* / gpg.* (prefer pgp in site links).
+ * Dev: middleware handles Host. Prod: prerendered `/` skips middleware; see pgp-subdomain-worker-entry integration.
+ */
 const RAW_KEY_HOSTS = new Set(['pgp.v0id.me', 'gpg.v0id.me']);
 
 export const onRequest = defineMiddleware(async (context, next) => {
