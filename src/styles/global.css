@@ -249,6 +249,12 @@ a:hover {
   line-height: 1.5;
 }
 
+.pgp-key {
+  margin-top: 12px;
+  font-size: 12px;
+  overflow-x: auto;
+}
+
 /* --- About page --- */
 
 .about-page h1 {
