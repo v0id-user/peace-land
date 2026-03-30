@@ -1,7 +1,7 @@
-/**
- * After build, wrap dist/server/entry.mjs so raw PGP is served on pgp.* / gpg.* before
- * Astro's handler serves prerendered index.html from ASSETS (middleware never runs there).
- */
+// After build:
+// 1. Patch wrangler.json: set run_worker_first=true so the Worker executes before
+//    Cloudflare serves static assets (default is false — assets served directly from CDN).
+// 2. Wrap entry.mjs: intercept pgp/gpg subdomain hosts and return the raw armored key.
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,9 +13,17 @@ export default function pgpSubdomainWorkerEntry() {
     name: 'pgp-subdomain-worker-entry',
     hooks: {
       'astro:build:done': ({ dir }) => {
-        // `dir` is the client output dir (e.g. dist/client); server bundle is sibling server/entry.mjs
-        const entryUrl = new URL('../server/entry.mjs', dir);
-        const entryPath = fileURLToPath(entryUrl);
+        const serverDir = new URL('../server/', dir);
+
+        // 1. Patch wrangler.json — add run_worker_first so the Worker runs before static assets
+        const wranglerPath = fileURLToPath(new URL('wrangler.json', serverDir));
+        const wrangler = JSON.parse(readFileSync(wranglerPath, 'utf8'));
+        wrangler.assets ??= {};
+        wrangler.assets.run_worker_first = true;
+        writeFileSync(wranglerPath, JSON.stringify(wrangler));
+
+        // 2. Wrap entry.mjs — intercept pgp/gpg subdomain before Astro handler
+        const entryPath = fileURLToPath(new URL('entry.mjs', serverDir));
         let src = readFileSync(entryPath, 'utf8');
         if (src.includes(MARKER)) {
           return;
@@ -23,7 +31,7 @@ export default function pgpSubdomainWorkerEntry() {
         const m = src.match(/from\s+"(\.\/chunks\/worker-entry_[^"]+\.mjs)"/);
         if (!m) {
           throw new Error(
-            'pgp-subdomain-worker-entry: expected import from ./chunks/worker-entry_*.mjs in server/entry.mjs'
+            'pgp-subdomain-worker-entry: could not find worker-entry chunk import in entry.mjs'
           );
         }
         const root = fileURLToPath(new URL('../../', import.meta.url));
