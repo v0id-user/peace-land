@@ -1,12 +1,12 @@
 // After build:
 // 1. Patch wrangler.json: set run_worker_first=true so the Worker executes before
 //    Cloudflare serves static assets (default is false — assets served directly from CDN).
-// 2. Wrap entry.mjs: tree.* root -> /tree; pgp/gpg root -> raw key.
+// 2. Wrap entry.mjs: non-root on tree/pgp/gpg -> www; tree / -> /tree; pgp/gpg / -> raw key.
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const MARKER = 'SUBDOMAIN_WORKER_WRAPPED_V2';
+const MARKER = 'SUBDOMAIN_WORKER_WRAPPED_V3';
 
 export default function pgpSubdomainWorkerEntry() {
   return {
@@ -49,10 +49,21 @@ import { w } from "${chunkPath}";
 const PGP_RAW_PUBLIC = ${JSON.stringify(keyBody)};
 const RAW_KEY_HOSTS = new Set(["pgp.v0id.me", "gpg.v0id.me"]);
 const TREE_HOST = "tree.v0id.me";
+const SUBDOMAIN_HOSTS = new Set(["tree.v0id.me", "pgp.v0id.me", "gpg.v0id.me"]);
+const CANONICAL_WWW = "https://www.v0id.me";
 export default {
   async fetch(request, env, ctx) {
     const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
     const url = new URL(request.url);
+    if (host && SUBDOMAIN_HOSTS.has(host)) {
+      const p = url.pathname;
+      if (p !== "/" && p !== "") {
+        const dest = new URL(CANONICAL_WWW);
+        dest.pathname = url.pathname;
+        dest.search = url.search;
+        return Response.redirect(dest.toString(), 301);
+      }
+    }
     if (host === TREE_HOST && request.method === "GET" && (url.pathname === "/" || url.pathname === "")) {
       url.pathname = "/tree";
       return w.fetch(new Request(url.toString(), request), env, ctx);
@@ -66,10 +77,6 @@ export default {
           },
         });
       }
-      return new Response("Not Found", {
-        status: 404,
-        headers: { "Content-Type": "text/plain; charset=utf-8" },
-      });
     }
     return w.fetch(request, env, ctx);
   },
