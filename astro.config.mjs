@@ -10,7 +10,7 @@ export default defineConfig({
   adapter: cloudflare(),
   vite: {
     server: {
-      allowedHosts: ['pgp.v0id.me', 'gpg.v0id.me'],
+      allowedHosts: ['pgp.v0id.me', 'gpg.v0id.me', 'tree.v0id.me'],
     },
   },
   markdown: {

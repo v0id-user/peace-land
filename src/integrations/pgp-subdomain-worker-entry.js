@@ -1,12 +1,12 @@
 // After build:
 // 1. Patch wrangler.json: set run_worker_first=true so the Worker executes before
 //    Cloudflare serves static assets (default is false — assets served directly from CDN).
-// 2. Wrap entry.mjs: intercept pgp/gpg subdomain hosts and return the raw armored key.
+// 2. Wrap entry.mjs: tree.* root -> /tree; pgp/gpg root -> raw key.
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const MARKER = 'PGP_SUBDOMAIN_ENTRY_WRAPPED';
+const MARKER = 'SUBDOMAIN_WORKER_WRAPPED_V2';
 
 export default function pgpSubdomainWorkerEntry() {
   return {
@@ -22,7 +22,7 @@ export default function pgpSubdomainWorkerEntry() {
         wrangler.assets.run_worker_first = true;
         writeFileSync(wranglerPath, JSON.stringify(wrangler));
 
-        // 2. Wrap entry.mjs — intercept pgp/gpg subdomain before Astro handler
+        // 2. Wrap entry.mjs — tree / pgp / gpg subdomains before Astro handler
         const entryPath = fileURLToPath(new URL('entry.mjs', serverDir));
         let src = readFileSync(entryPath, 'utf8');
         if (src.includes(MARKER)) {
@@ -48,11 +48,16 @@ import { w } from "${chunkPath}";
 // ${MARKER}
 const PGP_RAW_PUBLIC = ${JSON.stringify(keyBody)};
 const RAW_KEY_HOSTS = new Set(["pgp.v0id.me", "gpg.v0id.me"]);
+const TREE_HOST = "tree.v0id.me";
 export default {
   async fetch(request, env, ctx) {
     const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
+    const url = new URL(request.url);
+    if (host === TREE_HOST && request.method === "GET" && (url.pathname === "/" || url.pathname === "")) {
+      url.pathname = "/tree";
+      return w.fetch(new Request(url.toString(), request), env, ctx);
+    }
     if (host && RAW_KEY_HOSTS.has(host) && request.method === "GET") {
-      const url = new URL(request.url);
       if (url.pathname === "/" || url.pathname === "") {
         return new Response(PGP_RAW_PUBLIC, {
           headers: {
