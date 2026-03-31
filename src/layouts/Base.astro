@@ -2,7 +2,9 @@
 import '../styles/global.css';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('posts')).sort(
+const posts = (await getCollection('posts', ({ data }) => {
+  return import.meta.env.PROD ? data.draft !== true : true;
+})).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
 );
 
