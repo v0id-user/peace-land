@@ -1,8 +1,7 @@
 ---
-title: "How I Built a Serverless Video Transcoding System Using Cloudflare, Fly.io, and Redis"
+title: How I Built a Serverless Video Transcoding System Using Cloudflare, Fly.io, and Redis
 date: 2026-01-10
 slug: how-i-built-a-serverless-video-transcoding-system-using-cloudflare-fly-io-and-re
-description: Building a video transcoding pipeline from upload to multi-quality playback using Cloudflare Workers, Fly.io, Redis, and FFmpeg.
 ---
 
 I’ve always been curious about how companies like YouTube move a video from the **“uploaded”** stage to **“ready to watch in multiple qualities.”**
@@ -11,7 +10,7 @@ Instead of spending hours reading theoretical articles, I decided to build a rea
 
 That’s how **TCoder** was born: an **event-driven, serverless video transcoding system** designed to mimic large-scale media pipelines, but on a smaller and more approachable scale.
 
----
+***
 
 ## The Idea in Simple Terms
 
@@ -27,22 +26,22 @@ All coordination happens through **Redis**.
 
 There’s **no central job queue** and **no backend running 24/7**.
 
----
+***
 
 ## Technologies Used
 
-* **Cloudflare Workers**  
+* **Cloudflare Workers**
   Acts as the **Control Plane** (the orchestrating brain of the system).
-* **Cloudflare R2 & Queues**  
+* **Cloudflare R2 & Queues**
   Handle uploads and deliver the events that trigger processing.
-* **Upstash Redis**  
+* **Upstash Redis**
   Stores system state and coordinates orchestration.
-* [**Fly.io**](http://Fly.io) **Machines**  
+* [**Fly.io**](http://Fly.io) **Machines**
   Used to run flexible FFmpeg workers.
-* **Bun + TypeScript**  
+* **Bun + TypeScript**
   Used everywhere to keep the stack consistent.
-* **Bunny CDN**  
-  Distributes the final content to the edge with control available through a **Middleware layer**.  
+* **Bunny CDN**
+  Distributes the final content to the edge with control available through a **Middleware layer**.
   <https://github.com/v0id-user/tcoder-middleware>
 
 What I wanted to explore wasn’t just **“how to transcode a video.”**
@@ -57,7 +56,7 @@ For example:
 
 The workers are designed to **run indefinitely if needed**, while still allowing me to safely terminate them when necessary.
 
----
+***
 
 ## Why I Chose Cloudflare
 
@@ -75,7 +74,7 @@ As soon as an upload finishes in **R2**, an event can be pushed directly to a **
 
 Another major advantage is **startup speed**.
 
-Workers aren’t just “acceptable” in terms of cold start performance like Lambda.  
+Workers aren’t just “acceptable” in terms of cold start performance like Lambda.
 They’re actually **fast**.
 
 The most important thing though is that Workers **force you to be stateless**.
@@ -84,7 +83,7 @@ And that turned out to be a good thing.
 
 It pushed me to design explicit **state transitions in Redis**, which made the system easier to understand, easier to inspect, and even easier to intentionally break while testing.
 
----
+***
 
 ## Why [Fly.io](http://Fly.io)?
 
@@ -136,7 +135,7 @@ Everything is transparent:
 
 You can see everything directly and fix it if something breaks.
 
----
+***
 
 ## Tradeoffs
 
@@ -154,13 +153,13 @@ This project exists primarily as a **learning experiment** to understand how med
 
 All architectural decisions, state models, and tradeoffs are documented in the repository’s README.
 
----
+***
 
 ## Full Architecture
 
 ![](https://b.v0id.me/uploads/8c4ac0cca76120aced3bcca93add007487ee608494cedf047c95bce29178611f.png)
 
-Project repository:  
+Project repository:
 <https://github.com/v0id-user/tcoder>
 
-This English version of the article was translated with the help of AI. Because the original post was written in Arabic, some nuances or details may not have transferred perfectly in the translation. For the most accurate version, you may prefer reading the original Arabic article.
+_This English version of the article was translated with the help of AI. Because the original post was written in Arabic, some nuances or details may not have transferred perfectly in the translation. For the most accurate version, you may prefer reading the original Arabic article._
