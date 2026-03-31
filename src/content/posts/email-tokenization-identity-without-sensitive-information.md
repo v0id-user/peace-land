@@ -2,6 +2,7 @@
 title: Email Tokenization — Identity Without Sensitive Information
 date: 2025-11-21
 slug: email-tokenization-identity-without-sensitive-information
+description: How to separate email addresses from user identity using tokenization — a practical approach to handling PII in login systems.
 ---
 
 ## Why Separate Email From Identity?

@@ -2,6 +2,7 @@
 title: How Vercel Makes Any TypeScript Function Durable
 date: 2025-10-25
 slug: how-vercel-makes-any-typescript-function-durable
+description: A look at how Vercel's workflow SDK turns regular TypeScript functions into durable, resumable workflows under the hood.
 ---
 
 ***

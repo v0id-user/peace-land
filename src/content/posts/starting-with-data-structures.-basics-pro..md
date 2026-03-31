@@ -2,6 +2,7 @@
 title: Big O and Why I Finally Stopped Ignoring It
 date: 2026-03-29
 slug: big-o-and-why-i-finally-stopped-ignoring-it
+description: Why I finally decided to learn Big O notation and algorithm complexity — bridging the gap between practical experience and CS fundamentals.
 ---
 
 I landed and held a job at a respected company without a CS degree, purely on raw experience. I'm proud of that. But there's always been this nagging cultural gap, the kind that shows up in code reviews, system design conversations, or just reading other engineers' reasoning. Algorithm complexity was one of those gaps.

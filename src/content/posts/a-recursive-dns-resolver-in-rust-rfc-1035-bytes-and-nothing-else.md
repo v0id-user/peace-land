@@ -3,6 +3,7 @@ title: 'A Recursive DNS Resolver in Rust: RFC 1035, Bytes and Nothing Else'
 date: 2026-03-31
 slug: a-recursive-dns-resolver-in-rust-rfc-1035-bytes-and-nothing-else
 draft: true
+description: Building a recursive DNS resolver from scratch in Rust by implementing RFC 1035 byte by byte — no libraries, just the spec.
 ---
 
 We've all read RFCs. but have you actually sat with one, section by section, and understood the intent of the writer?

@@ -2,6 +2,7 @@
 title: 'From int to u32: How Rust Changed My Perspective on Low-Level'
 date: 2025-06-04
 slug: from-int-to-u32-how-rust-changed-my-perspective-on-low-level
+description: How switching from high-level languages to Rust changed the way I think about types, memory, and low-level programming.
 ---
 
 Before

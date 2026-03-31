@@ -2,6 +2,7 @@
 title: "Uncompressible File. A File That Defies Compression Algorithms."
 date: 2026-02-01
 slug: uncompressible-file-a-file-that-defies-compression-algorithms
+description: What happens when you try to compress truly random data? An experiment exploring the limits of compression algorithms.
 ---
 
 I got the idea for this experiment from an episode titled [*“Searching For Meaning In Randomness”*](https://www.youtube.com/watch?v=tiXIOpq_tQ0) from the podcast **The Rest Is Science**. It inspired me to ask: **what happens when we try to compress truly random data?**
