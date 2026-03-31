@@ -106,6 +106,17 @@ a:hover {
   color: #999;
 }
 
+.rss-link {
+  margin-top: 8px;
+  font-size: 10px;
+}
+
+.rss-link a {
+  color: #999;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
 /* --- Article --- */
 
 .back-link {
