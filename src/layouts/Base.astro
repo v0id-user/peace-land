@@ -25,7 +25,11 @@ const pageTitle = title ? `${title} — #V0ID` : '#V0ID';
           <a href="https://github.com/v0id-user" target="_blank" rel="noopener"><img src="https://avatars.githubusercontent.com/u/172490913?v=4" alt="" width="24" height="24" class="avatar" /></a>
           <a href="/" class="brand">#V0ID</a>
         </div>
-        <iframe src="/now-playing" class="np-frame" frameborder="0" scrolling="no"></iframe>
+        <iframe
+          src="/now-playing"
+          class="np-frame"
+          title="Now playing on Spotify"
+        ></iframe>
         <nav>
           {posts.map((post) => (
             <a
