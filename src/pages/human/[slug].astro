@@ -14,7 +14,7 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 ---
 
-<Base title={entry.data.title}>
+<Base title={entry.data.title} type="article" noindex={true}>
   <a href="/human/all" class="back-link">&larr; back</a>
   <article>
     <header class="post-header">

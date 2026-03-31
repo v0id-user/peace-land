@@ -2,6 +2,7 @@
 title: "Exploring Cloudflare's Workerd Runtime: From Source to Custom API"
 date: 2026-03-28
 slug: exploring-cloudflares-workerd
+description: Digging into the Cloudflare Workers runtime source code — building workerd from scratch and adding a custom C++ API.
 ---
 
 # Why?

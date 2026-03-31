@@ -2,6 +2,7 @@
 title: "How I Built a Serverless Video Transcoding System Using Cloudflare, Fly.io, and Redis"
 date: 2026-01-10
 slug: how-i-built-a-serverless-video-transcoding-system-using-cloudflare-fly-io-and-re
+description: Building a video transcoding pipeline from upload to multi-quality playback using Cloudflare Workers, Fly.io, Redis, and FFmpeg.
 ---
 
 I’ve always been curious about how companies like YouTube move a video from the **“uploaded”** stage to **“ready to watch in multiple qualities.”**
