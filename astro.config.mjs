@@ -8,6 +8,11 @@ import pgpSubdomainWorkerEntry from './src/integrations/pgp-subdomain-worker-ent
 export default defineConfig({
   integrations: [pgpSubdomainWorkerEntry()],
   adapter: cloudflare(),
+  build: {
+    // global.css (~6.5KB) exceeds Vite's default inline limit (~4KB), so "auto"
+    // emitted Base.*.css as render-blocking. Inline to avoid an extra round-trip.
+    inlineStylesheets: 'always',
+  },
   vite: {
     server: {
       allowedHosts: ['pgp.v0id.me', 'gpg.v0id.me', 'tree.v0id.me'],
