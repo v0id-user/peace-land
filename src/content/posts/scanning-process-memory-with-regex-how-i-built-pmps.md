@@ -1,5 +1,5 @@
 ---
-title: 'scanning process memory with regex: how i built pmps'
+title: 'Scanning process memory with regex: How I built PMPS'
 date: 2024-05-19
 slug: scanning-process-memory-with-regex-how-i-built-pmps
 draft: false
@@ -45,7 +45,7 @@ most anti-debug code checks for process names or window titles. those are trivia
 
 \`\`\`c
 
-pm_t\* pm = PMSearchAllForMatch("[Ii][Dd][Aa] [Ff]reeware\\s\*", TRUE);
+pm_t\* pm = PMSearchAllForMatch("[Ii][Dd][Aa] [Ff]reeware\s\*", TRUE);
 
 printf("App name: %s\n", pm->exeName);
 
@@ -102,9 +102,7 @@ the buffers \`stringBuffer\` and \`memDumpBuffer\` are fixed 4KB heap allocation
 a few things i'd revisit:
 
 - the regex engine is \`tiny-regex-c\` by kokke, which is great for embedded use but has limited syntax. a more complete engine would open up more use cases
-
 - fixed page size is a real constraint. parameterizing the scan size is the obvious next step
-
 - windows-only. a cross-platform version using \`/proc/<pid>/maps\` on linux would be interesting
 
 ::sep
