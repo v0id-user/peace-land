@@ -61,7 +61,7 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.v0id.me');
               href={`/posts/${post.data.slug}`}
               class={Astro.url.pathname.includes(post.data.slug) ? 'active' : ''}
             >
-              {post.data.title.length > 24 ? post.data.title.slice(0, 22) + '..' : post.data.title}
+              {post.data.title}
             </a>
           ))}
           <a href="/about" class={Astro.url.pathname.startsWith('/about') ? 'active' : ''} style="margin-top: 6px;">about</a>

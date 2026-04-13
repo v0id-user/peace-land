@@ -12,7 +12,7 @@ export async function GET() {
     title: '#V0ID',
     description: 'Technical blog by #V0ID — backend engineering, Rust, TypeScript, Cloudflare, and systems programming.',
     site: 'https://www.v0id.me',
-    items: posts.map((post) => ({
+    items: posts.slice(0, 50).map((post) => ({
       title: post.data.title,
       pubDate: post.data.date,
       description: post.data.description,

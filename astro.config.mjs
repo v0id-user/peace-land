@@ -4,6 +4,7 @@ import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 import remarkDirective from 'remark-directive';
 import { remarkCallouts } from './src/plugins/remark-callouts.ts';
+import { remarkUnescape } from './src/plugins/remark-unescape.ts';
 import pgpSubdomainWorkerEntry from './src/integrations/pgp-subdomain-worker-entry.js';
 
 export default defineConfig({
@@ -26,6 +27,6 @@ export default defineConfig({
     shikiConfig: {
       theme: 'github-light',
     },
-    remarkPlugins: [remarkDirective, remarkCallouts],
+    remarkPlugins: [remarkUnescape, remarkDirective, remarkCallouts],
   },
 });
