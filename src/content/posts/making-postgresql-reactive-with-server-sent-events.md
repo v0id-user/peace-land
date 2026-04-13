@@ -1,32 +1,32 @@
 ---
-title: Making PostgreSQL reactive with server-sent events
+title: Making PostgreSQL Reactive with Server-Sent Events
 date: 2025-01-19
 slug: postgresql-reactive-sse
 draft: false
 ---
 
-Most people reach for websockets the moment they need real-time updates. or they pick a specialized database like convex that bundles reactivity out of the box. both are valid, but there's a third option nobody talks about enough: postgresql already has a pub/sub system built in, and it's been there since version 9.0.
+Most people reach for WebSockets the moment they need real-time updates. Or they pick a specialized database like Convex that bundles reactivity out of the box. Both are valid, but there's a third option nobody talks about enough: PostgreSQL already has a pub/sub system built in, and it's been there since version 9.0.
 
-this is a writeup of a project i built to explore exactly that: real-time reactive updates using postgres `NOTIFY/LISTEN` + server-sent events, no websockets, no external message broker.
+This is a writeup of a project I built to explore exactly that: real-time reactive updates using Postgres `NOTIFY/LISTEN` + server-sent events, no WebSockets, no external message broker.
 
 :::note
 
-this was inspired by exploring convex db's reactivity model. the question i kept asking was: do we actually need a specialized database for this, or can postgres do it?
+This was inspired by exploring Convex DB's reactivity model. The question I kept asking was: do we actually need a specialized database for this, or can Postgres do it?
 
 :::
 
 ::sep
 
-## the mechanism: pg_notify
+## The Mechanism: pg_notify
 
-postgres has two commands that most backend devs have never touched:
+Postgres has two commands that most backend devs have never touched:
 
 - `LISTEN channel_name` — subscribe to a channel
 - `NOTIFY channel_name, 'payload'` — broadcast a message to all listeners on that channel
 
-the payload is a plain string, so in practice you serialize JSON into it. any connected client listening on that channel gets the notification instantly when `NOTIFY` fires.
+The payload is a plain string, so in practice you serialize JSON into it. Any connected client listening on that channel gets the notification instantly when `NOTIFY` fires.
 
-the real power comes from **triggers**. instead of manually calling `NOTIFY` from application code, you attach a trigger to a table that fires automatically on `INSERT` or `UPDATE`. the database itself becomes the event emitter.
+The real power comes from **triggers**. Instead of manually calling `NOTIFY` from application code, you attach a trigger to a table that fires automatically on `INSERT` or `UPDATE`. The database itself becomes the event emitter.
 
 :::diagram[The Full Flow]
 
@@ -36,9 +36,9 @@ DB Row Change → Trigger Fires → pg_notify → asyncpg Listener → FastAPI S
 
 ::sep
 
-## the trigger boilerplate
+## The Trigger Boilerplate
 
-here's the core of it. this python function takes any sqlalchemy model class and automatically wires up a trigger + notification function for it:
+Here's the core of it. This Python function takes any SQLAlchemy model class and automatically wires up a trigger + notification function for it:
 
 ::codelabel[sql_create_trigger_boilerplate.py]
 
@@ -95,19 +95,19 @@ async def setup_model_trigger(model_class):
     return channel_name
 ```
 
-call `setup_model_trigger(Newsletter)` once at startup and you get back a channel name like `newsletters_changes`. now anything listening on that channel gets notified automatically whenever a row is inserted or updated, no application-level plumbing needed.
+Call `setup_model_trigger(Newsletter)` once at startup and you get back a channel name like `newsletters_changes`. Now anything listening on that channel gets notified automatically whenever a row is inserted or updated, no application-level plumbing needed.
 
 :::note
 
-the function uses `CREATE OR REPLACE` so it's idempotent. safe to call on every startup.
+The function uses `CREATE OR REPLACE` so it's idempotent. Safe to call on every startup.
 
 :::
 
 ::sep
 
-## the fastapi side: listening with asyncpg
+## The FastAPI Side: Listening with asyncpg
 
-once the trigger is wired up, you need a process that holds a persistent postgres connection and listens on the channel. `asyncpg` has a clean api for this:
+Once the trigger is wired up, you need a process that holds a persistent Postgres connection and listens on the channel. `asyncpg` has a clean API for this:
 
 ::codelabel[main.py]
 
@@ -145,34 +145,34 @@ async def stream_updates():
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 ```
 
-the `add_listener` call registers a callback that fires every time postgres sends a notification on that channel. we dump it into an asyncio queue, and the SSE generator pulls from that queue and streams it to the client.
+The `add_listener` call registers a callback that fires every time Postgres sends a notification on that channel. We dump it into an asyncio queue, and the SSE generator pulls from that queue and streams it to the client.
 
 ::sep
 
-## why SSE and not websockets?
+## Why SSE and Not WebSockets?
 
-this question comes up immediately so let's address it directly.
+This question comes up immediately so let's address it directly.
 
-websockets are bidirectional. for real-time _updates_ where data only flows from server to client, that's overkill. SSE is:
+WebSockets are bidirectional. For real-time *updates* where data only flows from server to client, that's overkill. SSE is:
 
-- unidirectional (server to client only)
-- a plain HTTP connection, meaning it works through most proxies and load balancers without special config
-- built-in reconnection handling in the browser (`EventSource` API reconnects automatically)
-- simpler to implement and reason about
+- Unidirectional (server to client only)
+- A plain HTTP connection, meaning it works through most proxies and load balancers without special config
+- Built-in reconnection handling in the browser (`EventSource` API reconnects automatically)
+- Simpler to implement and reason about
 
 :::warning
 
-SSE has a browser limit of 6 concurrent connections per domain (HTTP/1.1). if you're building something with many concurrent SSE streams per user, either use HTTP/2 or reconsider the architecture.
+SSE has a browser limit of 6 concurrent connections per domain (HTTP/1.1). If you're building something with many concurrent SSE streams per user, either use HTTP/2 or reconsider the architecture.
 
 :::
 
-for a newsletter update feed, SSE is exactly right. you don't need the client to send data back.
+For a newsletter update feed, SSE is exactly right. You don't need the client to send data back.
 
 ::sep
 
-## the browser side
+## The Browser Side
 
-the client is three lines:
+The client is three lines:
 
 ```javascript
 const source = new EventSource('/stream');
@@ -182,18 +182,18 @@ source.onmessage = (event) => {
 };
 ```
 
-`EventSource` handles reconnection, error recovery, and keeps the connection alive. the browser will automatically reconnect if the connection drops.
+`EventSource` handles reconnection, error recovery, and keeps the connection alive. The browser will automatically reconnect if the connection drops.
 
 ::sep
 
-## what this is actually useful for
+## What This Is Actually Useful For
 
-the pattern generalizes beyond newsletters:
+The pattern generalizes beyond newsletters:
 
-- **live dashboards** — db metrics, order counts, inventory levels
-- **collaborative tools** — any shared state that multiple clients need to see updated
-- **audit feeds** — surface row-level changes in real time to a monitoring UI
-- **cache invalidation** — instead of TTL-based expiry, invalidate on actual data change
+- **Live dashboards** — DB metrics, order counts, inventory levels
+- **Collaborative tools** — any shared state that multiple clients need to see updated
+- **Audit feeds** — surface row-level changes in real time to a monitoring UI
+- **Cache invalidation** — instead of TTL-based expiry, invalidate on actual data change
 
 :::diagram[Generalized Pattern]
 
@@ -201,14 +201,14 @@ Any Table → Trigger → pg_notify → Listener Pool → SSE → N Clients
 
 :::
 
-the key insight is that the trigger approach decouples the event emission from application code. even if you have multiple services writing to the same table, every write triggers the notification. you don't have to coordinate across services to fire events.
+The key insight is that the trigger approach decouples the event emission from application code. Even if you have multiple services writing to the same table, every write triggers the notification. You don't have to coordinate across services to fire events.
 
 ::sep
 
-## tldr
+## TLDR
 
 :::tldr
 
-postgres `NOTIFY/LISTEN` + database triggers give you reactive updates without a specialized real-time database. pair it with server-sent events and asyncpg and you have a lightweight, production-viable real-time system. the full project is at [v0id-user/Postgres-Reactive-SSE-Example](https://github.com/v0id-user/Postgres-Reactive-SSE-Example).
+Postgres `NOTIFY/LISTEN` + database triggers give you reactive updates without a specialized real-time database. Pair it with server-sent events and asyncpg and you have a lightweight, production-viable real-time system. The full project is at [v0id-user/Postgres-Reactive-SSE-Example](https://github.com/v0id-user/Postgres-Reactive-SSE-Example).
 
 :::
