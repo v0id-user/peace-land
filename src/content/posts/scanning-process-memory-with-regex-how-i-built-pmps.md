@@ -44,13 +44,9 @@ send a message in discord, run PMPS against \`discord.exe\` with a pattern like 
 most anti-debug code checks for process names or window titles. those are trivially bypassable by renaming the process. PMPS takes a different angle: IDA has strings like "IDA Freeware" sitting in its memory. pattern-match against that and you find the debugger regardless of what it's called.
 
 \`\`\`c
-
 pm_t\* pm = PMSearchAllForMatch("[Ii][Dd][Aa] [Ff]reeware\s\*", TRUE);
-
 printf("App name: %s\n", pm->exeName);
-
 // output: ida64.exe
-
 \`\`\`
 
 \*\*3. hunting malware at runtime\*\*
@@ -68,23 +64,14 @@ Process Start (0x0) → VirtualQueryEx → Readable Page? → Run Regex → Matc
 ## the api is simple on purpose
 
 \`\`\`c
-
 pm_t\* pm = CreateProcessMatcher("[Hh]ey");
-
 GetProcessHandleByName(pm, "target.exe");
-
 char\* block = PMFindMatchBlock(pm);
-
 while (block != NULL) {
-
     printf("%s\n", block);
-
     block = PMFindMatchBlock(pm); // stateful, keeps walking
-
 }
-
 CleanupProcessMatcher(pm);
-
 \`\`\`
 
 the state lives in the \`pm_t\` struct. call \`PMFindMatchBlock\` again and it picks up where it left off. no restarting, no re-scanning from scratch.
