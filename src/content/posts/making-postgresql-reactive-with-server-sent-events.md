@@ -5,7 +5,7 @@ slug: postgresql-reactive-sse
 draft: false
 ---
 
-most people reach for websockets the moment they need real-time updates. or they pick a specialized database like convex that bundles reactivity out of the box. both are valid, but there's a third option nobody talks about enough: postgresql already has a pub/sub system built in, and it's been there since version 9.0.
+Most people reach for websockets the moment they need real-time updates. or they pick a specialized database like convex that bundles reactivity out of the box. both are valid, but there's a third option nobody talks about enough: postgresql already has a pub/sub system built in, and it's been there since version 9.0.
 
 this is a writeup of a project i built to explore exactly that: real-time reactive updates using postgres `NOTIFY/LISTEN` + server-sent events, no websockets, no external message broker.
 
@@ -153,7 +153,7 @@ the `add_listener` call registers a callback that fires every time postgres send
 
 this question comes up immediately so let's address it directly.
 
-websockets are bidirectional. for real-time *updates* where data only flows from server to client, that's overkill. SSE is:
+websockets are bidirectional. for real-time _updates_ where data only flows from server to client, that's overkill. SSE is:
 
 - unidirectional (server to client only)
 - a plain HTTP connection, meaning it works through most proxies and load balancers without special config
