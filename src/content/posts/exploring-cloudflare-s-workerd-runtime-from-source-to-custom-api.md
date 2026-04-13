@@ -5,11 +5,11 @@ slug: exploring-cloudflares-workerd
 description: Digging into the Cloudflare Workers runtime source code — building workerd from scratch and adding a custom C++ API.
 ---
 
-# Why?
+## Why?
 
 [Cloudflare Workers](https://workers.cloudflare.com/) are basically magic. They handle shit ton of load, they're easy to deploy to, easy to work with. They just work. In this blog post I'm trying to scratch the surface of their actual code internals to understand what I'm running my code on top of, and to deepen my understanding of the thing I deploy to every time I'm building something of my own.
 
-# What is it?
+## What is it?
 
 It's a C++ server built on top of V8 (the same engine behind Chrome and Node.js). It's the open-source version of the Cloudflare Workers Runtime. When you upload your JS or WASM, it runs inside an isolated V8 instance within the workerd server. But all the built-in APIs (fetch, Request, crypto, etc.) are implemented in C++ and exposed to JavaScript through a custom binding layer called JSG (JavaScript Glue).
 
@@ -22,7 +22,7 @@ Workerd uses Cap'n Proto for its configuration, which is a schema language, seri
 In this blog post, I'm going to explore the source code, identify entry points, and build my own function to print a string. Just to get my hands dirty and rip the blackbox open.
 
 
-# Problem
+## Problem
 
 What does workerd even try to solve? Why would you bother building this, sinking thousands of hours into it? What problem did Cloudflare need to solve?
 
@@ -40,7 +40,7 @@ But why build custom APIs? Because there's no DOM, no window, no browser. You n
 
 And why Cap'n Proto? You need a way to configure which worker listens on which port, with what bindings. Cap'n Proto is the config format and the internal serialization. It's fast, zero-copy, and it was created by Kenton Varda, the same person who created protobuf at Google and later built workerd at Cloudflare. He wasn't going to use someone else's tool when he wrote the better version.
 
-# Mental Model
+## Mental Model
 
 Workerd is event-driven. It's similar to a browser tab. Each request comes through and runs in its own isolated environment via V8.
 
@@ -54,7 +54,7 @@ This also means your server doesn't actually run. That's a tricky mental model t
 
 [As Sunil puts it: One big stretchy server.](https://x.com/threepointone/status/1446231689081020422)
 
-# Code
+## Code
 
 Now that we know what workerd is and why it exists, let's open it up. I cloned the repo, built it from source on an M4 MacBook Air (34 minutes, 7685 build actions), and ran the helloworld sample. It returned "Hello World" on localhost:8080. Cool. But what actually happened between me hitting enter on workerd serve config.capnp and that response? That's what this section is about.
 
@@ -63,7 +63,7 @@ We're going to trace the full path: from the config file, through the C++ source
 
 First, let's orient ourselves with the source tree.
 
-Source Tree
+### Source Tree
 
 ```
 src/workerd/
@@ -79,7 +79,7 @@ samples/     ← Working examples: helloworld, durable-objects-chat, wasm, etc.
 
 The two directories that matter most for understanding the startup chain are jsg/ (where C++ becomes JavaScript) and io/ (where the worker lifecycle lives). The server/ directory is the entry point, but it mostly wires things together. The real work happens in io/ and jsg/.
 
-How It Starts
+### How It Starts
 
 After you compile the server and run “workerd serve config.capnp”, this is the full chain of what happens inside the binary.
 
@@ -113,7 +113,7 @@ workerd serve config.capnp
 
 Let's walk through each step.
 
-## Step 1: The Config
+### Step 1: The Config
 
 The capnp config file is the wiring diagram. It tells workerd what code to run and where to listen. The schema in workerd.capnp defines two ways to provide JavaScript:
 
@@ -124,7 +124,7 @@ modules @6 :List(Module);        # ES modules with import/export
 
 In the samples folder. The helloworld sample uses serviceWorkerScript with embed "worker.js". Cap'n Proto reads the file contents into that text field. The config is type-checked at compile time. If a field is wrong, it fails before anything runs.
 
-## Step 2: Extracting the Source
+### Step 2: Extracting the Source
 
 In “workerd-api.c++”, the function extractSource() parses the config and pulls out your JavaScript:
 
@@ -143,7 +143,7 @@ struct ScriptSource {
 
 At this point your JavaScript is just a string being carried through the system.
 
-## Step 3: V8 Compilation
+### Step 3: V8 Compilation
 
 The “Worker::Script” constructor in “worker.c++” receives the ScriptSource and compiles it:
 
@@ -175,7 +175,7 @@ Three V8 calls. ScriptOrigin sets up the filename for stack traces. “Script
 
 A note on “NonModuleScript”:  this is the old Service Worker syntax, the addEventListener('fetch', ...) style. If you use the modern ES module syntax (export default { fetch() {} }), V8 compiles it through a different path using “CompileModule” instead of “CompileUnboundScript”, because modules have imports and exports that need to be resolved. Most Workers today use the module syntax.
 
-## Step 4: Execution
+### Step 4: Execution
 
 In “worker.c++”, the compiled script is bound to a context and executed:
 
@@ -207,7 +207,7 @@ After that, “runMicrotasks” flushes any pending promises.
 
 Your code is done running. workerd now listens on the configured port and dispatches incoming HTTP requests to the handler you registered.
 
-# Security Mitigation and Sandboxing
+## Security Mitigation and Sandboxing
 
 Talking about isolation, you might think workerd could serve as a sandbox solution. It can't. The README states this explicitly “WARNING: workerd is not a hardened sandbox.”
 
@@ -225,7 +225,7 @@ None of these measures are a complete fix on their own. But stacked together, th
 
 Kenton Varda wrote the full breakdown here: [Mitigating Spectre and Other Security Threats: The Cloudflare Workers Security Model.](https://blog.cloudflare.com/mitigating-spectre-and-other-security-threats-the-cloudflare-workers-security-model/)
 
-# Adding your own stuff
+## Adding your own stuff
 
 To build your own API is actually straightforward. You navigate to `src/workerd/api/` and create your header file, define your class using JSG macros, and wire it up.
 
@@ -283,11 +283,11 @@ export default {
 
 Every API in workerd follows this exact same pattern. fetch, crypto, caches, Durable Objects, all of them. A C++ class, JSG macros, type registration, global scope wiring. That's how the entire Workers API surface was built, one type at a time.
 
-# Interesting stuff
+## Interesting stuff
 
 If you've dealt with Cloudflare you know the CPU limits. The funny thing in this source code, all limits are no-ops. The entire NullIsolateLimitEnforcer does nothing. And that's the cool part about open source. You don't need to open-source everything. You can still keep your business internals private. Same as SQLite's test suite.
 
-# Thanks for reading
+## Thanks for reading
 
 That's it! A C++ server, V8 under the hood, JSG gluing it all together, and Cap'n Proto wiring the config. Now when I deploy to Cloudflare Workers, I know what's underneath. Not the docs version. The actual code.
 
