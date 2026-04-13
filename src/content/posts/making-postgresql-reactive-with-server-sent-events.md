@@ -1,5 +1,5 @@
 ---
-title: Making PostgreSQL reactive with server-sent events
+title: Making PostgreSQL Reactive with Server-Sent Events
 date: 2024-12-30
 slug: postgresql-reactive-sse
 draft: false

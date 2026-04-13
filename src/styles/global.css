@@ -68,6 +68,9 @@ a:hover {
   padding: 2px 6px;
   text-decoration: none;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
 }
 
 .sidebar nav a:hover {
