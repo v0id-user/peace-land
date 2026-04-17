@@ -2,7 +2,7 @@
 title: Relearning rust in a world that codes for you
 date: 2026-04-17
 slug: relearning-rust-in-a-world-that-codes-for-you
-draft: true
+draft: false
 description: ''
 ---
 
