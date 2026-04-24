@@ -257,6 +257,25 @@ a:hover {
   font-size: 12px;
 }
 
+.tree-links-item--inactive a {
+  color: #999;
+  font-style: italic;
+}
+
+.tree-links-item--inactive a:visited {
+  color: #999;
+}
+
+.tree-links-item--inactive a:hover {
+  color: #777;
+}
+
+.tree-links-status {
+  font-size: 9px;
+  font-style: normal;
+  color: #aaa;
+}
+
 .tree-note {
   margin-top: 16px;
   font-size: 10px;

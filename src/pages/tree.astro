@@ -3,11 +3,11 @@ import Base from '../layouts/Base.astro';
 
 const links = [
   { name: 'GitHub', url: 'https://github.com/v0id-user' },
-  { name: 'X (Twitter)', url: 'https://x.com/v0id_user' },
+  { name: 'X (Twitter)', url: 'https://x.com/v0id_user', inactive: true },
   { name: 'LinkedIn', url: 'https://linkedin.com/in/v0id-user' },
-  { name: 'Bluesky', url: 'https://bsky.app/profile/v0id.me' },
-  { name: 'Reddit', url: 'https://reddit.com/u/v0id_user' },
-  { name: 'Instagram', url: 'https://instagram.com/v0id_user' },
+  { name: 'Bluesky', url: 'https://bsky.app/profile/v0id.me', inactive: true },
+  { name: 'Reddit', url: 'https://reddit.com/u/v0id_user', inactive: true },
+  { name: 'Instagram', url: 'https://instagram.com/v0id_user', inactive: true },
   { name: 'Email', url: 'mailto:hey@v0id.me' },
   { name: 'PGP key', url: 'https://pgp.v0id.me' },
   { name: 'Book a Call', url: 'https://cal.com/v0id-user/30min' },
@@ -19,13 +19,18 @@ const links = [
     <h1>Links</h1>
     <ul class="tree-links">
       {links.map((link) => (
-        <li><a href={link.url} target="_blank" rel="noopener">{link.name}</a></li>
+        <li class:list={[{ 'tree-links-item--inactive': link.inactive }]}>
+          <a href={link.url} target="_blank" rel="noopener">{link.name}</a>
+          {link.inactive && (
+            <span class="tree-links-status"> (inactive/archived)</span>
+          )}
+        </li>
       ))}
     </ul>
     <p class="tree-note">
-      Mostly inactive on socials.<br />
-      Email has the highest chance of a response.<br />
-      LinkedIn works too.
+      I’m not very active on socials—replies there are slow.<br />
+      Email is the best way to reach me.<br />
+      LinkedIn messages are fine too.
     </p>
   </div>
 </Base>
