@@ -5,6 +5,8 @@ slug: i-built-managed-infra-in-three-days-then-archived-it
 draft: false
 ---
  
+# What?
+
 I built a whole managed realtime infra called [hela](https://github.com/v0id-user/hela). five primitives, four sdks, two react apps, one elixir gateway, one elixir control plane, polar billing, terraform for railway, the works. i shipped 216 deployments to production. i archived it three days later.
  
 The reason isn't clever. i got burned out. i didn't think much while building it. that's the post.
@@ -17,7 +19,7 @@ so i built. gateway in elixir. control plane in elixir. typescript sdk. python s
  
 day three i looked at the deploy graph and saw 216 deployments. i looked at the four sdks i now had to maintain. i looked at the dashboard for a hosted product i'd never sold. i looked at the polar tier configs for a price i'd never charged. and i didn't want any of it.
  
-## that's the burnout
+## That's the burnout
  
 it isn't dramatic. it's the moment where you realize you've been moving for three days in a direction nobody asked for, including you, and the energy you started with is gone, and what's left is the maintenance shape of the thing you built. four sdks don't maintain themselves. a hosted product doesn't sell itself. a marketing site doesn't drive itself. you signed up for all of it the moment you typed it into existence.
  
