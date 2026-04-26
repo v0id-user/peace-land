@@ -5,7 +5,7 @@ slug: i-built-managed-infra-in-three-days-then-archived-it
 draft: false
 ---
  
-# What?
+## What?
 
 I built a whole managed realtime infra called [hela](https://github.com/v0id-user/hela). five primitives, four sdks, two react apps, one elixir gateway, one elixir control plane, polar billing, terraform for railway, the works. i shipped 216 deployments to production. i archived it three days later.
  
