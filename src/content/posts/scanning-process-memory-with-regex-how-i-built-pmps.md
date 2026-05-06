@@ -5,6 +5,10 @@ slug: scanning-process-memory-with-regex-how-i-built-pmps
 draft: false
 ---
 
+:::tldr
+PMPS walks a Windows process's virtual memory page by page, runs a regex on each page, and returns the matching block. Useful for memory forensics, anti-debug detection, and malware analysis. No kernel access required.
+:::
+
 A while back I got obsessed with something: no matter how well you hide sensitive data in software, the memory always tells the truth.
 
 That thought turned into PMPS, a C library and tool for scanning a Windows process's memory space using regex patterns. You give it a process name and a pattern, it walks through virtual memory page by page (4KB at a time) and hands you back the matched block.
@@ -91,15 +95,5 @@ A few things I'd revisit:
 - The regex engine is `tiny-regex-c` by kokke, which is great for embedded use but has limited syntax. A more complete engine would open up more use cases
 - Fixed page size is a real constraint. Parameterizing the scan size is the obvious next step
 - Windows-only. A cross-platform version using `/proc/<pid>/maps` on Linux would be interesting
-
-::sep
-
-## TLDR
-
-:::tldr
-
-PMPS walks a Windows process's virtual memory page by page, runs a regex on each page, and returns the matching block. Useful for memory forensics, anti-debug detection, and malware analysis. No kernel access required.
-
-:::
 
 The repo is at [GhaynOrg/PMPS](https://github.com/GhaynOrg/PMPS) if you want to poke at the code.

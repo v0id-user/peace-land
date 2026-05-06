@@ -5,6 +5,10 @@ slug: email-tokenization-identity-without-sensitive-information
 description: How to separate email addresses from user identity using tokenization — a practical approach to handling PII in login systems.
 ---
 
+:::tldr
+Don't store emails next to identity in one users table. Keep real emails in their own table keyed by an opaque token, and reference that token from the identity table. Identity never sees the email itself, so a read-only leak of one table doesn't expose PII tied to logins.
+:::
+
 ## Why Separate Email From Identity?
 
 When you build a login system or any website with users, the common approach is simple: collect things like the email, password, and username, then store them in a single table.

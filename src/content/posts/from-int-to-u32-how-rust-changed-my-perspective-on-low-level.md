@@ -5,6 +5,10 @@ slug: from-int-to-u32-how-rust-changed-my-perspective-on-low-level
 description: How switching from high-level languages to Rust changed the way I think about types, memory, and low-level programming.
 ---
 
+:::tldr
+C's `int` has no fixed width — its size depends on compiler, OS, and architecture. stdint.h fixes that in C99 (uint32_t, uint8_t, etc.) but it's opt-in. Rust bakes fixed-width integers (u32, i64, usize) into the language by default, plus libraries like bincode that refuse to deserialize when types don't match exactly. Safety isn't just the borrow checker; it's the whole stack forcing intent.
+:::
+
 ## Before
 
 Not long ago, I started working on a real-time chat project built entirely from scratch using modern technologies: Rust, WebAssembly, and Cloudflare Workers. I teased it on Twitter, but in the middle of all that, there was one point I really wanted to dive deep into — my choice of Rust.
