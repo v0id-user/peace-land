@@ -6,6 +6,10 @@ draft: true
 description: Building a recursive DNS resolver from scratch in Rust by implementing RFC 1035 byte by byte — no libraries, just the spec.
 ---
 
+:::tldr
+Build a recursive DNS resolver from scratch in Rust by following RFC 1035 section by section. No DNS libraries, just byte-level parsing. The point is to treat the RFC as a contract between implementers, not a tutorial.
+:::
+
 We've all read RFCs. But have you actually sat with one, section by section, and understood the intent of the writer?
 
 Here's the thing. It's not written to teach you. The writer isn't trying to explain concepts or hold your hand through the ideas. The only purpose of an RFC is exactly what you do at work: write precisely enough that two separate implementers can build the exact same system and communicate with each other from opposite ends of the world. That's it.

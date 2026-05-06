@@ -4,6 +4,10 @@ date: 2026-01-10
 slug: how-i-built-a-serverless-video-transcoding-system-using-cloudflare-fly-io-and-re
 ---
 
+:::tldr
+TCoder is an event-driven transcoding pipeline. The client uploads to R2 with a presigned URL, R2 fires a Queue event into a Cloudflare Worker control plane, the Worker hands the job to a Fly.io machine running FFmpeg, with Redis as the orchestration layer. Machines spin up when needed and shut themselves down when the job's done. No central queue, no 24/7 backend. Code at v0id-user/tcoder.
+:::
+
 I’ve always been curious about how companies like YouTube move a video from the **“uploaded”** stage to **“ready to watch in multiple qualities.”**
 
 Instead of spending hours reading theoretical articles, I decided to build a real system that performs the entire process from start to finish.

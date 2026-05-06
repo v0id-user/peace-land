@@ -5,6 +5,10 @@ slug: how-i-built-my-personal-website-and-blog
 description: The journey of building my personal website and blog — from motivation to deployment, tools, challenges, and lessons learned.
 ---
 
+:::tldr
+The old blog, kept here for context. Built on Next.js with Tailwind, a custom TipTap editor, hosted on Vercel with Postgres for content and Tigris (S3-compatible) for images. Started after Ghost deleted my posts when the trial ended. The current site you're reading is a different one entirely.
+:::
+
 Peace be upon you,
 
 In this article, I wanted to share my journey of building my personal website and blog. Starting from the reason that pushed me to create this project, all the way to the tools and technologies I used, the challenges I faced, and the future plans I hope to achieve.

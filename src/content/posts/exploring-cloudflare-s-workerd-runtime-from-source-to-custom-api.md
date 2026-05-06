@@ -5,6 +5,10 @@ slug: exploring-cloudflares-workerd
 description: Digging into the Cloudflare Workers runtime source code — building workerd from scratch and adding a custom C++ API.
 ---
 
+:::tldr
+Workerd is a C++ server on top of V8. Each Worker runs in its own isolate. JS APIs (fetch, crypto, etc.) are C++ classes glued to V8 through JSG, and Cap'n Proto wires the config. Adding your own API is a `JSG_RESOURCE_TYPE` class in `src/workerd/api/`, registered in `workerd-api.c++` and exposed via `global-scope.h`. Then rebuild.
+:::
+
 ## Why?
 
 [Cloudflare Workers](https://workers.cloudflare.com/) are basically magic. They handle shit ton of load, they're easy to deploy to, easy to work with. They just work. In this blog post I'm trying to scratch the surface of their actual code internals to understand what I'm running my code on top of, and to deepen my understanding of the thing I deploy to every time I'm building something of my own.

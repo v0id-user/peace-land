@@ -6,6 +6,10 @@ draft: false
 description: How to store private keys on the server securely, how proton and other services do it.
 ---
 
+:::tldr
+E2EE doesn't require the private key to live only on your device. Run your password through a KDF to derive two independent secrets: one authenticates with the server, the other unlocks the locally-encrypted private key the server stores for you. The server never sees the password or the unwrapping secret. The math is solid, the only soft spot is JavaScript delivery from the same server.
+:::
+
 ::sep
 
 ## Well
@@ -89,7 +93,3 @@ A compromised server could ship a slightly modified version of that JavaScript t
 ```
 
 What surprises me looking back is that I was confused not because the answer was hard, but because I had accepted the wrong constraint. "The server can't have your key" isn't quite right, the real thing is "the server can't _read_ your key", and that is a much weaker requirement. That gap is where a whole category of products lives.
-
-:::tldr
-E2EE doesn't require the private key to live only on your device. Run your password through a KDF to derive two independent secrets: one authenticates with the server, the other unlocks the locally-encrypted private key the server stores for you. The server never sees the password or the unwrapping secret. The math is solid, the only soft spot is JavaScript delivery from the same server.
-:::

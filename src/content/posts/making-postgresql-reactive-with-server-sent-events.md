@@ -5,6 +5,10 @@ slug: postgresql-reactive-sse
 draft: false
 ---
 
+:::tldr
+postgres `NOTIFY/LISTEN` + database triggers give you reactive updates without a specialized real-time database. pair it with server-sent events and asyncpg and you have a lightweight, production-viable real-time system. the full project is at [v0id-user/Postgres-Reactive-SSE-Example](https://github.com/v0id-user/Postgres-Reactive-SSE-Example).
+:::
+
 Most people reach for websockets the moment they need real-time updates. or they pick a specialized database like convex that bundles reactivity out of the box. both are valid, but there's a third option nobody talks about enough: postgresql already has a pub/sub system built in, and it's been there since version 9.0.
 
 this is a writeup of a project i built to explore exactly that: real-time reactive updates using postgres `NOTIFY/LISTEN` + server-sent events, no websockets, no external message broker.
@@ -202,13 +206,3 @@ Any Table → Trigger → pg_notify → Listener Pool → SSE → N Clients
 :::
 
 the key insight is that the trigger approach decouples the event emission from application code. even if you have multiple services writing to the same table, every write triggers the notification. you don't have to coordinate across services to fire events.
-
-::sep
-
-## tldr
-
-:::tldr
-
-postgres `NOTIFY/LISTEN` + database triggers give you reactive updates without a specialized real-time database. pair it with server-sent events and asyncpg and you have a lightweight, production-viable real-time system. the full project is at [v0id-user/Postgres-Reactive-SSE-Example](https://github.com/v0id-user/Postgres-Reactive-SSE-Example).
-
-:::

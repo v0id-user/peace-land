@@ -6,6 +6,10 @@ draft: false
 description: ''
 ---
 
+:::tldr
+Want to actually learn Rust in an era where I barely write code by hand. Plan: small focused projects, Cursor on hand but Tab completion off, ask for help only when genuinely stuck, generate ideas via Claude Code to make sure I touch every part of the language.
+:::
+
 ## Well
 
 I have a very weird relationship with the Rust programming language. The last time I built something with it was about a year ago, [wasm.channel](https://wasm.channel), and it was literally the only stable piece of that entire project. That's something I genuinely admire about Rust: it's one of the few languages where when you ship something, it's either you're adding a feature, or it's just... done. No race conditions, no mystery bugs, no "works on my machine." Complete.

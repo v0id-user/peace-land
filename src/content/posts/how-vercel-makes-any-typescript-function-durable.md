@@ -5,6 +5,10 @@ slug: how-vercel-makes-any-typescript-function-durable
 description: A look at how Vercel's workflow SDK turns regular TypeScript functions into durable, resumable workflows under the hood.
 ---
 
+:::tldr
+SWC plugin instruments your code at compile time. `start()` creates durable storage and fires an HTTP request to `/flow`. `/flow` runs your workflow in a VM — steps throw `WorkflowSuspension` if not yet done. Each suspended step fires as an HTTP call to `/step`. `/step` runs your business logic, persists the result, then re-queues `/flow`. Loop continues. Completed steps are skipped via cached results. Finish when no new suspensions are thrown.
+:::
+
 ***
 
 :::note
@@ -195,9 +199,5 @@ Seven hours and there's still surface area I didn't get to. Worth knowing these 
 - The custom `fetch` implementation inside the workflow world
 - How `Request` and `Response` become step-based streams
 - Max attempts, backoff, and error escalation paths
-
-:::tldr
-SWC plugin instruments your code at compile time. `start()` creates durable storage and fires an HTTP request to `/flow`. `/flow` runs your workflow in a VM — steps throw `WorkflowSuspension` if not yet done. Each suspended step fires as an HTTP call to `/step`. `/step` runs your business logic, persists the result, then re-queues `/flow`. Loop continues. Completed steps are skipped via cached results. Finish when no new suspensions are thrown.
-:::
 
 All the code analyzed came directly from [vercel/workflow](https://github.com/vercel/workflow) on GitHub.
