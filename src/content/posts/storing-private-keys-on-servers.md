@@ -2,7 +2,7 @@
 title: Storing private keys on servers
 date: 2026-05-06
 slug: storing-private-keys-on-servers
-draft: true
+draft: false
 description: How to store private keys on the server securely, how proton and other services do it.
 ---
 
