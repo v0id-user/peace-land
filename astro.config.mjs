@@ -10,7 +10,7 @@ import pgpSubdomainWorkerEntry from './src/integrations/pgp-subdomain-worker-ent
 export default defineConfig({
   site: 'https://www.v0id.me',
   integrations: [pgpSubdomainWorkerEntry(), sitemap({
-    filter: (page) => !page.includes('/now-playing') && !page.includes('/human/confirm'),
+    filter: (page) => !page.includes('/now-playing') && !page.includes('/human/confirm') && !page.includes('/cv'),
   })],
   adapter: cloudflare(),
   build: {

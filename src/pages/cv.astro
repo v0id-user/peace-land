@@ -1,0 +1,510 @@
+---
+// Standalone CV page. Not wrapped in the site's Base layout on purpose:
+// this is meant to be the page you share or save as a PDF, with none of
+// the site chrome. Unlinked from the rest of the site (no sidebar entry,
+// sitemap-excluded, noindex).
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fahad Al-Ghamdi, Backend Engineer</title>
+    <meta name="description" content="CV. Backend engineer at Thmanyah. Go, TypeScript, Python, Rust." />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html, body {
+        background: #f4f4f2;
+        color: #1a1a1a;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-feature-settings: "tnum" 1, "zero" 1, "ss01" 1;
+        font-variant-numeric: slashed-zero tabular-nums;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      .toolbar {
+        position: sticky;
+        top: 0;
+        background: #f4f4f2;
+        border-bottom: 1px solid #e2e2dd;
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-size: 12px;
+        color: #555;
+        z-index: 10;
+      }
+
+      .toolbar button {
+        font: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+        background: #1a1a1a;
+        border: 1px solid #1a1a1a;
+        padding: 6px 14px;
+        cursor: pointer;
+      }
+
+      .toolbar button:hover { background: #333; }
+      .toolbar .hint { color: #888; }
+
+      .page {
+        max-width: 21cm;
+        margin: 24px auto;
+        padding: 36px 44px;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        font-size: 13px;
+      }
+
+      header.cv-header {
+        text-align: center;
+        margin-bottom: 18px;
+      }
+
+      .cv-name {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        margin-bottom: 2px;
+      }
+
+      .cv-role {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 8px;
+      }
+
+      .cv-contact {
+        font-size: 12px;
+        color: #333;
+      }
+
+      .cv-contact a {
+        color: #1a1a1a;
+        text-decoration: none;
+      }
+
+      .cv-contact a:hover { text-decoration: underline; }
+
+      .cv-contact .sep {
+        color: #aaa;
+        margin: 0 6px;
+      }
+
+      section {
+        margin-top: 14px;
+      }
+
+      section > h2 {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #1a1a1a;
+        border-bottom: 1px solid #d4d4cf;
+        padding-bottom: 3px;
+        margin-bottom: 8px;
+      }
+
+      section p {
+        margin-bottom: 6px;
+      }
+
+      .role-block {
+        margin-bottom: 12px;
+      }
+
+      .role-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 6px;
+      }
+
+      .role-title {
+        font-weight: 600;
+      }
+
+      .role-meta {
+        font-size: 11px;
+        color: #888;
+      }
+
+      .role-block ul {
+        list-style: disc;
+        padding-left: 20px;
+        margin-top: 4px;
+      }
+
+      .role-block li {
+        margin-bottom: 4px;
+      }
+
+      .project {
+        margin-bottom: 8px;
+      }
+
+      .project-head {
+        font-weight: 600;
+      }
+
+      .project-head .date {
+        font-weight: 400;
+        color: #888;
+      }
+
+      .project-head a {
+        color: #1a1a1a;
+        font-weight: 400;
+        text-decoration: none;
+        font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 11.5px;
+      }
+
+      .project-head a:hover { text-decoration: underline; }
+
+      .tech-grid {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        row-gap: 4px;
+        column-gap: 12px;
+      }
+
+      .tech-grid .label {
+        font-weight: 600;
+        font-size: 12px;
+      }
+
+      .tech-grid .value {
+        font-size: 12px;
+        color: #333;
+      }
+
+      a { color: inherit; }
+
+      @media (max-width: 640px) {
+        .page { margin: 0; padding: 22px; box-shadow: none; }
+        .tech-grid { grid-template-columns: 1fr; row-gap: 2px; }
+        .tech-grid .label { margin-top: 4px; }
+      }
+
+      @media print {
+        @page { size: A4; margin: 1.2cm; }
+        html, body { background: #fff; color: #000; }
+        .toolbar { display: none; }
+        .page {
+          margin: 0;
+          padding: 0;
+          max-width: none;
+          box-shadow: none;
+          font-size: 10.5pt;
+          line-height: 1.4;
+        }
+        section { margin-top: 10px; break-inside: avoid; }
+        .role-block, .project { break-inside: avoid; }
+        .cv-name { font-size: 20pt; }
+        .cv-role { font-size: 11pt; }
+        .cv-contact { font-size: 9.5pt; }
+        section > h2 { font-size: 9pt; border-bottom-color: #444; }
+        .role-meta, .project-head .date { color: #555; }
+        a { color: #000; text-decoration: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar no-print">
+      <button type="button" onclick="window.print()">Print or save as PDF</button>
+      <span class="hint">or press &#8984; + P / Ctrl + P</span>
+    </div>
+
+    <main class="page">
+      <header class="cv-header">
+        <div class="cv-name">Fahad Al-Ghamdi</div>
+        <div class="cv-role">Backend Software Engineer</div>
+        <div class="cv-contact">
+          <a href="mailto:hey@v0id.me">hey@v0id.me</a>
+          <span class="sep">·</span>
+          <a href="https://github.com/v0id-user">github.com/v0id-user</a>
+          <span class="sep">·</span>
+          <a href="https://x.com/v0id_user">x.com/v0id_user</a>
+          <span class="sep">·</span>
+          <a href="https://v0id.me">v0id.me</a>
+        </div>
+      </header>
+
+      <section>
+        <h2>Summary</h2>
+        <p>
+          Self-taught backend engineer with years of hands-on systems work
+          and production engineering at a fast-moving media company.
+          Deepest in distributed messaging, performance optimization, and
+          cloud-native backend design.
+        </p>
+        <p>
+          Ships systems end to end: schema design, API architecture, CI/CD,
+          operational tooling, and observability. Go and TypeScript day to
+          day. Python where it fits. Rust through prior work and personal
+          projects.
+        </p>
+      </section>
+
+      <section>
+        <h2>Experience</h2>
+
+        <div class="role-block">
+          <div class="role-head">
+            <div class="role-title">Backend Software Engineer, Thmanyah</div>
+            <div class="role-meta">Feb 2026 to present · Full time, hybrid, Riyadh</div>
+          </div>
+          <ul>
+            <li>
+              Authored RFC-001 and architected a contract-first CMS backend
+              in Go to replace an unstable third-party vendor, after a
+              TypeScript/Bun direction was tried and abandoned for this
+              domain. Designed async pub/sub on RabbitMQ and sync reads
+              over gRPC. Built a configurable per-domain dual-write
+              mirroring layer that isolates upstream breaks per service.
+              Reverse-engineered a 20-table PostgreSQL schema from live
+              API responses, automated Zod schema decomposition (2,800
+              lines into 25 domain files), and delivered the CI/CD and
+              auth foundation.
+            </li>
+            <li>
+              Automated media migration from Google Drive to internal
+              infrastructure: about 2,200 files, around 273 GB. Cut roughly
+              a week of manual effort to 12 hours. Idempotent Python
+              pipeline with codec validation, retries with backoff, and
+              error handling that respects API rate limits.
+            </li>
+            <li>
+              Built and ran idempotent push-notification scripts targeting
+              around 30K users on FCM with full delivery tracking. About
+              17K delivered, 12K unreachable. Executed several targeted
+              campaigns with zero duplicates.
+            </li>
+            <li>
+              Diagnosed a recurring HTTP 500 in Radio while tuning Datadog
+              alert baselines. Led production error triage across time
+              windows, traced the root cause to a content-type mismatch in
+              the frontend, and redirected the fix there. Avoided an
+              unnecessary backend change.
+            </li>
+            <li>
+              Fixed a production integer overflow in the Radio API where
+              iOS listen_position values exceeded PostgreSQL integer
+              range. Shipped a guard capping values at 24 hours.
+              Separately diagnosed a Redis dedup failure where timestamp
+              fields made each webhook payload byte-unique. Proposed and
+              documented split 4xx and 5xx Datadog monitoring so
+              guard-originated 400s stop counting against the same
+              alerting budget as real 5xx incidents.
+            </li>
+            <li>
+              Authored the Radio CMS proposal, accepted by CTO and
+              Director of Engineering, to replace a third-party vendor
+              with an internal system and shift recurring operational work
+              away from engineering.
+            </li>
+          </ul>
+        </div>
+
+        <div class="role-block">
+          <div class="role-head">
+            <div class="role-title">Software Developer, Thmanyah</div>
+            <div class="role-meta">Nov 2025 to Feb 2026 · Freelance, remote</div>
+          </div>
+          <ul>
+            <li>
+              Delivered multiple query and endpoint optimizations. Around
+              11x p95 improvement on a timeline query, and around 20x
+              latency reduction on a critical feed endpoint, through
+              query decomposition and targeted indexing.
+            </li>
+            <li>
+              Resolved systemic data integrity issues. Eliminated recurring
+              foreign key failures from auth and DB state drift, and fixed
+              a race condition in a critical endpoint with Redis locking.
+              Acted as first responder during a backend outage and
+              tightened monitoring around the affected paths.
+            </li>
+            <li>
+              Re-architected Datadog anomaly monitoring to separate
+              downtime from spike detection, cutting alert fatigue.
+              Designed a state-driven dynamic ads pipeline, and
+              established a measure, improve, measure performance
+              optimization process with documentation and tracking
+              templates.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>Selected projects</h2>
+
+        <div class="project">
+          <div class="project-head">
+            hela <span class="date">(2026, archived experiment)</span>
+            &nbsp;<a href="https://github.com/v0id-user/hela">github.com/v0id-user/hela</a>
+          </div>
+          <p>
+            Open-source realtime platform on Elixir/BEAM. Phoenix Channels,
+            CRDT presence, per-channel ETS ring buffers with cursor
+            pagination back to Postgres, UUIDv7 sequencing, JWT auth
+            verified against customer-registered JWKs. Per-region gateway
+            clusters meshed with dns_cluster over IPv6. A separate control
+            plane fans project state to gateways over signed internal
+            POSTs, avoiding cross-region BEAM clustering. Four codegen
+            SDKs (TypeScript, Python, Go, Rust) generated from a single
+            JSON Schema source of truth. Documented post-mortem: scope had
+            to be explicit from day one, and schema-driven codegen at
+            four-language scale was a real maintenance bet.
+          </p>
+        </div>
+
+        <div class="project">
+          <div class="project-head">
+            eir-websocket <span class="date">(2026)</span>
+            &nbsp;<a href="https://github.com/v0id-user/eir-websocket">github.com/v0id-user/eir-websocket</a>
+          </div>
+          <p>
+            A rig for pushing Elixir/BEAM under chat-shaped load. Phoenix
+            cluster on Railway with four IPv6-meshed replicas. Broadway
+            batches inserts to Postgres up to 1000 messages or 200ms
+            windows. Per-group ETS ring buffers for sub-millisecond
+            recent-history reads. Log-bucketed latency histograms for
+            ingest-to-broadcast and ingest-to-persist spans. A
+            Mint.WebSocket simulator drives synthetic users; a React and
+            TanStack dashboard streams live BEAM internals (schedulers,
+            reductions, ETS counts, memory) and shows about 6 to 7 second
+            cluster heal when a replica is killed.
+          </p>
+        </div>
+
+        <div class="project">
+          <div class="project-head">
+            pg18-chat <span class="date">(2026)</span>
+            &nbsp;<a href="https://github.com/v0id-user/pg18-chat">github.com/v0id-user/pg18-chat</a>
+          </div>
+          <p>
+            PostgreSQL 18-first realtime chat. FastAPI in front, but
+            Postgres is the identity store, domain model enforcer,
+            realtime bus (LISTEN/NOTIFY), rate limiter, and search engine
+            (stored tsvector). Uses uuidv7(), virtual generated columns,
+            OLD/NEW in RETURNING, WITHOUT OVERLAPS, skip-scan B-tree,
+            pg_stat_io, pg_aios. Range-partitioned messages, RLS via SET
+            LOCAL, deferred constraint triggers for DM and admin
+            invariants. An SSE admin stream exposes pool, db_activity,
+            db_io, and notify samples in real time.
+          </p>
+        </div>
+
+        <div class="project">
+          <div class="project-head">
+            e2ee-notes <span class="date">(2026)</span>
+            &nbsp;<a href="https://github.com/v0id-user/e2ee-notes">github.com/v0id-user/e2ee-notes</a>
+          </div>
+          <p>
+            Notes app whose Rust backend only ever sees ciphertext. The
+            browser runs Argon2id(passphrase, salt) to derive 64 bytes,
+            splits into a server-known auth_key and a never-shared
+            wrap_key, then encrypts each note with AES-GCM. The server
+            stores salt, SHA-256(auth_key), and opaque blobs.
+          </p>
+        </div>
+
+        <div class="project">
+          <div class="project-head">
+            tcoder <span class="date">(2026)</span>
+            &nbsp;<a href="https://github.com/v0id-user/tcoder">github.com/v0id-user/tcoder</a>
+          </div>
+          <p>
+            Event-driven serverless video transcoding pipeline. Cloudflare
+            Workers as control plane (admission control, machine
+            lifecycle), Upstash Redis as state store (sorted-set job
+            queue, machine pool tracking), Fly.io Machines as ephemeral
+            FFmpeg compute, R2 as object storage. R2 object-created events
+            drive the pipeline; machines pull jobs with ZPOPMIN; cron
+            sweeps idle machines and recovers stuck uploading jobs.
+          </p>
+        </div>
+
+        <div class="project">
+          <div class="project-head">
+            vkv <span class="date">(2025)</span>
+            &nbsp;<a href="https://github.com/v0id-user/vkv">github.com/v0id-user/vkv</a>
+          </div>
+          <p>
+            A tiny LSM-style key-value store written from scratch in Go.
+            Sharded memtable, append-only WAL with startup recovery,
+            immutable sorted SSTables on disk. Newline-delimited text
+            protocol through a lexer, parser, and command AST. Reactor and
+            worker-pool networking around a plain TCP accept loop.
+          </p>
+        </div>
+
+        <div class="project">
+          <div class="project-head">
+            Erebus <span class="date">(2025)</span>
+            &nbsp;<a href="https://github.com/erebus-sh/erebus">github.com/erebus-sh/erebus</a>
+          </div>
+          <p>
+            Realtime pub/sub on Cloudflare Durable Objects and WebSockets,
+            fronted by a REST control surface. Redis and Queues for state
+            and fanout. Next.js dashboard for operators. TypeScript.
+          </p>
+        </div>
+
+        <div class="project">
+          <div class="project-head">
+            WasmChannel <span class="date">(2025)</span>
+            &nbsp;<a href="https://github.com/v0id-user/wasmchannel">github.com/v0id-user/wasmchannel</a>
+          </div>
+          <p>
+            Rust and WebAssembly client speaking a custom binary protocol
+            against a Cloudflare Workers backend (D1, KV, Queues).
+            Benchmarked at 34k versus 17k ops/sec against a JSON baseline,
+            about 95.3% higher throughput.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Technologies</h2>
+        <div class="tech-grid">
+          <div class="label">Languages</div>
+          <div class="value">Go, TypeScript, Python, Rust. Elixir for recent experiments. C and Windows API when warranted.</div>
+
+          <div class="label">Data</div>
+          <div class="value">PostgreSQL, Redis. Drizzle and Zod for schemas. CBOR on the wire when it earns its keep.</div>
+
+          <div class="label">Transport &amp; integration</div>
+          <div class="value">WebSockets, SSE, gRPC, RabbitMQ, LISTEN/NOTIFY.</div>
+
+          <div class="label">Cloud &amp; ops</div>
+          <div class="value">Cloudflare Workers, Durable Objects, Queues, KV, D1, R2. Fly.io Machines. Railway. Docker. Datadog.</div>
+
+          <div class="label">Frontend, when needed</div>
+          <div class="value">React, Next.js, Zustand.</div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
