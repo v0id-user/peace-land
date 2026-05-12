@@ -206,12 +206,15 @@
       }
 
       @media print {
-        @page { size: A4; margin: 1.2cm; }
+        /* margin: 0 removes the browser's auto-injected header (date, page
+           title) and footer (URL, page number). Page-internal whitespace
+           moves into .page padding below. */
+        @page { size: A4; margin: 0; }
         html, body { background: #fff; color: #000; }
         .toolbar { display: none; }
         .page {
           margin: 0;
-          padding: 0;
+          padding: 1.2cm 1.2cm;
           max-width: none;
           box-shadow: none;
           font-size: 10.5pt;
@@ -361,45 +364,6 @@
 
         <div class="project">
           <div class="project-head">
-            hela <span class="date">(2026, archived experiment)</span>
-            &nbsp;<a href="https://github.com/v0id-user/hela">github.com/v0id-user/hela</a>
-          </div>
-          <p>
-            Open-source realtime platform on Elixir/BEAM. Phoenix Channels,
-            CRDT presence, per-channel ETS ring buffers with cursor
-            pagination back to Postgres, UUIDv7 sequencing, JWT auth
-            verified against customer-registered JWKs. Per-region gateway
-            clusters meshed with dns_cluster over IPv6. A separate control
-            plane fans project state to gateways over signed internal
-            POSTs, avoiding cross-region BEAM clustering. Four codegen
-            SDKs (TypeScript, Python, Go, Rust) generated from a single
-            JSON Schema source of truth. Documented post-mortem: scope had
-            to be explicit from day one, and schema-driven codegen at
-            four-language scale was a real maintenance bet.
-          </p>
-        </div>
-
-        <div class="project">
-          <div class="project-head">
-            eir-websocket <span class="date">(2026)</span>
-            &nbsp;<a href="https://github.com/v0id-user/eir-websocket">github.com/v0id-user/eir-websocket</a>
-          </div>
-          <p>
-            A rig for pushing Elixir/BEAM under chat-shaped load. Phoenix
-            cluster on Railway with four IPv6-meshed replicas. Broadway
-            batches inserts to Postgres up to 1000 messages or 200ms
-            windows. Per-group ETS ring buffers for sub-millisecond
-            recent-history reads. Log-bucketed latency histograms for
-            ingest-to-broadcast and ingest-to-persist spans. A
-            Mint.WebSocket simulator drives synthetic users; a React and
-            TanStack dashboard streams live BEAM internals (schedulers,
-            reductions, ETS counts, memory) and shows about 6 to 7 second
-            cluster heal when a replica is killed.
-          </p>
-        </div>
-
-        <div class="project">
-          <div class="project-head">
             pg18-chat <span class="date">(2026)</span>
             &nbsp;<a href="https://github.com/v0id-user/pg18-chat">github.com/v0id-user/pg18-chat</a>
           </div>
@@ -413,20 +377,6 @@
             LOCAL, deferred constraint triggers for DM and admin
             invariants. An SSE admin stream exposes pool, db_activity,
             db_io, and notify samples in real time.
-          </p>
-        </div>
-
-        <div class="project">
-          <div class="project-head">
-            e2ee-notes <span class="date">(2026)</span>
-            &nbsp;<a href="https://github.com/v0id-user/e2ee-notes">github.com/v0id-user/e2ee-notes</a>
-          </div>
-          <p>
-            Notes app whose Rust backend only ever sees ciphertext. The
-            browser runs Argon2id(passphrase, salt) to derive 64 bytes,
-            splits into a server-known auth_key and a never-shared
-            wrap_key, then encrypts each note with AES-GCM. The server
-            stores salt, SHA-256(auth_key), and opaque blobs.
           </p>
         </div>
 
@@ -448,40 +398,15 @@
 
         <div class="project">
           <div class="project-head">
-            vkv <span class="date">(2025)</span>
-            &nbsp;<a href="https://github.com/v0id-user/vkv">github.com/v0id-user/vkv</a>
+            e2ee-notes <span class="date">(2026)</span>
+            &nbsp;<a href="https://github.com/v0id-user/e2ee-notes">github.com/v0id-user/e2ee-notes</a>
           </div>
           <p>
-            A tiny LSM-style key-value store written from scratch in Go.
-            Sharded memtable, append-only WAL with startup recovery,
-            immutable sorted SSTables on disk. Newline-delimited text
-            protocol through a lexer, parser, and command AST. Reactor and
-            worker-pool networking around a plain TCP accept loop.
-          </p>
-        </div>
-
-        <div class="project">
-          <div class="project-head">
-            Erebus <span class="date">(2025)</span>
-            &nbsp;<a href="https://github.com/erebus-sh/erebus">github.com/erebus-sh/erebus</a>
-          </div>
-          <p>
-            Realtime pub/sub on Cloudflare Durable Objects and WebSockets,
-            fronted by a REST control surface. Redis and Queues for state
-            and fanout. Next.js dashboard for operators. TypeScript.
-          </p>
-        </div>
-
-        <div class="project">
-          <div class="project-head">
-            WasmChannel <span class="date">(2025)</span>
-            &nbsp;<a href="https://github.com/v0id-user/wasmchannel">github.com/v0id-user/wasmchannel</a>
-          </div>
-          <p>
-            Rust and WebAssembly client speaking a custom binary protocol
-            against a Cloudflare Workers backend (D1, KV, Queues).
-            Benchmarked at 34k versus 17k ops/sec against a JSON baseline,
-            about 95.3% higher throughput.
+            Notes app whose Rust backend only ever sees ciphertext. The
+            browser runs Argon2id(passphrase, salt) to derive 64 bytes,
+            splits into a server-known auth_key and a never-shared
+            wrap_key, then encrypts each note with AES-GCM. The server
+            stores salt, SHA-256(auth_key), and opaque blobs.
           </p>
         </div>
       </section>
