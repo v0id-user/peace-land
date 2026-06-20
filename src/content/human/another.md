@@ -1,6 +1,6 @@
 ---
 title: "Another"
-date: 3416578-06-27
+date: 341657-06-27
 slug: another
 ---
 Another one. Same story, same lines, same outcome.
