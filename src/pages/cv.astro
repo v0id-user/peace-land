@@ -10,7 +10,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Fahad Al-Ghamdi, Backend Engineer</title>
-    <meta name="description" content="CV. Backend engineer at Thmanyah. Go, TypeScript, Python, Rust." />
+    <meta name="description" content="CV. Backend engineer. Go, TypeScript, Python, Rust." />
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -256,10 +256,9 @@
       <section>
         <h2>Summary</h2>
         <p>
-          Self-taught backend engineer with years of hands-on systems work
-          and production engineering at a fast-moving media company.
-          Deepest in distributed messaging, performance optimization, and
-          cloud-native backend design.
+          Self-taught backend engineer. Deepest in distributed messaging,
+          performance optimization, and cloud-native backend design.
+          Currently building production backend services at a media company.
         </p>
         <p>
           Ships systems end to end: schema design, API architecture, CI/CD,
@@ -279,16 +278,24 @@
           </div>
           <ul>
             <li>
-              Authored RFC-001 and architected a contract-first CMS backend
-              in Go to replace an unstable third-party vendor, after a
-              TypeScript/Bun direction was tried and abandoned for this
-              domain. Designed async pub/sub on RabbitMQ and sync reads
-              over gRPC. Built a configurable per-domain dual-write
-              mirroring layer that isolates upstream breaks per service.
-              Reverse-engineered a 20-table PostgreSQL schema from live
-              API responses, automated Zod schema decomposition (2,800
-              lines into 25 domain files), and delivered the CI/CD and
-              auth foundation.
+              Built the content-service in Go, the application that serves
+              the company's catalog: movies, episodes, shows, series,
+              clips, and moments. It replaced an unstable third-party
+              vendor, after a TypeScript/Bun direction was tried and
+              dropped for this domain. Authored RFC-001 for a
+              contract-first design: async pub/sub on RabbitMQ,
+              synchronous reads over gRPC, and a configurable per-domain
+              dual-write mirroring layer that isolates upstream breaks per
+              service. Reverse-engineered a 20-table PostgreSQL schema from
+              live API responses and automated Zod schema decomposition,
+              2,800 lines into 25 domain files.
+            </li>
+            <li>
+              Built its CI pipeline with integration and end-to-end tests,
+              alongside the auth foundation. Load-tested the service to a
+              200K RPS target, which it missed until a read-through cache
+              layer that keeps data fresh brought reads to near
+              sub-millisecond.
             </li>
             <li>
               Automated media migration from Google Drive to internal
@@ -399,8 +406,8 @@
 
         <div class="project">
           <div class="project-head">
-            e2ee-notes <span class="date">(2026)</span>
-            &nbsp;<a href="https://github.com/v0id-user/e2ee-notes">github.com/v0id-user/e2ee-notes</a>
+            kdf-encrypted-notestore <span class="date">(2026)</span>
+            &nbsp;<a href="https://github.com/v0id-user/kdf-encrypted-notestore">github.com/v0id-user/kdf-encrypted-notestore</a>
           </div>
           <p>
             Notes app whose Rust backend only ever sees ciphertext. The

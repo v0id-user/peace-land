@@ -94,4 +94,4 @@ A compromised server could ship a slightly modified version of that JavaScript t
 
 What surprises me looking back is that I was confused not because the answer was hard, but because I had accepted the wrong constraint. "The server can't have your key" isn't quite right, the real thing is "the server can't _read_ your key", and that is a much weaker requirement. That gap is where a whole category of products lives.
 
-I built a tiny app that puts this into practice — a notes app where the server stores the encrypted blobs and never sees the contents: [v0id-user/e2ee-notes](https://github.com/v0id-user/e2ee-notes).
+I built a tiny app that puts this into practice — a notes app where the server stores the encrypted blobs and never sees the contents: [v0id-user/kdf-encrypted-notestore](https://github.com/v0id-user/kdf-encrypted-notestore).
