@@ -12,15 +12,6 @@ const posts = defineCollection({
   }),
 });
 
-const human = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/human' }),
-  schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    slug: z.string(),
-  }),
-});
-
 const test = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/test' }),
   schema: z.object({
@@ -30,4 +21,4 @@ const test = defineCollection({
   }),
 });
 
-export const collections = { posts, human, test };
+export const collections = { posts, test };

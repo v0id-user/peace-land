@@ -26,7 +26,14 @@
 ## Content collections
 
 - `posts` — tech blog posts in src/content/posts/*.md. Frontmatter: title, date, slug.
-- `human` — personal writings in src/content/human/*.md. Same frontmatter schema. Behind two warning pages (/human → /human/confirm → /human/all).
+
+## Human writings
+
+- Personal writings are NOT in this repo. They live in the private repo v0id-user/peace-land-human (markdown files at repo root, frontmatter: title, date, slug).
+- Served at request time: src/lib/human.ts fetches all files in one GitHub GraphQL call, parses frontmatter, renders markdown with marked. 60-second in-memory cache per isolate.
+- Secret: GITHUB_TOKEN (read access to the private repo). Set on Cloudflare Workers; in .dev.vars for local dev.
+- Behind two warning pages (/human → /human/confirm → /human/all). /human/all and /human/[slug] are prerender = false.
+- Git history of this repo was rewritten on 2026-07-10 to remove src/content/human entirely. Do not re-add those files here.
 
 ## Spotify now-playing
 

@@ -1,27 +1,23 @@
 ---
+export const prerender = false;
 import Base from '../../layouts/Base.astro';
-import { getCollection, render } from 'astro:content';
+import { getHumanEntry, renderHumanMarkdown } from '../../lib/human';
+import { env as cfEnv } from 'cloudflare:workers';
 
-export async function getStaticPaths() {
-  const entries = await getCollection('human');
-  return entries.map((entry) => ({
-    params: { slug: entry.data.slug },
-    props: { entry },
-  }));
+const { slug } = Astro.params;
+const entry = await getHumanEntry(slug!, { ...import.meta.env, ...cfEnv });
+if (!entry) {
+  return new Response('Not found', { status: 404 });
 }
-
-const { entry } = Astro.props;
-const { Content } = await render(entry);
+const html = renderHumanMarkdown(entry.body);
 ---
 
-<Base title={entry.data.title} type="article" noindex={true}>
+<Base title={entry.title} type="article" noindex={true}>
   <a href="/human/all" class="back-link">&larr; back</a>
   <article>
     <header class="post-header">
-      <h1>{entry.data.title}</h1>
+      <h1>{entry.title}</h1>
     </header>
-    <div class="post-content">
-      <Content />
-    </div>
+    <div class="post-content" set:html={html} />
   </article>
 </Base>
