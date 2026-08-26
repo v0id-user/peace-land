@@ -2,7 +2,7 @@
 title: 'WebTransport: A New Way to Connect Things in Real Time'
 date: 2026-08-26
 slug: webtransport-a-new-way-to-connect-things
-description: Notes from building a small WebTransport server in Go and a client in React — how streams and datagrams work, and when to use each one.
+description: Notes from building a small WebTransport server in Go and a client in React, covering how streams and datagrams work and when to use each one.
 ---
 
 :::tldr
@@ -15,7 +15,7 @@ WebTransport runs over HTTP/3, which runs over QUIC, which runs over UDP. One co
 These are notes from a weekend spent building a WebTransport server in Go and a client in React. They're first impressions, not a reference.
 :::
 
-WebTransport doesn't introduce new networking ideas. Streams, datagrams, ordering, reliability — all of that already existed. What it changes is how much work it takes to use them from a browser.
+WebTransport doesn't introduce new networking ideas. Streams, datagrams, ordering and reliability all existed already. What it changes is how much work it takes to use them from a browser.
 
 ::sep
 
@@ -57,7 +57,7 @@ Two things here are easy to misread.
 
 **Streams are not topics.** A stream has no name, path, or address, so you can't connect to a specific one the way you'd subscribe to a topic. `createBidirectionalStream()` allocates a stream locally. There's no handshake and no round trip: a QUIC stream ID is just a counter, and the server first learns the stream exists when its first bytes arrive. Opening one costs microseconds and no extra packets.
 
-That makes a stream the right unit for a single piece of work — one upload, one query, one request and its response. Something that ends.
+That makes a stream the right unit for a single piece of work: one upload, one query, one request and its response. Something that ends.
 
 **There is only one datagram lane.** Not one per stream: one per session, with no sub-structure. That matches UDP, which has no notion of channels either. If you want several kinds of message on the datagram lane, put a type field in the payload and sort them out yourself.
 
@@ -111,7 +111,7 @@ open stream → write bytes → close writer (EOF) → server replies → read t
 
 :::
 
-So the stream itself marks where the message starts and stops. That's the argument for using one stream per request: QUIC already gives you both the boundaries (open and close) and independent failure (an error on one stream doesn't affect the others). Over a single WebSocket you'd have to build the same thing yourself — attach an ID to every request and keep a map of the ones still waiting for a reply.
+So the stream itself marks where the message starts and stops. That's the argument for using one stream per request: QUIC already gives you both the boundaries (open and close) and independent failure (an error on one stream doesn't affect the others). Over a single WebSocket you'd have to build the same thing yourself, attaching an ID to every request and keeping a map of the ones still waiting for a reply.
 
 ::sep
 
@@ -133,7 +133,7 @@ The echo server above handles each session on its own, which is all an echo serv
 
 `io.Copy(stream, stream)` copies a stream into itself, so bytes go back out the same stream they came in on, and the two sessions share no state. That's the expected behaviour, and it has nothing to do with WebTransport.
 
-To make it multi-user — a chat room, a shared cursor layer — you add the piece the echo server doesn't have: a hub, created once at startup and shared by every session.
+To make it multi-user, say a chat room or a shared cursor layer, you add the piece the echo server doesn't have: a hub, created once at startup and shared by every session.
 
 ::codelabel[hub.go]
 
@@ -151,14 +151,14 @@ Copying before writing is the part worth getting right. Writing to a peer means 
 None of this is WebTransport-specific. It's the same structure a WebSocket server needs. The transport changed; the room logic didn't.
 
 :::note
-The full example — hub, peers, presence, room membership checks, and both lanes wired up — is at [v0id-user/webtransport](https://github.com/v0id-user/webtransport).
+The full example, with hub, peers, presence, room membership checks and both lanes wired up, is at [v0id-user/webtransport](https://github.com/v0id-user/webtransport).
 :::
 
 ::sep
 
 ## Streams carry bytes, not messages
 
-Once a stream is long-lived — the server pushing events to the client, for instance — the end-of-stream signal isn't available, because the stream stays open. You need your own way to mark where one message ends and the next begins. The simplest option is a length prefix:
+Once a stream is long-lived, as it is when the server pushes events to the client, the end-of-stream signal isn't available, because the stream stays open. You need your own way to mark where one message ends and the next begins. The simplest option is a length prefix:
 
 ```plain
 you write:  [len][json][len][json][len][json]...
@@ -218,7 +218,7 @@ One write becomes one packet, and one read returns exactly that packet. Nothing 
 
 ## What reliable and unreliable actually mean
 
-Everyone learns that TCP is reliable and ordered and UDP is neither. WebTransport turns that into a choice you make per message, so it's worth being precise about what the guarantees are. "Unreliable" is often read as meaning more than it does — a UDP datagram doesn't arrive corrupted or half-written:
+Everyone learns that TCP is reliable and ordered and UDP is neither. WebTransport turns that into a choice you make per message, so it's worth being precise about what the guarantees are. "Unreliable" is often read as meaning more than it does. A UDP datagram doesn't arrive corrupted or half-written:
 
 ```plain
 UDP gives you:
@@ -229,7 +229,7 @@ UDP gives you:
   ✗ deduplication        ← can arrive twice
 ```
 
-A datagram either arrives whole or doesn't arrive at all. Unreliable *delivery* and unreliable *contents* are different things, and only the first one applies here. What you have to handle is a message that may be missing, may arrive out of order, or may arrive twice — not a partial message.
+A datagram either arrives whole or doesn't arrive at all. Unreliable *delivery* and unreliable *contents* are different things, and only the first one applies here. What you have to handle is a message that may be missing, out of order, or duplicated, rather than a partial one.
 
 That leaves the two lanes as complements:
 
@@ -256,7 +256,7 @@ position lost → retransmit → 3 fresher positions wait → stale position arr
 
 :::
 
-The result is an out-of-date position, delivered late, having delayed newer ones on the way. For this kind of data, dropping the lost packet is the better outcome — the next update is already on its way, and it's more accurate than the one that was lost.
+The result is an out-of-date position, delivered late, having delayed newer ones on the way. For this kind of data, dropping the lost packet is the better outcome, because the next update is already on its way and it's more accurate than the one that was lost.
 
 So unreliable delivery isn't a degraded version of reliable delivery. It's the right choice whenever data goes stale faster than a retransmission round trip takes. Chat messages belong on a stream. Cursor positions belong in datagrams. Having both available on one connection, and choosing between them per message, is the practical difference from a WebSocket.
 
@@ -268,4 +268,4 @@ The API is small: open a session, open streams, read and write, send and receive
 
 What you get in return is the ability to choose reliability per message from a browser without adopting a peer-to-peer stack to get there. The underlying ideas are the ones QUIC and UDP already had. What changed is the amount of code it takes to reach them.
 
-The example project I built while working through this — server, client, hub, rooms, both lanes — is at [v0id-user/webtransport](https://github.com/v0id-user/webtransport).
+The example project I built while working through this, with server, client, hub, rooms and both lanes, is at [v0id-user/webtransport](https://github.com/v0id-user/webtransport).
