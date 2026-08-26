@@ -6,7 +6,7 @@ description: What happens when you try to compress truly random data? An experim
 ---
 
 :::tldr
-Compression relies on patterns. Generated 1 MB of high-entropy random bytes, ran gzip/xz/zstd/brotli at max level — every output came back the same size or *bigger* than the input due to metadata overhead. Random data has nothing to compress.
+Compression relies on patterns. Generated 1 MB of high-entropy random bytes, ran gzip/xz/zstd/brotli at max level, and every output came back the same size or *bigger* than the input due to metadata overhead. Random data has nothing to compress.
 :::
 
 I got the idea for this experiment from an episode titled [*“Searching For Meaning In Randomness”*](https://www.youtube.com/watch?v=tiXIOpq_tQ0) from the podcast **The Rest Is Science**. It inspired me to ask: **what happens when we try to compress truly random data?**

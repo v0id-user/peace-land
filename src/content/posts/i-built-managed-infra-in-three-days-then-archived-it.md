@@ -6,7 +6,7 @@ draft: false
 ---
 
 :::tldr
-Built [hela](https://github.com/v0id-user/hela) — a full open-source realtime infra (Elixir gateway and control plane, four SDKs, two React apps, Polar billing, Terraform on Railway, 216 deployments) — then archived it three days later. Not a clever post-mortem, just burnout. Agentic coding ships at insane speed but doesn't push back when the spec is a vibe. Next thing is smaller, with a spec written first.
+Built [hela](https://github.com/v0id-user/hela), a full open-source realtime infra (Elixir gateway and control plane, four SDKs, two React apps, Polar billing, Terraform on Railway, 216 deployments), then archived it three days later. Not a clever post-mortem, just burnout. Agentic coding ships at insane speed but doesn't push back when the spec is a vibe. Next thing is smaller, with a spec written first.
 :::
  
 ## What?

@@ -2,7 +2,7 @@
 title: "Exploring Cloudflare's Workerd Runtime: From Source to Custom API"
 date: 2026-03-28
 slug: exploring-cloudflares-workerd
-description: Digging into the Cloudflare Workers runtime source code — building workerd from scratch and adding a custom C++ API.
+description: Digging into the Cloudflare Workers runtime source code, building workerd from scratch and adding a custom C++ API.
 ---
 
 :::tldr
@@ -71,10 +71,10 @@ First, let's orient ourselves with the source tree.
 
 ```
 src/workerd/
-  jsg/       ← The "magic glue" — C++ ↔ V8 binding framework (macros, type mappings)
-  api/       ← All the JS APIs (fetch, crypto, KV, DO, WebSocket, etc.) — implemented in C++
+  jsg/       ← The "magic glue": C++ ↔ V8 binding framework (macros, type mappings)
+  api/       ← All the JS APIs (fetch, crypto, KV, DO, WebSocket, etc.), implemented in C++
   io/        ← I/O layer: worker lifecycle, event delivery, network I/O
-  server/    ← The top-level server binary — the actual entry point
+  server/    ← The top-level server binary, the actual entry point
   util/      ← Random helpers
   tools/     ← Tooling (TypeScript type extractor)
 types/       ← TypeScript type generator (reads RTTI → produces .d.ts)

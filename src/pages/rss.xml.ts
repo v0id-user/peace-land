@@ -10,7 +10,7 @@ export async function GET() {
 
   return rss({
     title: '#V0ID',
-    description: 'Technical blog by #V0ID — backend engineering, Rust, TypeScript, Cloudflare, and systems programming.',
+    description: 'Technical blog by #V0ID: backend engineering, Rust, TypeScript, Cloudflare, and systems programming.',
     site: 'https://www.v0id.me',
     items: posts.slice(0, 50).map((post) => ({
       title: post.data.title,

@@ -8,7 +8,7 @@ const np = await getNowPlaying(mergedEnv);
 const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_ms * 100) : 0;
 const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_ms - np.progress_ms) / 1000) : 0;
 const hasTrack = !!np.title;
-const fullText = hasTrack ? `${np.title} — ${np.artist}` : '';
+const fullText = hasTrack ? `${np.title} · ${np.artist}` : '';
 ---
 
 <html lang="en">
@@ -73,7 +73,7 @@ const fullText = hasTrack ? `${np.title} — ${np.artist}` : '';
         <img src="/spotify-pixle-logo-black.svg" alt="" width="12" height="12" class="np-icon" />
         {hasTrack ? (
           <div class="np-info">
-            <a href={np.url} target="_blank" rel="noopener" title={`${np.title} — ${np.artist}`}>
+            <a href={np.url} target="_blank" rel="noopener" title={`${np.title} · ${np.artist}`}>
               <span class="np-title">
                 {!np.is_playing && <span class="pause-label">paused</span>}{np.title}
               </span>

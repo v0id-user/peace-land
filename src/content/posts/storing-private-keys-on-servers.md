@@ -41,7 +41,7 @@ Well an easy answer is simply the boilerplate for it. Although Proton says they 
 
 When you sign up, your browser generates a fresh keypair locally. Your password gets fed into a key derivation function that spits out two independent secrets. One of them encrypts your private key right there in the browser, and the encrypted blob gets uploaded to the server. The other one is sent up as your login credential, and the server stores a hash of it next to your email. Your actual password never leaves your device.
 
-::codelabel[client.py — key derivation]
+::codelabel[client.py (key derivation)]
 
 ```python
 from argon2.low_level import hash_secret_raw, Type
@@ -78,7 +78,7 @@ There is one weakness worth being honest about though, because most explainers s
 A compromised server could ship a slightly modified version of that JavaScript to a specific user, one that quietly captures their password before it gets fed into the key derivation. The math is still perfect, the trust hole is in the delivery. Native apps and signed browser extensions mostly close this gap because the code is fetched and updated through a separate channel. Pure web apps fundamentally can't. This is why Signal generates keys on-device and never has them server-side at all, it's a different tradeoff for a different problem.
 :::
 
-::codelabel[server view — everything stored for one user]
+::codelabel[server view (everything stored for one user)]
 
 ```python
 # Everything the server has on disk for one user:
@@ -94,4 +94,4 @@ A compromised server could ship a slightly modified version of that JavaScript t
 
 What surprises me looking back is that I was confused not because the answer was hard, but because I had accepted the wrong constraint. "The server can't have your key" isn't quite right, the real thing is "the server can't _read_ your key", and that is a much weaker requirement. That gap is where a whole category of products lives.
 
-I built a tiny app that puts this into practice — a notes app where the server stores the encrypted blobs and never sees the contents: [v0id-user/kdf-encrypted-notestore](https://github.com/v0id-user/kdf-encrypted-notestore).
+I built a tiny app that puts this into practice, a notes app where the server stores the encrypted blobs and never sees the contents: [v0id-user/kdf-encrypted-notestore](https://github.com/v0id-user/kdf-encrypted-notestore).

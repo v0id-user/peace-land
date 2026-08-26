@@ -25,8 +25,8 @@ this was inspired by exploring convex db's reactivity model. the question i kept
 
 postgres has two commands that most backend devs have never touched:
 
-- `LISTEN channel_name` — subscribe to a channel
-- `NOTIFY channel_name, 'payload'` — broadcast a message to all listeners on that channel
+- `LISTEN channel_name`: subscribe to a channel
+- `NOTIFY channel_name, 'payload'`: broadcast a message to all listeners on that channel
 
 the payload is a plain string, so in practice you serialize JSON into it. any connected client listening on that channel gets the notification instantly when `NOTIFY` fires.
 
@@ -194,10 +194,10 @@ source.onmessage = (event) => {
 
 the pattern generalizes beyond newsletters:
 
-- **live dashboards** — db metrics, order counts, inventory levels
-- **collaborative tools** — any shared state that multiple clients need to see updated
-- **audit feeds** — surface row-level changes in real time to a monitoring UI
-- **cache invalidation** — instead of TTL-based expiry, invalidate on actual data change
+- **live dashboards**: db metrics, order counts, inventory levels
+- **collaborative tools**: any shared state that multiple clients need to see updated
+- **audit feeds**: surface row-level changes in real time to a monitoring UI
+- **cache invalidation**: instead of TTL-based expiry, invalidate on actual data change
 
 :::diagram[Generalized Pattern]
 

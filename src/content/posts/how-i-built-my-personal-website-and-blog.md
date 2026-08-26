@@ -2,7 +2,7 @@
 title: How I Built My Personal Website and Blog | Old site
 date: 2025-01-15
 slug: how-i-built-my-personal-website-and-blog
-description: The journey of building my personal website and blog — from motivation to deployment, tools, challenges, and lessons learned.
+description: The journey of building my personal website and blog, from motivation to deployment, tools, challenges, and lessons learned.
 ---
 
 :::tldr
@@ -65,7 +65,7 @@ I strongly recommend avoiding manual state management for anything beyond very s
 
 ## How I Hosted the Project on the Cloud
 
-What you're currently viewing is my website hosted on **Vercel** (which hasn’t been the best experience so far — I’ll talk about its issues in a future article).
+What you're currently viewing is my website hosted on **Vercel** (which hasn’t been the best experience so far; I’ll talk about its issues in a future article).
 
 The blog content itself is stored in a **PostgreSQL** database.
 

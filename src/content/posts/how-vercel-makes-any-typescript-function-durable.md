@@ -6,7 +6,7 @@ description: A look at how Vercel's workflow SDK turns regular TypeScript functi
 ---
 
 :::tldr
-SWC plugin instruments your code at compile time. `start()` creates durable storage and fires an HTTP request to `/flow`. `/flow` runs your workflow in a VM — steps throw `WorkflowSuspension` if not yet done. Each suspended step fires as an HTTP call to `/step`. `/step` runs your business logic, persists the result, then re-queues `/flow`. Loop continues. Completed steps are skipped via cached results. Finish when no new suspensions are thrown.
+SWC plugin instruments your code at compile time. `start()` creates durable storage and fires an HTTP request to `/flow`. `/flow` runs your workflow in a VM, where steps throw `WorkflowSuspension` if not yet done. Each suspended step fires as an HTTP call to `/step`. `/step` runs your business logic, persists the result, then re-queues `/flow`. Loop continues. Completed steps are skipped via cached results. Finish when no new suspensions are thrown.
 :::
 
 ***
@@ -67,7 +67,7 @@ const workflowId = getWorkflowId(); // bundled by SWC
 const world = getEnvironment();     // local | vercel | custom
 const args = dehydrateWorkflowArguments(input);
 
-// Durable state storage — tracks every step, every output
+// Durable state storage: tracks every step, every output
 const store = await world.createDurableStorage(workflowId);
 
 // Enqueue the workflow to run via HTTP
@@ -105,7 +105,7 @@ const { runId } = parseQueuedMessage(request);
 // Transition state: pending → running
 await store.updateStatus(runId, "running");
 
-// Run the workflow — but steps won't execute yet
+// Run the workflow, but steps won't execute yet
 await runWorkflow(workflowFn, context);
 ```
 
@@ -118,14 +118,14 @@ The workflow function runs inside a **Node.js VM sandbox**. The whole thing exec
 Inside `useStep`, every step that hasn't been completed yet throws a `WorkflowSuspension` error. Not a real error. A signal. It tells the system: "these steps need to run."
 
 ```typescript
-// Inside useStep — simplified
+// Inside useStep (simplified)
 const result = store.getStepResult(stepId);
 
 if (result.isDone()) {
   return result.value; // Already ran, skip it
 }
 
-// Not done — signal suspension
+// Not done, so signal suspension
 throw new WorkflowSuspension([stepId]);
 ```
 
@@ -142,7 +142,7 @@ Back in `workflowEntrypoint`, the `WorkflowSuspension` is caught. Every suspende
 This is the endpoint where your business logic finally executes. The generated route has all your step functions registered via `registerStepFunction`. When a step request arrives, `stepEntrypoint` takes over:
 
 ```typescript
-// stepEntrypoint — simplified
+// stepEntrypoint (simplified)
 const fn = stepRegistry.get(stepId);
 const args = hydrateArguments(rawArgs);
 
@@ -172,7 +172,7 @@ start() → /flow runs → Suspension thrown → /step runs → Result persisted
 Every time `/flow` runs, it checks the durable storage. Steps that already completed are skipped instantly (their outputs are replayed from storage). New steps throw `WorkflowSuspension` and get dispatched. The whole workflow is a loop of HTTP calls updating and reading a JSON state file.
 
 :::warning
-The workflow function can be replayed from scratch every single time `/flow` fires. Completed steps don't re-execute, they return their cached result. This is how you get "no double side effects" and "no duplicate emails" for free. Design your steps to be idempotent anyway — don't rely on this as a safety net.
+The workflow function can be replayed from scratch every single time `/flow` fires. Completed steps don't re-execute, they return their cached result. This is how you get "no double side effects" and "no duplicate emails" for free. Design your steps to be idempotent anyway; don't rely on this as a safety net.
 :::
 
 ::sep
@@ -181,11 +181,11 @@ The workflow function can be replayed from scratch every single time `/flow` fir
 
 The genius here isn't any single piece. It's the combination:
 
-- **SWC plugin** — zero developer overhead. You write normal TypeScript. The compiler instruments it.
-- **Durable storage** — every step input and output is persisted. Crash the server mid-workflow, it picks up exactly where it left off.
-- **WorkflowSuspension as a control signal** — using exceptions for flow control sounds alarming until you see how clean it makes the orchestration logic.
-- **Serverless-native HTTP loop** — no long-running processes. Every invocation is stateless. The state lives in storage.
-- **Pluggable world interface** — run locally with SQLite, run on Vercel with their infra, point it at Postgres. The engine doesn't care. "Make any TypeScript function durable" isn't marketing. It literally just needs a world with storage and a queue.
+- **SWC plugin**: zero developer overhead. You write normal TypeScript. The compiler instruments it.
+- **Durable storage**: every step input and output is persisted. Crash the server mid-workflow, it picks up exactly where it left off.
+- **WorkflowSuspension as a control signal**: using exceptions for flow control sounds alarming until you see how clean it makes the orchestration logic.
+- **Serverless-native HTTP loop**: no long-running processes. Every invocation is stateless. The state lives in storage.
+- **Pluggable world interface**: run locally with SQLite, run on Vercel with their infra, point it at Postgres. The engine doesn't care. "Make any TypeScript function durable" isn't marketing. It literally just needs a world with storage and a queue.
 
 ::sep
 
@@ -194,8 +194,8 @@ The genius here isn't any single piece. It's the combination:
 Seven hours and there's still surface area I didn't get to. Worth knowing these exist:
 
 - How workflow arguments are serialized via `dehydrateWorkflowArguments` and how custom types survive that round-trip
-- The full durable storage schema — how it tracks step dependencies and partial graph state
-- The Node VM sandboxing specifics — what's exposed, what's not, why it matters for replay safety
+- The full durable storage schema: how it tracks step dependencies and partial graph state
+- The Node VM sandboxing specifics: what's exposed, what's not, why it matters for replay safety
 - The custom `fetch` implementation inside the workflow world
 - How `Request` and `Response` become step-based streams
 - Max attempts, backoff, and error escalation paths

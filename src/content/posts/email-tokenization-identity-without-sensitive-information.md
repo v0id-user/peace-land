@@ -1,8 +1,8 @@
 ---
-title: Email Tokenization — Identity Without Sensitive Information
+title: 'Email Tokenization: Identity Without Sensitive Information'
 date: 2025-11-21
 slug: email-tokenization-identity-without-sensitive-information
-description: How to separate email addresses from user identity using tokenization — a practical approach to handling PII in login systems.
+description: How to separate email addresses from user identity using tokenization, a practical approach to handling PII in login systems.
 ---
 
 :::tldr
@@ -23,7 +23,7 @@ id | email | password | username
 
 Looks normal, right?
 
-The problem is that the **email address** is sitting directly next to the user identity and password. Anyone with access to the database — even if it's just **read-only access** — can immediately see sensitive data.
+The problem is that the **email address** is sitting directly next to the user identity and password. Anyone with access to the database, even if it's just **read-only access**, can immediately see sensitive data.
 
 Even worse, this violates a core principle related to **PII (Personally Identifiable Information)**.
 

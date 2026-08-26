@@ -17,8 +17,8 @@ interface Props {
 }
 
 const { title, description, type = 'website', publishedDate, noindex = false } = Astro.props;
-const pageTitle = title ? `${title} — #V0ID` : '#V0ID';
-const metaDescription = description || 'Technical blog by #V0ID — backend engineering, Rust, TypeScript, Cloudflare, and systems programming.';
+const pageTitle = title ? `${title} · #V0ID` : '#V0ID';
+const metaDescription = description || 'Technical blog by #V0ID: backend engineering, Rust, TypeScript, Cloudflare, and systems programming.';
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.v0id.me');
 ---
 
