@@ -62,17 +62,17 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.v0id.me');
         <nav>
           {posts.map((post) => (
             <a
-              href={`/posts/${post.data.slug}`}
+              href={`/posts/${post.data.slug}/`}
               class={Astro.url.pathname.includes(post.data.slug) ? 'active' : ''}
             >
               {post.data.title}
             </a>
           ))}
-          <a href="/about" class={Astro.url.pathname.startsWith('/about') ? 'active' : ''} style="margin-top: 6px;">about</a>
-          <a href="/tree" class={Astro.url.pathname.startsWith('/tree') ? 'active' : ''}>tree</a>
-          <a href="/pgp" class={Astro.url.pathname.startsWith('/pgp') ? 'active' : ''}>pgp</a>
-          <a href="/human" class={Astro.url.pathname.startsWith('/human') ? 'active' : ''} style="margin-top: 6px;">human</a>
-          <a href="/test" class={Astro.url.pathname.startsWith('/test') ? 'active' : ''} style="margin-top: 16px;">tests</a>
+          <a href="/about/" class={Astro.url.pathname.startsWith('/about') ? 'active' : ''} style="margin-top: 6px;">about</a>
+          <a href="/tree/" class={Astro.url.pathname.startsWith('/tree') ? 'active' : ''}>tree</a>
+          <a href="/pgp/" class={Astro.url.pathname.startsWith('/pgp') ? 'active' : ''}>pgp</a>
+          <a href="/human/" class={Astro.url.pathname.startsWith('/human') ? 'active' : ''} style="margin-top: 6px;">human</a>
+          <a href="/test/" class={Astro.url.pathname.startsWith('/test') ? 'active' : ''} style="margin-top: 16px;">tests</a>
         </nav>
       </aside>
 

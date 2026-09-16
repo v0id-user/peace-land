@@ -13,7 +13,7 @@ const posts = (await getCollection('posts', ({ data }) => {
   <ul class="post-list">
     {posts.map((post) => (
       <li>
-        <a href={`/posts/${post.data.slug}`}>
+        <a href={`/posts/${post.data.slug}/`}>
           <span class="post-title">{post.data.title}</span>
           <span class="post-date">{post.data.date.toISOString().slice(0, 10)}</span>
         </a>

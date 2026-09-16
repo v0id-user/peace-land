@@ -12,7 +12,7 @@ const entries = (await getCollection('test')).sort(
     <h1>Test</h1>
     <ul class="tree-links">
       {entries.map((entry) => (
-        <li><a href={`/test/${entry.data.slug}`}>{entry.data.title}</a></li>
+        <li><a href={`/test/${entry.data.slug}/`}>{entry.data.title}</a></li>
       ))}
     </ul>
   </div>

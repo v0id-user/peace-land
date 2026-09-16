@@ -1,0 +1,12 @@
+# Static assets are served without the Worker (run_worker_first covers "/" only),
+# so their cache headers are set here instead of in the Worker wrapper.
+/*.svg
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/*.ico
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/*.png
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/*.webp
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/*.jpg
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

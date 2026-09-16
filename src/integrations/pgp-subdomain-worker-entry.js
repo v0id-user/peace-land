@@ -1,6 +1,8 @@
 // After build:
-// 1. Patch wrangler.json: set run_worker_first=true so the Worker executes before
-//    Cloudflare serves static assets (default is false, assets served directly from CDN).
+// 1. Patch wrangler.json: run the Worker before static assets only for "/", where
+//    tree/pgp/gpg need host-based handling. Every other asset is served directly by
+//    Cloudflare without invoking the Worker. Non-root paths on those subdomains are
+//    redirected to www by a zone Redirect Rule, since run_worker_first cannot match hosts.
 // 2. Wrap entry.mjs: non-root on tree/pgp/gpg -> www; tree / -> /tree; pgp/gpg / -> raw key.
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -15,11 +17,11 @@ export default function pgpSubdomainWorkerEntry() {
       'astro:build:done': ({ dir }) => {
         const serverDir = new URL('../server/', dir);
 
-        // 1. Patch wrangler.json: add run_worker_first so the Worker runs before static assets
+        // 1. Patch wrangler.json: run the Worker first for "/" only
         const wranglerPath = fileURLToPath(new URL('wrangler.json', serverDir));
         const wrangler = JSON.parse(readFileSync(wranglerPath, 'utf8'));
         wrangler.assets ??= {};
-        wrangler.assets.run_worker_first = true;
+        wrangler.assets.run_worker_first = ['/'];
         writeFileSync(wranglerPath, JSON.stringify(wrangler));
 
         // 2. Wrap entry.mjs: tree / pgp / gpg subdomains before Astro handler
