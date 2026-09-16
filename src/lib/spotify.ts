@@ -10,7 +10,13 @@ export interface NowPlaying {
   url?: string;
 }
 
+// Access tokens live for an hour. Keep one per isolate so a request only pays for
+// the now-playing call, not a token refresh before it.
+let tokenCache: { token: string; expiresAt: number } | null = null;
+
 async function getAccessToken(clientId: string, clientSecret: string, refreshToken: string): Promise<string> {
+  if (tokenCache && Date.now() < tokenCache.expiresAt) return tokenCache.token;
+
   const res = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
     headers: {
@@ -23,6 +29,10 @@ async function getAccessToken(clientId: string, clientSecret: string, refreshTok
     }),
   });
   const data = await res.json();
+  if (data.access_token) {
+    // Refresh a minute early so a token never expires between check and use.
+    tokenCache = { token: data.access_token, expiresAt: Date.now() + (data.expires_in - 60) * 1000 };
+  }
   return data.access_token;
 }
 
@@ -41,6 +51,7 @@ export async function getNowPlaying(env: any): Promise<NowPlaying> {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    if (res.status === 401) tokenCache = null;
     if (res.status === 204) return { is_playing: false };
 
     const data = await res.json();
