@@ -29,10 +29,13 @@ async function getAccessToken(clientId: string, clientSecret: string, refreshTok
     }),
   });
   const data = await res.json();
-  if (data.access_token) {
-    // Refresh a minute early so a token never expires between check and use.
-    tokenCache = { token: data.access_token, expiresAt: Date.now() + (data.expires_in - 60) * 1000 };
+  if (!data.access_token) {
+    // A revoked refresh token shows as "silence." on the page, so say why here.
+    console.error("spotify token refresh failed", res.status, data.error, data.error_description);
+    return data.access_token;
   }
+  // Refresh a minute early so a token never expires between check and use.
+  tokenCache = { token: data.access_token, expiresAt: Date.now() + (data.expires_in - 60) * 1000 };
   return data.access_token;
 }
 
@@ -53,6 +56,10 @@ export async function getNowPlaying(env: any): Promise<NowPlaying> {
 
     if (res.status === 401) tokenCache = null;
     if (res.status === 204) return { is_playing: false };
+    if (!res.ok) {
+      console.error("spotify now-playing failed", res.status, await res.text());
+      return { is_playing: false };
+    }
 
     const data = await res.json();
     if (!data.item) return { is_playing: false };
@@ -65,7 +72,8 @@ export async function getNowPlaying(env: any): Promise<NowPlaying> {
       duration_ms: data.item.duration_ms,
       url: data.item.external_urls?.spotify,
     };
-  } catch {
+  } catch (err) {
+    console.error("spotify now-playing threw", err);
     return { is_playing: false };
   }
 }
