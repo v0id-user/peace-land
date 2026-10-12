@@ -13,6 +13,8 @@ export default defineConfig({
     filter: (page) => !page.includes('/now-playing') && !page.includes('/human/confirm') && !page.includes('/cv'),
   })],
   adapter: cloudflare(),
+  // The toolbar also renders inside the sidebar iframe and covers it.
+  devToolbar: { enabled: false },
   build: {
     // global.css (~6.5KB) exceeds Vite's default inline limit (~4KB), so "auto"
     // emitted Base.*.css as render-blocking. Inline to avoid an extra round-trip.
