@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  The script runs from outside the repo so switching branches never breaks the job:
+    mkdir -p ~/.local/bin && cp scripts/presence.ts ~/.local/bin/v0id-presence.ts
+    cp scripts/me.v0id.presence.plist ~/Library/LaunchAgents/
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/me.v0id.presence.plist
+  Stop it with: launchctl bootout gui/$(id -u)/me.v0id.presence
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>me.v0id.presence</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/v0id/.bun/bin/bun</string>
+    <string>run</string>
+    <string>/Users/v0id/.local/bin/v0id-presence.ts</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>StartInterval</key>
+  <integer>120</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardErrorPath</key>
+  <string>/Users/v0id/Library/Logs/me.v0id.presence.log</string>
+</dict>
+</plist>

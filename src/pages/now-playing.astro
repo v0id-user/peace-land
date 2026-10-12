@@ -1,14 +1,38 @@
 ---
 export const prerender = false;
 import { getNowPlaying } from '../lib/spotify';
+import { getLatestPublicCommit } from '../lib/github';
+import { getPresence } from '../lib/presence';
 import { env as cfEnv } from 'cloudflare:workers';
 
-const mergedEnv = { ...import.meta.env, ...cfEnv };
-const np = await getNowPlaying(mergedEnv);
+const mergedEnv: any = { ...import.meta.env, ...cfEnv };
+const [np, commit, presence] = await Promise.all([
+  getNowPlaying(mergedEnv),
+  getLatestPublicCommit(mergedEnv),
+  getPresence(mergedEnv.SESSION),
+]);
 const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_ms * 100) : 0;
 const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_ms - np.progress_ms) / 1000) : 0;
 const hasTrack = !!np.title;
-const fullText = hasTrack ? `${np.title} · ${np.artist}` : '';
+
+function ago(ms: number): string {
+  const min = Math.floor((Date.now() - ms) / 60_000);
+  if (min < 1) return 'just now';
+  if (min < 60) return `${min}m ago`;
+  if (min < 48 * 60) return `${Math.floor(min / 60)}h ago`;
+  return `${Math.floor(min / 1440)}d ago`;
+}
+
+const awake = presence?.state === 'awake' ? presence : null;
+const sessions = awake && awake.agents > 0
+  ? {
+      count: `${awake.agents} ${awake.agents === 1 ? 'session' : 'sessions'}`,
+      split: awake.busy === 0 ? `${awake.agents} idle`
+        : awake.busy === awake.agents ? `${awake.busy} working`
+        : `${awake.busy} working, ${awake.agents - awake.busy} idle`,
+    }
+  : null;
+const sessionsTitle = 'Claude Code sessions open on my laptop right now';
 ---
 
 <html lang="en">
@@ -60,6 +84,18 @@ const fullText = hasTrack ? `${np.title} · ${np.artist}` : '';
         font-size: 8px;
         margin-top: 2px;
       }
+      .status {
+        margin-top: 3px;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 9px;
+        line-height: 10px;
+        color: #777;
+      }
+      .ln { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .me { color: #000; font-weight: bold; }
+      .dim { color: #aaa; }
+      .key { display: inline-block; width: 7ch; padding-left: 2ch; color: #aaa; }
+      .ln .u { text-decoration: underline; text-decoration-color: #ccc; }
       .pause-label {
         color: #999;
         font-size: 8px;
@@ -92,5 +128,31 @@ const fullText = hasTrack ? `${np.title} · ${np.artist}` : '';
       </div>
       <span class="np-label">currently listening to...</span>
     </div>
+
+    {(presence || commit) && (
+      <div class="status">
+        <span class="ln">
+          <span class="me">fahad</span>
+          {presence && <span class="dim">{presence.state === 'awake' ? 'active' : 'inactive'}</span>}
+        </span>
+        {awake && <span class="ln"><span class="key">laptop</span>{awake.lid}</span>}
+        {presence?.state === 'asleep' && (
+          <span class="ln"><span class="key">laptop</span>zzz since {ago(presence.at).replace(' ago', '')}</span>
+        )}
+        {presence && (sessions ? (
+          <>
+            <span class="ln" title={sessionsTitle}><span class="key">claude</span>{sessions.count}</span>
+            <span class="ln" title={sessionsTitle}><span class="key"></span>{sessions.split}</span>
+          </>
+        ) : (
+          <span class="ln" title={sessionsTitle}><span class="key">claude</span><span class="dim">no sessions</span></span>
+        ))}
+        {commit && (
+          <a class="ln" href={commit.url} target="_blank" rel="noopener" title={`${commit.headline} · ${commit.repo}`}>
+            <span class="key">git</span><span class="u">{ago(commit.date.getTime())}</span>
+          </a>
+        )}
+      </div>
+    )}
   </body>
 </html>

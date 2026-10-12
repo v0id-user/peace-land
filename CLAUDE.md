@@ -44,6 +44,17 @@
 - Progress bar is a static CSS width snapshot — no animation trickery.
 - Pixel Spotify logo in public/spotify.svg.
 
+## Laptop status
+
+- Shown in the same /now-playing iframe, under the Spotify block, as a monospace block: `fahad active`, then laptop, claude sessions, and git rows. Iframe is 98px tall.
+- The design was picked from several rounds of mockups. Change wording or layout only after showing variants.
+- git row: src/lib/github.ts asks GitHub GraphQL for my newest commit on my five most recently pushed public repos. The query uses `privacy: PUBLIC` because GITHUB_TOKEN can also read the private writings repo. 5-minute cache per isolate.
+- Laptop and claude rows: scripts/presence.ts runs on my Mac every 2 minutes from launchd (scripts/me.v0id.presence.plist, installed from ~/.local/bin/v0id-presence.ts). It reads lid state and counts Claude sessions, then POSTs to /presence only on change or every 6 minutes as a heartbeat.
+- Every report is a detached OpenPGP signature by my key (the one in key/). src/pages/presence.ts verifies it with openpgp, loaded only on that route. No secret is stored on Cloudflare.
+- The signed payload carries `for: "v0id.me/presence"` and `ts`. The endpoint rejects reports more than 2 minutes off, any ts not newer than the last one (no replay), any extra field, and writes closer than 30 seconds apart.
+- Stored in the SESSION KV namespace under the key `presence`. No report for 9 minutes means the laptop is asleep and the block shows `inactive`.
+- After a reboot, gpg gets the passphrase from the login keychain through pinentry-mac, so the job keeps signing without a prompt.
+
 ## CMS
 
 - Sveltia CMS at /admin, restricted to GitHub user v0id-user.
