@@ -46,10 +46,13 @@
 
 ## Laptop status
 
-- Shown in the same /now-playing iframe, under the Spotify block, as a monospace block: `fahad active`, then laptop, claude sessions, and git rows. Iframe is 98px tall.
+- Shown in the same /now-playing iframe, under the Spotify block, as a monospace block: `fahad active|away|inactive`, then laptop, claude sessions, and git rows. Iframe is 98px tall.
 - The design was picked from several rounds of mockups. Change wording or layout only after showing variants.
 - git row: src/lib/github.ts asks GitHub GraphQL for my newest commit on my five most recently pushed public repos. The query uses `privacy: PUBLIC` because GITHUB_TOKEN can also read the private writings repo. 5-minute cache per isolate.
-- Laptop and claude rows: scripts/presence.ts runs on my Mac every 2 minutes from launchd (scripts/me.v0id.presence.plist, installed from ~/.local/bin/v0id-presence.ts). It reads lid state and counts Claude sessions, then POSTs to /presence only on change or every 6 minutes as a heartbeat.
+- Laptop and claude rows: scripts/presence.ts runs on my Mac every 2 minutes from launchd (scripts/me.v0id.presence.plist, installed from ~/.local/bin/v0id-presence.ts). It POSTs to /presence only on change or every 6 minutes as a heartbeat.
+- Sessions come from `claude agents --json`, which gives each local session's own busy or idle status. Sessions in hidden folders of my home (plugin helpers like ~/.claude-mem) are skipped. Cloud sessions are not counted: nothing on the Mac reports their status.
+- `here` is decided on the Mac: away when the screen is locked, after 10 minutes without key or mouse input, or when the lid is closed with no external display. The Mac can be awake and reporting while I am away (caffeinate, the Claude app's keep-awake), so awake is not the same as here.
+- Display: here shows `active` and the lid. Away shows `away` with `open, unattended` or `closed, kept awake`. Lid closed while here is the Mac used docked and shows `closed`.
 - Every report is a detached OpenPGP signature by my key (the one in key/). src/pages/presence.ts verifies it with openpgp, loaded only on that route. No secret is stored on Cloudflare.
 - The signed payload carries `for: "v0id.me/presence"` and `ts`. The endpoint rejects reports more than 2 minutes off, any ts not newer than the last one (no replay), any extra field, and writes closer than 30 seconds apart.
 - Stored in the SESSION KV namespace under the key `presence`. No report for 9 minutes means the laptop is asleep and the block shows `inactive`.

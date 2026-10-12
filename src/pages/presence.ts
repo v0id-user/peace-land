@@ -65,7 +65,14 @@ export const POST: APIRoute = async ({ request }) => {
   if (last && report.ts <= last.ts) return new Response(null, { status: 403 });
   if (last && now - last.at < MIN_WRITE_GAP_MS) return new Response(null, { status: 429 });
 
-  const presence: Presence = { lid: report.lid, agents: report.agents, busy: report.busy, ts: report.ts, at: now };
+  const presence: Presence = {
+    lid: report.lid,
+    here: report.here,
+    agents: report.agents,
+    busy: report.busy,
+    ts: report.ts,
+    at: now,
+  };
   await kv.put(PRESENCE_KEY, JSON.stringify(presence));
   return new Response(null, { status: 204 });
 };

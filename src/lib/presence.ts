@@ -13,6 +13,9 @@ const STALE_MS = 9 * 60_000;
 
 export interface PresenceReport {
   lid: "open" | "closed";
+  // At the Mac (unlocked, recent input, lid open or a monitor attached) rather than
+  // the Mac just being awake. Decided on the laptop by scripts/presence.ts.
+  here: boolean;
   agents: number;
   busy: number;
 }
@@ -35,15 +38,16 @@ export type PresenceView =
 // cannot push anything richer onto the public page.
 export function parseReport(body: unknown): SignedReport | null {
   if (!body || typeof body !== "object") return null;
-  const { for: purpose, ts, lid, agents, busy, ...rest } = body as Record<string, unknown>;
+  const { for: purpose, ts, lid, here, agents, busy, ...rest } = body as Record<string, unknown>;
   if (Object.keys(rest).length > 0) return null;
   if (purpose !== PRESENCE_PURPOSE) return null;
   if (lid !== "open" && lid !== "closed") return null;
+  if (typeof here !== "boolean") return null;
   if (!Number.isInteger(ts) || !Number.isInteger(agents) || !Number.isInteger(busy)) return null;
   const a = agents as number;
   const b = busy as number;
   if (a < 0 || a > MAX_AGENTS || b < 0 || b > a) return null;
-  return { lid, agents: a, busy: b, ts: ts as number };
+  return { lid, here, agents: a, busy: b, ts: ts as number };
 }
 
 export async function getPresence(kv: KVNamespace | undefined): Promise<PresenceView | null> {

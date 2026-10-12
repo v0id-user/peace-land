@@ -20,35 +20,46 @@ const KEY = "6BEC93C909633B56534E2DCE1F4F0EDA64619E19";
 const PURPOSE = "v0id.me/presence";
 const HEARTBEAT_MS = 6 * 60_000;
 const SIGN_TIMEOUT_MS = 60_000;
-// ps %cpu is a decaying average; an idle session sits under 1%, a working one well above.
-const BUSY_CPU = 2;
 const STATE_FILE = join(homedir(), "Library/Caches/peace-land-presence.json");
+// No key or mouse input for this long means I stepped away, even with the Mac awake.
+const AWAY_IDLE_S = 10 * 60;
 
 async function lid(): Promise<"open" | "closed"> {
   const out = await $`ioreg -r -k AppleClamshellState -d 4`.text();
   return /"AppleClamshellState" = Yes/.test(out) ? "closed" : "open";
 }
 
-// A session is a process whose executable is named claude and that is either a
-// Claude desktop session (lives under .../claude-code/) or a terminal session (has
-// a tty). That leaves out SDK-spawned helpers and the Chrome native host.
+// Claude Code lists every live session on this Mac, desktop, terminal and background,
+// with its own busy or idle status: busy for the whole turn, including while the model
+// streams or a long command runs. Sessions working in a hidden folder of my home
+// (~/.claude-mem and the like) are plugin helpers, not my agents.
+// Cloud sessions are not counted: nothing on the Mac reports their status.
 async function agents(): Promise<{ agents: number; busy: number }> {
-  const out = await $`ps -axo pcpu=,tty=,comm=`.text();
-  let agents = 0;
-  let busy = 0;
-  for (const line of out.split("\n")) {
-    const m = line.match(/^\s*([\d.]+)\s+(\S+)\s+(.+)$/);
-    if (!m) continue;
-    const [, cpu, tty, comm] = m;
-    if (!/(^|\/)claude$/.test(comm)) continue;
-    if (!comm.includes("/claude-code/") && tty === "??") continue;
-    agents++;
-    if (Number(cpu) >= BUSY_CPU) busy++;
-  }
-  return { agents, busy };
+  const sessions: { cwd: string; status: string }[] = JSON.parse(await $`claude agents --json`.text());
+  const mine = sessions.filter((s) => !s.cwd.startsWith(`${homedir()}/.`));
+  return { agents: mine.length, busy: mine.filter((s) => s.status === "busy").length };
 }
 
-const state = { lid: await lid(), ...(await agents()) };
+// Whether I am at the Mac, as opposed to the Mac merely being awake. Apps such as
+// caffeinate or the Claude app keep it awake with the lid closed, so being able to
+// report at all says nothing about me.
+async function here(lid: "open" | "closed"): Promise<boolean> {
+  if (/"IOConsoleLocked" = Yes/.test(await $`ioreg -n Root -d1`.text())) return false;
+  const idle = (await $`ioreg -c IOHIDSystem`.text()).match(/"HIDIdleTime" = (\d+)/);
+  if (idle && Number(idle[1]) / 1e9 >= AWAY_IDLE_S) return false;
+  if (lid === "closed") {
+    // Lid closed with a monitor attached is the Mac used docked; without one it is in a bag.
+    const displays = JSON.parse(await $`system_profiler SPDisplaysDataType -json`.text());
+    const external = (displays.SPDisplaysDataType ?? [])
+      .flatMap((gpu: any) => gpu.spdisplays_ndrvs ?? [])
+      .filter((d: any) => d.spdisplays_connection_type !== "spdisplays_internal");
+    if (external.length === 0) return false;
+  }
+  return true;
+}
+
+const lidState = await lid();
+const state = { lid: lidState, here: await here(lidState), ...(await agents()) };
 const stateJson = JSON.stringify(state);
 const payload = JSON.stringify({ for: PURPOSE, ts: Math.floor(Date.now() / 1000), ...state });
 

@@ -24,6 +24,11 @@ function ago(ms: number): string {
 }
 
 const awake = presence?.state === 'awake' ? presence : null;
+// Awake but not here means the Mac runs without me: open and left alone, or closed and
+// kept awake by something like caffeinate. Closed while here is the Mac used docked.
+const laptop = !awake ? null
+  : awake.here ? awake.lid
+  : awake.lid === 'open' ? 'open, unattended' : 'closed, kept awake';
 const sessions = awake && awake.agents > 0
   ? {
       count: `${awake.agents} ${awake.agents === 1 ? 'session' : 'sessions'}`,
@@ -133,9 +138,9 @@ const sessionsTitle = 'Claude Code sessions open on my laptop right now';
       <div class="status">
         <span class="ln">
           <span class="me">fahad</span>
-          {presence && <span class="dim">{presence.state === 'awake' ? 'active' : 'inactive'}</span>}
+          {presence && <span class="dim">{!awake ? 'inactive' : awake.here ? 'active' : 'away'}</span>}
         </span>
-        {awake && <span class="ln"><span class="key">laptop</span>{awake.lid}</span>}
+        {laptop && <span class="ln"><span class="key">laptop</span>{laptop}</span>}
         {presence?.state === 'asleep' && (
           <span class="ln"><span class="key">laptop</span>zzz since {ago(presence.at).replace(' ago', '')}</span>
         )}
