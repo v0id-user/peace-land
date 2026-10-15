@@ -91,12 +91,13 @@ interface Cached {
   fetchedAt: number;
 }
 
-// The answer lives in the edge cache, which has no write limit (KV allows 1,000 writes a
-// day and the laptop reports need them). The URL is only a cache key and is never fetched.
-const CACHE_KEY = "https://www.v0id.me/__cache/github-latest";
-let refreshing: Promise<void> | null = null;
+export type GitCacheState = "fresh" | "stale" | "miss" | "off";
 
-async function refresh(env: any, previous: Cached | null): Promise<void> {
+// Stored in KV next to the presence report, so every edge location shares one answer.
+const KV_KEY = "github:latest";
+let refreshing: Promise<Cached> | null = null;
+
+async function refresh(env: any, previous: Cached | null): Promise<Cached> {
   let entry: Cached;
   try {
     const commit = await fetchNewest(env);
@@ -106,27 +107,30 @@ async function refresh(env: any, previous: Cached | null): Promise<void> {
     // Keep showing the last answer and wait a full TTL before trying again.
     entry = { commit: previous?.commit ?? null, fetchedAt: Date.now() };
   }
-  await caches.default.put(
-    CACHE_KEY,
-    new Response(JSON.stringify(entry), { headers: { "Cache-Control": "max-age=86400" } }),
-  );
+  await env.SESSION.put(KV_KEY, JSON.stringify(entry));
+  return entry;
 }
 
-// Returns the cached answer at once, however old, and refreshes it after the response
-// is sent when it is older than CACHE_TTL_MS. The first reader at an edge location sees
-// no git row; the next reload has one.
+// Returns the stored answer at once and, when it is older than CACHE_TTL_MS, refreshes
+// it after the response is sent. Only when nothing is stored yet (a new KV namespace)
+// does a reader wait for GitHub.
 export async function getLatestPublicCommit(
   env: any,
   waitUntil: (p: Promise<unknown>) => void,
-): Promise<LatestCommit | null> {
-  if (!env.GITHUB_TOKEN) return null;
-  const hit = await caches.default.match(CACHE_KEY);
-  const cached: Cached | null = hit ? await hit.json() : null;
-  if ((!cached || Date.now() - cached.fetchedAt > CACHE_TTL_MS) && !refreshing) {
-    refreshing = refresh(env, cached).finally(() => {
-      refreshing = null;
-    });
-    waitUntil(refreshing);
+): Promise<{ commit: LatestCommit | null; cache: GitCacheState }> {
+  if (!env.GITHUB_TOKEN || !env.SESSION) return { commit: null, cache: "off" };
+  let cached: Cached | null = await env.SESSION.get(KV_KEY, { type: "json", cacheTtl: 30 });
+  let state: GitCacheState = "fresh";
+  if (!cached) {
+    state = "miss";
+    cached = await (refreshing ??= refresh(env, null).finally(() => (refreshing = null)));
+  } else if (Date.now() - cached.fetchedAt > CACHE_TTL_MS) {
+    state = "stale";
+    if (!refreshing) {
+      refreshing = refresh(env, cached).finally(() => (refreshing = null));
+      waitUntil(refreshing);
+    }
   }
-  return cached?.commit ? { ...cached.commit, date: new Date(cached.commit.date) } : null;
+  const commit = cached?.commit ? { ...cached.commit, date: new Date(cached.commit.date) } : null;
+  return { commit, cache: state };
 }

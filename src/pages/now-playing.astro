@@ -6,11 +6,14 @@ import { getPresence } from '../lib/presence';
 import { env as cfEnv } from 'cloudflare:workers';
 
 const mergedEnv: any = { ...import.meta.env, ...cfEnv };
-const [np, commit, presence] = await Promise.all([
+const [np, git, presence] = await Promise.all([
   getNowPlaying(mergedEnv),
   getLatestPublicCommit(mergedEnv, (p) => Astro.locals.cfContext?.waitUntil(p)),
   getPresence(mergedEnv.SESSION),
 ]);
+const commit = git.commit;
+// Shows in production whether the git row came from a fresh, stale or missing stored answer.
+Astro.response.headers.set('x-git-cache', git.cache);
 const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_ms * 100) : 0;
 const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_ms - np.progress_ms) / 1000) : 0;
 const hasTrack = !!np.title;
