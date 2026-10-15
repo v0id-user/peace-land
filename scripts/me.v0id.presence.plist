@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
-  The script runs from outside the repo so switching branches never breaks the job:
+  The reporter stays running; launchd starts it at login and again whenever it exits.
+  It runs from outside the repo so switching branches never breaks it:
     mkdir -p ~/.local/bin && cp scripts/presence.ts ~/.local/bin/v0id-presence.ts
+    swiftc -O scripts/presence-events.swift -o ~/.local/bin/v0id-presence-events
     cp scripts/me.v0id.presence.plist ~/Library/LaunchAgents/
     launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/me.v0id.presence.plist
   Stop it with: launchctl bootout gui/$(id -u)/me.v0id.presence
@@ -22,10 +24,12 @@
     <key>PATH</key>
     <string>/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
   </dict>
-  <key>StartInterval</key>
-  <integer>30</integer>
   <key>RunAtLoad</key>
   <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
   <key>StandardErrorPath</key>
   <string>/Users/v0id/Library/Logs/me.v0id.presence.log</string>
 </dict>

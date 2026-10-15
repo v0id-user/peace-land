@@ -7,9 +7,10 @@ export const PRESENCE_KEY = "presence";
 export const PRESENCE_PURPOSE = "v0id.me/presence";
 const MAX_AGENTS = 32;
 
-// scripts/presence.ts runs every 30 seconds and writes on change or every 5 minutes.
-// A report older than 7 minutes means the laptop stopped reporting: it is asleep.
-const STALE_MS = 7 * 60_000;
+// scripts/presence.ts reports changes as they happen, says so itself just before the
+// Mac sleeps, and sends a heartbeat every 15 minutes. Silence past 20 minutes covers
+// what it cannot announce (a crash, a dead battery) and also reads as asleep.
+const STALE_MS = 20 * 60_000;
 
 export interface PresenceReport {
   lid: "open" | "closed";
@@ -18,6 +19,8 @@ export interface PresenceReport {
   here: boolean;
   agents: number;
   busy: number;
+  // Sent once, just before the Mac sleeps. Optional so older reporters still validate.
+  asleep: boolean;
 }
 
 export interface SignedReport extends PresenceReport {
@@ -38,16 +41,16 @@ export type PresenceView =
 // cannot push anything richer onto the public page.
 export function parseReport(body: unknown): SignedReport | null {
   if (!body || typeof body !== "object") return null;
-  const { for: purpose, ts, lid, here, agents, busy, ...rest } = body as Record<string, unknown>;
+  const { for: purpose, ts, lid, here, agents, busy, asleep = false, ...rest } = body as Record<string, unknown>;
   if (Object.keys(rest).length > 0) return null;
   if (purpose !== PRESENCE_PURPOSE) return null;
   if (lid !== "open" && lid !== "closed") return null;
-  if (typeof here !== "boolean") return null;
+  if (typeof here !== "boolean" || typeof asleep !== "boolean") return null;
   if (!Number.isInteger(ts) || !Number.isInteger(agents) || !Number.isInteger(busy)) return null;
   const a = agents as number;
   const b = busy as number;
   if (a < 0 || a > MAX_AGENTS || b < 0 || b > a) return null;
-  return { lid, here, agents: a, busy: b, ts: ts as number };
+  return { lid, here, agents: a, busy: b, asleep, ts: ts as number };
 }
 
 export async function getPresence(kv: KVNamespace | undefined): Promise<PresenceView | null> {
@@ -56,7 +59,7 @@ export async function getPresence(kv: KVNamespace | undefined): Promise<Presence
     // KV serves a value cached at the edge for up to 60 seconds by default; 30 is the floor.
     const p = await kv.get<Presence>(PRESENCE_KEY, { type: "json", cacheTtl: 30 });
     if (!p) return null;
-    if (Date.now() - p.at > STALE_MS) return { state: "asleep", at: p.at };
+    if (p.asleep || Date.now() - p.at > STALE_MS) return { state: "asleep", at: p.at };
     return { state: "awake", ...p };
   } catch (err) {
     console.error("presence read threw", err);

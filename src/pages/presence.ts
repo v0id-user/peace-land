@@ -9,8 +9,6 @@ export const prerender = false;
 const MAX_BODY = 1024;
 // How far the laptop's clock may be from the Worker's.
 const MAX_SKEW_MS = 2 * 60_000;
-// The laptop writes at most every 2 minutes; faster than this is a bug somewhere.
-const MIN_WRITE_GAP_MS = 30_000;
 
 // Only a detached OpenPGP signature by the site's own key (key/*.asc) is accepted.
 // The Worker holds the public key and no secret, so nothing stored on Cloudflare
@@ -63,13 +61,13 @@ export const POST: APIRoute = async ({ request }) => {
   if (Math.abs(now - report.ts * 1000) > MAX_SKEW_MS) return new Response(null, { status: 403 });
   const last = await kv.get<Presence>(PRESENCE_KEY, 'json');
   if (last && report.ts <= last.ts) return new Response(null, { status: 403 });
-  if (last && now - last.at < MIN_WRITE_GAP_MS) return new Response(null, { status: 429 });
 
   const presence: Presence = {
     lid: report.lid,
     here: report.here,
     agents: report.agents,
     busy: report.busy,
+    asleep: report.asleep,
     ts: report.ts,
     at: now,
   };
