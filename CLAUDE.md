@@ -37,7 +37,7 @@
 
 ## Spotify now-playing
 
-- SSR iframe at /now-playing with meta refresh every 30 seconds. No client JS.
+- SSR iframe at /now-playing with meta refresh every 15 seconds. No client JS.
 - Fetches from Spotify API server-side using refresh token flow.
 - Secrets stored on Cloudflare Workers: SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN.
 - For local dev, secrets go in .dev.vars (gitignored).
