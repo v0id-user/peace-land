@@ -7,9 +7,9 @@ export const PRESENCE_KEY = "presence";
 export const PRESENCE_PURPOSE = "v0id.me/presence";
 const MAX_AGENTS = 32;
 
-// scripts/presence.ts runs every 2 minutes and writes on change or every 6 minutes.
-// A report older than 9 minutes means the laptop stopped reporting: it is asleep.
-const STALE_MS = 9 * 60_000;
+// scripts/presence.ts runs every 30 seconds and writes on change or every 5 minutes.
+// A report older than 7 minutes means the laptop stopped reporting: it is asleep.
+const STALE_MS = 7 * 60_000;
 
 export interface PresenceReport {
   lid: "open" | "closed";
@@ -53,7 +53,8 @@ export function parseReport(body: unknown): SignedReport | null {
 export async function getPresence(kv: KVNamespace | undefined): Promise<PresenceView | null> {
   if (!kv) return null;
   try {
-    const p = await kv.get<Presence>(PRESENCE_KEY, "json");
+    // KV serves a value cached at the edge for up to 60 seconds by default; 30 is the floor.
+    const p = await kv.get<Presence>(PRESENCE_KEY, { type: "json", cacheTtl: 30 });
     if (!p) return null;
     if (Date.now() - p.at > STALE_MS) return { state: "asleep", at: p.at };
     return { state: "awake", ...p };

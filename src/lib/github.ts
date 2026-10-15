@@ -11,8 +11,6 @@ export interface LatestCommit {
   date: Date;
 }
 
-let cache: { commit: LatestCommit | null; fetchedAt: number } | null = null;
-
 // Every repo I committed to in the last year, mine or an organization's. GITHUB_TOKEN
 // can read private repos, work ones included, so this list contains them too. It asks
 // for names and privacy only; private repos are dropped before anything else is fetched.
@@ -59,41 +57,76 @@ async function graphql(token: string, query: string, variables?: object): Promis
   return json.data;
 }
 
-export async function getLatestPublicCommit(env: any): Promise<LatestCommit | null> {
-  if (cache && Date.now() - cache.fetchedAt < CACHE_TTL_MS) return cache.commit;
-
+// The newest of my commits on public repos. Takes about 5 seconds (two GraphQL calls),
+// so it never runs while a reader waits.
+async function fetchNewest(env: any): Promise<LatestCommit | null> {
   const token = env.GITHUB_TOKEN;
-  if (!token) return null;
+  const skip = new Set(
+    String(env.GITHUB_SKIP_OWNERS ?? "").split(",").map((o) => o.trim().toLowerCase()).filter(Boolean),
+  );
+  const contributed = await graphql(token, REPOS_QUERY, { login: LOGIN });
+  const publicRepos: string[] = (contributed.user?.contributionsCollection?.commitContributionsByRepository ?? [])
+    .map((c: any) => c.repository)
+    .filter((r: any) => r && r.isPrivate === false)
+    .map((r: any) => r.nameWithOwner as string)
+    .filter((name) => !skip.has(name.split("/")[0].toLowerCase()));
+  if (publicRepos.length === 0) return null;
 
+  let newest: LatestCommit | null = null;
+  const repos = Object.values(await graphql(token, commitsQuery(publicRepos))) as any[];
+  for (const repo of repos) {
+    // Checked again here in case a repo went private between the two requests.
+    if (!repo || repo.isPrivate !== false) continue;
+    const mine = repo.defaultBranchRef?.target?.history?.nodes?.[0];
+    if (!mine) continue;
+    const date = new Date(mine.committedDate);
+    if (newest && newest.date >= date) continue;
+    newest = { headline: mine.messageHeadline, repo: repo.nameWithOwner, url: mine.url, date };
+  }
+  return newest;
+}
+
+interface Cached {
+  commit: (Omit<LatestCommit, "date"> & { date: string }) | null;
+  fetchedAt: number;
+}
+
+// The answer lives in the edge cache, which has no write limit (KV allows 1,000 writes a
+// day and the laptop reports need them). The URL is only a cache key and is never fetched.
+const CACHE_KEY = "https://www.v0id.me/__cache/github-latest";
+let refreshing: Promise<void> | null = null;
+
+async function refresh(env: any, previous: Cached | null): Promise<void> {
+  let entry: Cached;
   try {
-    const skip = new Set(
-      String(env.GITHUB_SKIP_OWNERS ?? "").split(",").map((o) => o.trim().toLowerCase()).filter(Boolean),
-    );
-    const contributed = await graphql(token, REPOS_QUERY, { login: LOGIN });
-    const publicRepos: string[] = (contributed.user?.contributionsCollection?.commitContributionsByRepository ?? [])
-      .map((c: any) => c.repository)
-      .filter((r: any) => r && r.isPrivate === false)
-      .map((r: any) => r.nameWithOwner as string)
-      .filter((name) => !skip.has(name.split("/")[0].toLowerCase()));
-
-    let newest: LatestCommit | null = null;
-    if (publicRepos.length > 0) {
-      const repos = Object.values(await graphql(token, commitsQuery(publicRepos))) as any[];
-      for (const repo of repos) {
-        // Checked again here in case a repo went private between the two requests.
-        if (!repo || repo.isPrivate !== false) continue;
-        const mine = repo.defaultBranchRef?.target?.history?.nodes?.[0];
-        if (!mine) continue;
-        const date = new Date(mine.committedDate);
-        if (newest && newest.date >= date) continue;
-        newest = { headline: mine.messageHeadline, repo: repo.nameWithOwner, url: mine.url, date };
-      }
-    }
-    cache = { commit: newest, fetchedAt: Date.now() };
-    return newest;
+    const commit = await fetchNewest(env);
+    entry = { commit: commit && { ...commit, date: commit.date.toISOString() }, fetchedAt: Date.now() };
   } catch (err) {
     console.error("github latest commit failed", err);
-    cache = { commit: cache?.commit ?? null, fetchedAt: Date.now() };
-    return cache.commit;
+    // Keep showing the last answer and wait a full TTL before trying again.
+    entry = { commit: previous?.commit ?? null, fetchedAt: Date.now() };
   }
+  await caches.default.put(
+    CACHE_KEY,
+    new Response(JSON.stringify(entry), { headers: { "Cache-Control": "max-age=86400" } }),
+  );
+}
+
+// Returns the cached answer at once, however old, and refreshes it after the response
+// is sent when it is older than CACHE_TTL_MS. The first reader at an edge location sees
+// no git row; the next reload has one.
+export async function getLatestPublicCommit(
+  env: any,
+  waitUntil: (p: Promise<unknown>) => void,
+): Promise<LatestCommit | null> {
+  if (!env.GITHUB_TOKEN) return null;
+  const hit = await caches.default.match(CACHE_KEY);
+  const cached: Cached | null = hit ? await hit.json() : null;
+  if ((!cached || Date.now() - cached.fetchedAt > CACHE_TTL_MS) && !refreshing) {
+    refreshing = refresh(env, cached).finally(() => {
+      refreshing = null;
+    });
+    waitUntil(refreshing);
+  }
+  return cached?.commit ? { ...cached.commit, date: new Date(cached.commit.date) } : null;
 }

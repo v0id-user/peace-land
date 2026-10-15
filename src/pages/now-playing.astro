@@ -8,7 +8,7 @@ import { env as cfEnv } from 'cloudflare:workers';
 const mergedEnv: any = { ...import.meta.env, ...cfEnv };
 const [np, commit, presence] = await Promise.all([
   getNowPlaying(mergedEnv),
-  getLatestPublicCommit(mergedEnv),
+  getLatestPublicCommit(mergedEnv, (p) => Astro.locals.cfContext?.waitUntil(p)),
   getPresence(mergedEnv.SESSION),
 ]);
 const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_ms * 100) : 0;
