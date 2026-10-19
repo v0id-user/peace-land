@@ -63,6 +63,11 @@ function applyCacheAndClean(response, pathname) {
   } else if (STATIC_EXT_RE.test(pathname)) {
     h.set("Cache-Control", "public, max-age=86400, stale-while-revalidate=604800");
   }
+  // Web Key Directory: gpg --locate-keys hey@v0id.me fetches the key from here.
+  if (pathname.startsWith("/.well-known/openpgpkey/")) {
+    h.set("Content-Type", "application/octet-stream");
+    h.set("Access-Control-Allow-Origin", "*");
+  }
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers: h });
 }
 export default {

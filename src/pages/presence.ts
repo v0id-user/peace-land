@@ -70,6 +70,8 @@ export const POST: APIRoute = async ({ request }) => {
     asleep: report.asleep,
     ts: report.ts,
     at: now,
+    body: new TextDecoder().decode(body),
+    sig: signature,
   };
   await kv.put(PRESENCE_KEY, JSON.stringify(presence));
   return new Response(null, { status: 204 });

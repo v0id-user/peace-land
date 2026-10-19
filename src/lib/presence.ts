@@ -31,6 +31,11 @@ export interface SignedReport extends PresenceReport {
 export interface Presence extends PresenceReport {
   at: number;
   ts: number;
+  // The report exactly as the laptop signed it, and its detached signature (base64), so
+  // /status.asc can hand anyone the signed original to check with gpg. Absent on
+  // records written before they were kept.
+  body?: string;
+  sig?: string;
 }
 
 export type PresenceView =

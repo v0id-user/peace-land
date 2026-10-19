@@ -60,6 +60,14 @@
 - Stored in the SESSION KV namespace under the key `presence`. An `asleep` report, or no report for 20 minutes (a crash, a dead battery), shows `inactive`. Reads use a 30-second KV cacheTtl, the lowest KV allows, and the iframe reloads every 15 seconds.
 - After a reboot, gpg gets the passphrase from the login keychain through pinentry-mac, so the job keeps signing without a prompt.
 
+## From a terminal
+
+- `/status` is the status block as plain text, in the same rows and columns as the iframe. The wording lives in src/lib/status.ts and both use it.
+- `/status` and `/now-playing` send an `x-fahad: active|away|inactive` header.
+- `/status.asc` is the laptop's last report exactly as signed, as one armored OpenPGP message: `curl -s https://www.v0id.me/status.asc | gpg --decrypt`. /presence keeps the signed body and signature in KV for this. The message is built by hand (one-pass header, literal data, signature) because openpgp.js `appendSignature` puts the signature first, which gpg rejects as an old PGP 2 message.
+- Web Key Directory: `gpg --locate-keys hey@v0id.me` reads public/.well-known/openpgpkey (direct method). After changing the key: `gpg --export --export-options export-minimal --export-filter keep-uid=mbox=hey@v0id.me <fpr> > public/.well-known/openpgpkey/hu/$(gpg-wks-client --print-wkd-hash hey@v0id.me | cut -d' ' -f1)`.
+- public/.well-known/security.txt is clearsigned with my key and expires 2027-10-19. Re-sign it with a new Expires before then: `gpg --clearsign`.
+
 ## CMS
 
 - Sveltia CMS at /admin, restricted to GitHub user v0id-user.

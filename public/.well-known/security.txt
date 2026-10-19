@@ -1,0 +1,16 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Contact: mailto:hey@v0id.me
+Expires: 2027-10-19T00:00:00.000Z
+Encryption: https://pgp.v0id.me
+Preferred-Languages: en, ar
+Canonical: https://www.v0id.me/.well-known/security.txt
+-----BEGIN PGP SIGNATURE-----
+
+iJEEARYKADkWIQRr7JPJCWM7VlNOLc4fTw7aZGGeGQUCatYMBBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwwLDMACgkQH08O2mRhnhlZsQEA1JW08IIAOj2Um7BcRvUf
+SFfqOONpPafKyXpcmqMIX78A/RSI839xGokMwWcdyDxAOJOVvhTFWXBUhHhh7DWx
+0a0H
+=yIyQ
+-----END PGP SIGNATURE-----

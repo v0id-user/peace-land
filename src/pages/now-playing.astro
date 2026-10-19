@@ -3,6 +3,7 @@ export const prerender = false;
 import { getNowPlaying } from '../lib/spotify';
 import { getLatestPublicCommit } from '../lib/github';
 import { getPresence } from '../lib/presence';
+import { ago, laptopText, sessionsText, statusWord } from '../lib/status';
 import { env as cfEnv } from 'cloudflare:workers';
 
 const mergedEnv: any = { ...import.meta.env, ...cfEnv };
@@ -18,28 +19,10 @@ const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_m
 const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_ms - np.progress_ms) / 1000) : 0;
 const hasTrack = !!np.title;
 
-function ago(ms: number): string {
-  const min = Math.floor((Date.now() - ms) / 60_000);
-  if (min < 1) return 'just now';
-  if (min < 60) return `${min}m ago`;
-  if (min < 48 * 60) return `${Math.floor(min / 60)}h ago`;
-  return `${Math.floor(min / 1440)}d ago`;
-}
-
-const awake = presence?.state === 'awake' ? presence : null;
-// Awake but not here means the Mac runs without me: open and left alone, or closed and
-// kept awake by something like caffeinate. Closed while here is the Mac used docked.
-const laptop = !awake ? null
-  : awake.here ? awake.lid
-  : awake.lid === 'open' ? 'open, unattended' : 'closed, kept awake';
-const sessions = awake && awake.agents > 0
-  ? {
-      count: `${awake.agents} ${awake.agents === 1 ? 'session' : 'sessions'}`,
-      split: awake.busy === 0 ? `${awake.agents} idle`
-        : awake.busy === awake.agents ? `${awake.busy} working`
-        : `${awake.busy} working, ${awake.agents - awake.busy} idle`,
-    }
-  : null;
+const word = statusWord(presence);
+if (word) Astro.response.headers.set('x-fahad', word);
+const laptop = laptopText(presence);
+const sessions = sessionsText(presence);
 const sessionsTitle = 'Claude Code sessions open on my laptop right now';
 ---
 
@@ -141,12 +124,9 @@ const sessionsTitle = 'Claude Code sessions open on my laptop right now';
       <div class="status">
         <span class="ln">
           <span class="me">fahad</span>
-          {presence && <span class="dim">{!awake ? 'inactive' : awake.here ? 'active' : 'away'}</span>}
+          {word && <span class="dim">{word}</span>}
         </span>
         {laptop && <span class="ln"><span class="key">laptop</span>{laptop}</span>}
-        {presence?.state === 'asleep' && (
-          <span class="ln"><span class="key">laptop</span>zzz since {ago(presence.at).replace(' ago', '')}</span>
-        )}
         {presence && (sessions ? (
           <>
             <span class="ln" title={sessionsTitle}><span class="key">claude</span>{sessions.count}</span>
