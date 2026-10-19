@@ -1,0 +1,48 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Uses" description="The computer, editor, terminal, languages and infrastructure Fahad Al-Ghamdi (#V0ID) works with.">
+  <div class="tree-page">
+    <h1>Uses</h1>
+
+    <p class="section-label">computer</p>
+    <ul class="tree-links section-list">
+      <li>A Mac on macOS 26, set up from scratch by <a href="https://github.com/v0id-user/setmac">setmac</a>, an app I wrote that reinstalls my tools and dotfiles after a fresh format.</li>
+      <li>Raycast, Rectangle, Hammerspoon, and Karabiner-Elements turning Caps Lock into a hyper key.</li>
+    </ul>
+
+    <p class="section-label">editor</p>
+    <ul class="tree-links section-list">
+      <li>Neovim with LazyVim, Cursor, and Claude Code.</li>
+      <li>Black Metal (Marduk) everywhere, including <a href="https://github.com/v0id-user/vscode-black-metal-marduk">my port for VS Code and Cursor</a>.</li>
+    </ul>
+
+    <p class="section-label">terminal</p>
+    <ul class="tree-links section-list">
+      <li>Ghostty, tmux, zsh with Oh My Zsh and Starship.</li>
+      <li>eza, bat, fd and ripgrep in place of ls, cat, find and grep. fzf, lazygit, btop, yazi, just, gh.</li>
+    </ul>
+
+    <p class="section-label">languages</p>
+    <ul class="tree-links section-list">
+      <li>TypeScript on Bun most of the time. Go, Rust, Elixir, Python and Swift when they fit better.</li>
+      <li>Versions pinned per project with mise.</li>
+    </ul>
+
+    <p class="section-label">infrastructure</p>
+    <ul class="tree-links section-list">
+      <li>Cloudflare Workers, with Durable Objects, D1, KV, R2 and Queues. This site runs there.</li>
+      <li>Railway first, Fly second, Terraform for both.</li>
+      <li>Polar for billing.</li>
+    </ul>
+
+    <p class="section-label">everything else</p>
+    <ul class="tree-links section-list">
+      <li>GnuPG for signing, with <a href="/pgp/">my key</a> on pinentry-mac.</li>
+      <li>Proton for mail, Spotify for music (it shows in the sidebar).</li>
+    </ul>
+
+    <p class="tree-note">Most of this is in <a href="https://github.com/v0id-user/setmac">setmac</a>'s bundled configs. See also <a href="/colophon/">colophon</a>.</p>
+  </div>
+</Base>

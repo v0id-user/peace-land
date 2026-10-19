@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Misc" description="What v0id.me does besides pages: status from a terminal, a signed status, my key by address, and a guestbook.">
+  <div class="tree-page">
+    <h1>Misc</h1>
+    <p class="section-label">status</p>
+    <pre class="section-cmd">curl v0id.me
+curl v0id.me/status
+curl -s v0id.me/status.asc | gpg -d</pre>
+    <p class="section-label">keys</p>
+    <pre class="section-cmd">gpg --locate-keys hey@v0id.me
+curl -s https://pgp.v0id.me | gpg --import</pre>
+    <p class="section-label">more</p>
+    <p class="section-links">
+      <a href="/guestbook/">guestbook</a> · <a href="/uses/">uses</a> · <a href="/colophon/">colophon</a> · <a href="/.well-known/security.txt">security.txt</a> · <a href="/rss.xml">rss</a>
+    </p>
+  </div>
+</Base>

@@ -1,6 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import { env } from 'cloudflare:workers';
+import { getVisits } from '../lib/visits';
+
+// Rendered per request for the visit count and for terminals (src/middleware.ts).
+export const prerender = false;
+const visits = await getVisits((env as any).SESSION);
 
 const posts = (await getCollection('posts', ({ data }) => {
   return import.meta.env.PROD ? data.draft !== true : true;
@@ -21,5 +27,5 @@ const posts = (await getCollection('posts', ({ data }) => {
       </li>
     ))}
   </ul>
-  <p class="rss-link"><a href="/rss.xml">rss</a></p>
+  <p class="rss-link"><a href="/rss.xml">rss</a>{visits !== null && <span class="visits"> · {visits.toLocaleString('en-US')} visits</span>}</p>
 </Base>

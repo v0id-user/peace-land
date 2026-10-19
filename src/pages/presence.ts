@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
-import { PGP_PUBLIC_KEY_ARMORED } from '../lib/pgpKey';
 import { PRESENCE_KEY, parseReport, type Presence } from '../lib/presence';
+import { signedByMe } from '../lib/signed';
 
 export const prerender = false;
 
@@ -9,27 +9,6 @@ export const prerender = false;
 const MAX_BODY = 1024;
 // How far the laptop's clock may be from the Worker's.
 const MAX_SKEW_MS = 2 * 60_000;
-
-// Only a detached OpenPGP signature by the site's own key (key/*.asc) is accepted.
-// The Worker holds the public key and no secret, so nothing stored on Cloudflare
-// can be used to forge a report. openpgp is imported here, not at the top, so only
-// this route pays for loading it.
-async function signedByMe(body: Uint8Array, signatureB64: string): Promise<boolean> {
-  try {
-    const openpgp = await import('openpgp');
-    const binarySignature = Uint8Array.from(atob(signatureB64), (c) => c.charCodeAt(0));
-    const [verificationKeys, signature, message] = await Promise.all([
-      openpgp.readKey({ armoredKey: PGP_PUBLIC_KEY_ARMORED }),
-      openpgp.readSignature({ binarySignature }),
-      openpgp.createMessage({ binary: body }),
-    ]);
-    // expectSigned makes verify throw unless a signature by verificationKeys checks out.
-    await openpgp.verify({ message, signature, verificationKeys, expectSigned: true });
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 export const POST: APIRoute = async ({ request }) => {
   const kv = (env as any).SESSION as KVNamespace | undefined;

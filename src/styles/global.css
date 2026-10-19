@@ -120,6 +120,10 @@ a:hover {
   font-style: italic;
 }
 
+.rss-link .visits {
+  color: #999;
+}
+
 /* --- Article --- */
 
 .back-link {
@@ -292,6 +296,73 @@ a:hover {
 .pgp-before em {
   display: block;
   margin-top: 4px;
+}
+
+/* --- Misc, uses, colophon --- */
+
+.section-label {
+  margin: 12px 0 2px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.section-cmd {
+  font-size: 11px;
+  overflow-x: auto;
+}
+
+.section-links {
+  font-size: 11px;
+}
+
+.section-list li {
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 62ch;
+}
+
+/* --- Guestbook --- */
+
+.gb-entry {
+  margin: 8px 0;
+  font-size: 12px;
+}
+
+.gb-who {
+  font-size: 11px;
+  color: #777;
+}
+
+.gb-who a {
+  color: #777;
+}
+
+.gb-flash {
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+
+.gb-form {
+  display: grid;
+  gap: 4px;
+  max-width: 320px;
+  margin-top: 16px;
+}
+
+.gb-form input,
+.gb-form textarea {
+  font: inherit;
+  font-size: 12px;
+}
+
+.gb-form button {
+  justify-self: start;
+}
+
+/* Hidden from people; bots that fill every field give themselves away. */
+.gb-hp {
+  position: absolute;
+  left: -9999px;
 }
 
 /* --- About page --- */

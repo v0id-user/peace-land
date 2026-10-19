@@ -1,5 +1,6 @@
 import { defineMiddleware } from 'astro:middleware';
 import { PGP_PUBLIC_KEY_ARMORED } from './lib/pgpKey';
+import { isTerminal } from './lib/terminal';
 
 /**
  * Subdomain routing in dev (prod: worker entry in pgp-subdomain-worker-entry integration).
@@ -21,6 +22,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
       dest.search = url.search;
       return Response.redirect(dest.toString(), 301);
     }
+  }
+
+  // `curl v0id.me` gets the home page as plain text. The same URL answers differently
+  // by client, so caches must keep the two apart.
+  if ((url.pathname === '/' || url.pathname === '') && (!host || !SUBDOMAIN_HOSTS.has(host))) {
+    const response = isTerminal(context.request) ? await next('/index.txt') : await next();
+    response.headers.append('Vary', 'User-Agent');
+    return response;
   }
 
   if (host === TREE_HOST && context.request.method === 'GET') {

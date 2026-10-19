@@ -1,0 +1,72 @@
+---
+import Base from '../../layouts/Base.astro';
+import { env } from 'cloudflare:workers';
+import { APPROVED, entriesText, listEntries, sign, siteHref, siteLabel } from '../../lib/guestbook';
+import { isTerminal, text } from '../../lib/terminal';
+
+export const prerender = false;
+
+const kv = (env as any).SESSION as KVNamespace | undefined;
+const terminal = isTerminal(Astro.request);
+
+if (Astro.request.method === 'POST') {
+  // A browser always sends Origin with a form post; another site's form gets refused.
+  // curl sends none and is let through.
+  const origin = Astro.request.headers.get('origin');
+  if (origin && origin !== Astro.url.origin) return text('cross-site posts are refused\n', { status: 403 });
+  if (!kv) return text('the guestbook is closed right now\n', { status: 503 });
+  let form: FormData;
+  try {
+    form = await Astro.request.formData();
+  } catch {
+    return text('send it as a form: curl -d name=you -d msg=hello v0id.me/guestbook\n', { status: 400 });
+  }
+  const result = await sign(kv, form, Astro.request.headers.get('cf-connecting-ip') ?? '');
+  if (terminal) {
+    return result.ok
+      ? text(`thanks, ${result.name}. it shows up once I approve it.\n`)
+      : text(`${result.reason}\n`, { status: result.status });
+  }
+  // Post, redirect, get: reloading the page never sends the form twice.
+  const to = result.ok ? '/guestbook/?sent=1' : `/guestbook/?error=${encodeURIComponent(result.reason)}`;
+  return Astro.redirect(to, 303);
+}
+
+const entries = kv ? await listEntries(kv, APPROVED) : [];
+if (terminal) return text(entriesText(entries));
+
+const sent = Astro.url.searchParams.has('sent');
+const error = Astro.url.searchParams.get('error')?.slice(0, 80);
+const day = (at: number) => new Date(at).toISOString().slice(0, 10);
+---
+
+<Base title="Guestbook" description="Leave a note on v0id.me, from the page or from a terminal.">
+  <div class="tree-page">
+    <h1>Guestbook</h1>
+    {sent && <p class="gb-flash">thanks. it shows up once I approve it.</p>}
+    {error && <p class="gb-flash">{error}</p>}
+    {entries.length === 0 && <p class="gb-who">no entries yet.</p>}
+    {entries.map((e) => (
+      <div class="gb-entry">
+        {e.msg}
+        <div class="gb-who">
+          {e.name}{e.site && <> · <a href={siteHref(e.site)} rel="nofollow ugc noopener" target="_blank">{siteLabel(e.site)}</a></>}, {day(e.at)}
+        </div>
+      </div>
+    ))}
+    <form method="post" action="/guestbook/" class="gb-form">
+      <input id="gb-name" name="name" placeholder="name" maxlength="40" required />
+      <input id="gb-site" name="site" placeholder="site (optional)" maxlength="100" />
+      <textarea id="gb-msg" name="msg" rows="3" placeholder="message" maxlength="280" required></textarea>
+      <div class="gb-hp" aria-hidden="true">
+        <label for="gb-email">leave this empty</label>
+        <input id="gb-email" name="email" tabindex="-1" autocomplete="off" />
+      </div>
+      <button type="submit">sign</button>
+    </form>
+    <p class="tree-note">
+      Entries show up once I approve them.<br />
+      From a terminal: <code>curl -d name=you -d msg=hello v0id.me/guestbook</code>, and <code>curl v0id.me/guestbook</code> to read it.
+    </p>
+  </div>
+</Base>

@@ -14,13 +14,16 @@ interface Props {
   type?: 'website' | 'article';
   publishedDate?: string;
   noindex?: boolean;
+  // A post's slug picks its own preview image; every other page uses the site's.
+  ogSlug?: string;
 }
 
-const { title, description, type = 'website', publishedDate, noindex = false } = Astro.props;
+const { title, description, type = 'website', publishedDate, noindex = false, ogSlug } = Astro.props;
 const pageTitle = title ? `${title} · #V0ID` : '#V0ID · Fahad Al-Ghamdi';
 const metaDescription = description || 'Technical blog by Fahad Al-Ghamdi (#V0ID): backend engineering, Rust, TypeScript, Cloudflare, and systems programming.';
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.v0id.me');
-const ogImage = 'https://www.v0id.me/icon-512.png';
+// Drawn on request with the status at that moment (src/pages/og.png.ts, og/[slug].png.ts).
+const ogImage = ogSlug ? `https://www.v0id.me/og/${ogSlug}.png` : 'https://www.v0id.me/og.png';
 
 const person = {
   '@type': 'Person',
@@ -69,11 +72,11 @@ const jsonLd = type === 'article'
     <meta property="og:site_name" content="#V0ID" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="#V0ID" />
     {publishedDate && <meta property="article:published_time" content={publishedDate} />}
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={metaDescription} />
     <meta name="twitter:site" content="@v0id_user" />
@@ -107,6 +110,7 @@ const jsonLd = type === 'article'
           <a href="/pgp/" class={Astro.url.pathname.startsWith('/pgp') ? 'active' : ''}>pgp</a>
           <a href="/human/" class={Astro.url.pathname.startsWith('/human') ? 'active' : ''} style="margin-top: 6px;">human</a>
           <a href="/test/" class={Astro.url.pathname.startsWith('/test') ? 'active' : ''} style="margin-top: 16px;">tests</a>
+          <a href="/misc/" class={Astro.url.pathname.startsWith('/misc') ? 'active' : ''}>misc</a>
         </nav>
       </aside>
 

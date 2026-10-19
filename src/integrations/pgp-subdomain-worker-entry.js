@@ -60,7 +60,7 @@ function applyCacheAndClean(response, pathname) {
   h.delete("Speculation-Rules");
   if (HASHED_RE.test(pathname)) {
     h.set("Cache-Control", "public, max-age=31536000, immutable");
-  } else if (STATIC_EXT_RE.test(pathname)) {
+  } else if (STATIC_EXT_RE.test(pathname) && pathname !== "/favicon.svg") {
     h.set("Cache-Control", "public, max-age=86400, stale-while-revalidate=604800");
   }
   // Web Key Directory: gpg --locate-keys hey@v0id.me fetches the key from here.
@@ -69,6 +69,39 @@ function applyCacheAndClean(response, pathname) {
     h.set("Access-Control-Allow-Origin", "*");
   }
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers: h });
+}
+// Visit count for the home page (src/lib/visits.ts): page loads by people, not the
+// sidebar iframe, prefetches or bots. Each isolate adds up its visits and writes them
+// at most every 10 seconds, since KV takes one write per key per second. Isolates that
+// write at the same moment can overwrite each other, so the count is approximate.
+const BOT_RE = /bot|crawl|spider|slurp|preview|facebookexternalhit|curl|wget|httpie|python|go-http|headless|lighthouse|monitor/i;
+let pendingVisits = 0;
+let lastVisitFlush = 0;
+let flushingVisits = false;
+async function flushVisits(env) {
+  const n = pendingVisits;
+  pendingVisits = 0;
+  try {
+    const current = Number(await env.SESSION.get("visits")) || 0;
+    await env.SESSION.put("visits", String(current + n));
+  } catch {
+    pendingVisits += n;
+  } finally {
+    lastVisitFlush = Date.now();
+    flushingVisits = false;
+  }
+}
+function countVisit(request, response, pathname, env, ctx) {
+  if (!env.SESSION || request.method !== "GET" || response.status !== 200) return;
+  if (!(response.headers.get("content-type") || "").startsWith("text/html")) return;
+  if (pathname.startsWith("/now-playing") || pathname.startsWith("/admin")) return;
+  const purpose = request.headers.get("sec-purpose") || request.headers.get("purpose") || "";
+  if (purpose.includes("prefetch")) return;
+  if (BOT_RE.test(request.headers.get("user-agent") || "")) return;
+  pendingVisits++;
+  if (flushingVisits || Date.now() - lastVisitFlush < 10000) return;
+  flushingVisits = true;
+  ctx.waitUntil(flushVisits(env));
 }
 export default {
   async fetch(request, env, ctx) {
@@ -99,6 +132,7 @@ export default {
       }
     }
     const r = await w.fetch(request, env, ctx);
+    countVisit(request, r, url.pathname, env, ctx);
     return applyCacheAndClean(r, url.pathname);
   },
 };

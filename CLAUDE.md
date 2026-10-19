@@ -62,11 +62,22 @@
 
 ## From a terminal
 
+- Requests from curl, wget, HTTPie and xh (src/lib/terminal.ts) get plain text. src/middleware.ts sends `/` to src/pages/index.txt.ts: the pixel mark (public/favicon's shape in half blocks), the status block, the latest post and `curl v0id.me/posts`. `/` sends `Vary: User-Agent`. `/posts` lists every post for terminals and redirects browsers to `/`. The home page is rendered per request for this and for the visit count.
+- `curl v0id.me` over plain http only works once the Cloudflare zone lets curl through: the apex to www redirect and Always Use HTTPS both have to skip curl and wget user agents. That lives in the dashboard, not in this repo.
 - `/status` is the status block as plain text, in the same rows and columns as the iframe. The wording lives in src/lib/status.ts and both use it.
 - `/status` and `/now-playing` send an `x-fahad: active|away|inactive` header.
 - `/status.asc` is the laptop's last report exactly as signed, as one armored OpenPGP message: `curl -s https://www.v0id.me/status.asc | gpg --decrypt`. /presence keeps the signed body and signature in KV for this. The message is built by hand (one-pass header, literal data, signature) because openpgp.js `appendSignature` puts the signature first, which gpg rejects as an old PGP 2 message.
 - Web Key Directory: `gpg --locate-keys hey@v0id.me` reads public/.well-known/openpgpkey (direct method). After changing the key: `gpg --export --export-options export-minimal --export-filter keep-uid=mbox=hey@v0id.me <fpr> > public/.well-known/openpgpkey/hu/$(gpg-wks-client --print-wkd-hash hey@v0id.me | cut -d' ' -f1)`.
 - public/.well-known/security.txt is clearsigned with my key and expires 2027-10-19. Re-sign it with a new Expires before then: `gpg --clearsign`.
+
+## Misc, guestbook and the rest
+
+- The `misc` sidebar button, under tests, opens /misc: terminal commands grouped as status, keys and more. /uses and /colophon are linked from there and written from my public GitHub (setmac's configs are the source for /uses).
+- /guestbook takes a plain form post or `curl -d name=… -d msg=… v0id.me/guestbook`, and `curl v0id.me/guestbook` reads it. Entries live in SESSION KV, one key each, with the entry in the key's metadata (src/lib/guestbook.ts). New ones wait under `gb:pending:` until I approve them with `bun run scripts/guestbook.ts`, which signs every request with my key like the presence reports (src/pages/guestbook/admin.ts checks the signature, a 2 minute window and a strictly increasing ts). One post a minute per visitor, a hidden field for bots, at most 100 waiting.
+- Astro's checkOrigin is off because it refuses form posts without an Origin header, which is every curl post. The guestbook refuses a mismatched Origin itself and is the only route that takes form posts.
+- Visit count next to rss: the Worker entry counts page loads by people (not bots, prefetches or the sidebar iframe) into KV key `visits`, batched per isolate and written at most every 10 seconds. Approximate by design.
+- /favicon.svg is rendered per request: the pixel mark in black, gray when away, pale when inactive, cached 60 seconds.
+- Link previews: /og.png for the site and /og/<slug>.png for posts, drawn on the Worker with resvg (WebAssembly, bundled; Workers cannot compile wasm at runtime) and DejaVu fonts served from public/og and fetched on first use. They show the status when the image was fetched; apps cache them.
 
 ## CMS
 
