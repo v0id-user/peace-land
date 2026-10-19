@@ -78,7 +78,7 @@ export const siteLabel = (site: string) => site.replace(/^https?:\/\//i, '').rep
 
 // The terminal view: date, name, message, one entry per line.
 export function entriesText(entries: Entry[]): string {
-  if (entries.length === 0) return 'no entries yet. sign it: curl -d name=you -d msg=hello v0id.me/guestbook\n';
+  if (entries.length === 0) return 'no entries yet. sign it: curl -d name=you -d msg=hello https://www.v0id.me/guestbook\n';
   const width = Math.min(16, Math.max(...entries.map((e) => e.name.length)));
   return entries
     .map((e) => `${new Date(e.at).toISOString().slice(0, 10)}  ${e.name.padEnd(width)}  ${e.msg}`)

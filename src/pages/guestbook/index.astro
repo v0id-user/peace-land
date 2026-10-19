@@ -19,7 +19,7 @@ if (Astro.request.method === 'POST') {
   try {
     form = await Astro.request.formData();
   } catch {
-    return text('send it as a form: curl -d name=you -d msg=hello v0id.me/guestbook\n', { status: 400 });
+    return text('send it as a form: curl -d name=you -d msg=hello https://www.v0id.me/guestbook\n', { status: 400 });
   }
   const result = await sign(kv, form, Astro.request.headers.get('cf-connecting-ip') ?? '');
   if (terminal) {
@@ -66,7 +66,7 @@ const day = (at: number) => new Date(at).toISOString().slice(0, 10);
     </form>
     <p class="tree-note">
       Entries show up once I approve them.<br />
-      From a terminal: <code>curl -d name=you -d msg=hello v0id.me/guestbook</code>, and <code>curl v0id.me/guestbook</code> to read it.
+      From a terminal: <code>curl -d name=you -d msg=hello https://www.v0id.me/guestbook</code>, and <code>curl -L v0id.me/guestbook</code> to read it.
     </p>
   </div>
 </Base>

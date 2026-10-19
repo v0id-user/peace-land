@@ -17,14 +17,14 @@ import Base from '../layouts/Base.astro';
     <ul class="tree-links section-list">
       <li>The Spotify block and the status under it are a small page the sidebar reloads every 15 seconds. The Worker asks Spotify for what is playing; nothing runs in your browser.</li>
       <li>The status comes from a reporter on my Mac. It reads the lid, whether I am at the keyboard, and my Claude Code sessions, and sends only what changed. Before the Mac sleeps it says so.</li>
-      <li>Every report is signed with <a href="/pgp/">my OpenPGP key</a>. The Worker holds only the public key and drops anything it cannot verify, and anyone can check the last report with <code>curl -s v0id.me/status.asc | gpg -d</code>.</li>
+      <li>Every report is signed with <a href="/pgp/">my OpenPGP key</a>. The Worker holds only the public key and drops anything it cannot verify, and anyone can check the last report with <code>curl -sL v0id.me/status.asc | gpg -d</code>.</li>
       <li>The git row shows my newest commit in a public repo. Private repos are filtered out before any commit is looked at.</li>
       <li>The tab icon fades to gray when I am away and pale when the laptop sleeps.</li>
     </ul>
 
     <p class="section-label">from a terminal</p>
     <ul class="tree-links section-list">
-      <li><code>curl v0id.me</code> answers in plain text, my key is found with <code>gpg --locate-keys hey@v0id.me</code>, and the <a href="/guestbook/">guestbook</a> can be signed with curl. The full list is under <a href="/misc/">misc</a>.</li>
+      <li><code>curl -L v0id.me</code> answers in plain text, my key is found with <code>gpg --locate-keys hey@v0id.me</code>, and the <a href="/guestbook/">guestbook</a> can be signed with curl. The full list is under <a href="/misc/">misc</a>.</li>
       <li>Guestbook entries wait for me to approve them with a command signed by the same key.</li>
     </ul>
   </div>

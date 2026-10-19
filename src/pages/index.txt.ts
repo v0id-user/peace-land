@@ -34,7 +34,7 @@ export const GET: APIRoute = async ({ locals }) => {
     `latest  ${latest.data.title}`,
     `        ${postURL(latest.data.slug)}`,
     '',
-    'more    curl v0id.me/posts',
+    'more    curl -L v0id.me/posts',
     '',
   ].join('\n');
   const word = statusWord(presence);
