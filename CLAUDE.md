@@ -63,7 +63,7 @@
 ## From a terminal
 
 - Requests from curl, wget, HTTPie and xh (src/lib/terminal.ts) get plain text. src/middleware.ts sends `/` to src/pages/index.txt.ts: the pixel mark (public/favicon's shape in half blocks), the status block, the latest post and `curl v0id.me/posts`. `/` sends `Vary: User-Agent`. `/posts` lists every post for terminals and redirects browsers to `/`. The home page is rendered per request for this and for the visit count.
-- `curl v0id.me` over plain http only works once the Cloudflare zone lets curl through: the apex to www redirect and Always Use HTTPS both have to skip curl and wget user agents. That lives in the dashboard, not in this repo.
+- `curl v0id.me` over plain http needs three things outside this repo: a Worker route `v0id.me/*` to peace-land (the apex is not one of the Worker's custom domains, only www, pgp, gpg and tree are), and the zone's apex to www redirect and http to https redirect both skipping curl and wget user agents. Redirect rules run before the Worker, so browsers still land on https://www.
 - `/status` is the status block as plain text, in the same rows and columns as the iframe. The wording lives in src/lib/status.ts and both use it.
 - `/status` and `/now-playing` send an `x-fahad: active|away|inactive` header.
 - `/status.asc` is the laptop's last report exactly as signed, as one armored OpenPGP message: `curl -s https://www.v0id.me/status.asc | gpg --decrypt`. /presence keeps the signed body and signature in KV for this. The message is built by hand (one-pass header, literal data, signature) because openpgp.js `appendSignature` puts the signature first, which gpg rejects as an old PGP 2 message.
