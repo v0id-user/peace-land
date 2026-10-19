@@ -1,5 +1,6 @@
 ---
 title: How I Built a Serverless Video Transcoding System Using Cloudflare, Fly.io, and Redis
+description: "An event-driven video transcoding pipeline with R2 uploads, a Cloudflare Worker control plane, FFmpeg on Fly.io machines, and Redis for coordination."
 date: 2026-01-10
 slug: how-i-built-a-serverless-video-transcoding-system-using-cloudflare-fly-io-and-re
 ---

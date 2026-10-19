@@ -1,5 +1,6 @@
 ---
 title: 'I built a whole managed infra in three days then archived it'
+description: "I built hela, an open-source realtime infra with an Elixir gateway, four SDKs, and 216 deployments, then archived it three days later from burnout."
 date: 2026-04-26
 slug: i-built-managed-infra-in-three-days-then-archived-it
 draft: false

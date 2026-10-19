@@ -1,5 +1,6 @@
 ---
 title: 'Scanning process memory with regex: How I built PMPS'
+description: "PMPS is a C library that walks a Windows process's virtual memory page by page with VirtualQueryEx and matches regex patterns, for forensics and malware analysis."
 date: 2024-05-19
 slug: scanning-process-memory-with-regex-how-i-built-pmps
 draft: false

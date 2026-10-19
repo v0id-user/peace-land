@@ -17,9 +17,37 @@ interface Props {
 }
 
 const { title, description, type = 'website', publishedDate, noindex = false } = Astro.props;
-const pageTitle = title ? `${title} · #V0ID` : '#V0ID';
-const metaDescription = description || 'Technical blog by #V0ID: backend engineering, Rust, TypeScript, Cloudflare, and systems programming.';
+const pageTitle = title ? `${title} · #V0ID` : '#V0ID · Fahad Al-Ghamdi';
+const metaDescription = description || 'Technical blog by Fahad Al-Ghamdi (#V0ID): backend engineering, Rust, TypeScript, Cloudflare, and systems programming.';
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.v0id.me');
+const ogImage = 'https://www.v0id.me/icon-512.png';
+
+const person = {
+  '@type': 'Person',
+  name: 'Fahad Al-Ghamdi',
+  alternateName: '#V0ID',
+  url: 'https://www.v0id.me/about/',
+  sameAs: ['https://github.com/v0id-user', 'https://x.com/v0id_user', 'https://linkedin.com/in/v0id-user'],
+};
+const jsonLd = type === 'article'
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: title,
+      description: metaDescription,
+      datePublished: publishedDate,
+      url: canonicalURL.href,
+      mainEntityOfPage: canonicalURL.href,
+      image: ogImage,
+      author: person,
+    }
+  : {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: '#V0ID',
+      url: 'https://www.v0id.me/',
+      author: person,
+    };
 ---
 
 <html lang="en">
@@ -40,11 +68,17 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://www.v0id.me');
     <meta property="og:url" content={canonicalURL.href} />
     <meta property="og:site_name" content="#V0ID" />
     <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="#V0ID" />
     {publishedDate && <meta property="article:published_time" content={publishedDate} />}
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={metaDescription} />
     <meta name="twitter:site" content="@v0id_user" />
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <link rel="alternate" type="application/rss+xml" title="#V0ID" href="/rss.xml" />
   </head>
   <body>

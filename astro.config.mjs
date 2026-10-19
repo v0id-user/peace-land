@@ -10,7 +10,7 @@ import pgpSubdomainWorkerEntry from './src/integrations/pgp-subdomain-worker-ent
 export default defineConfig({
   site: 'https://www.v0id.me',
   integrations: [pgpSubdomainWorkerEntry(), sitemap({
-    filter: (page) => !page.includes('/now-playing') && !page.includes('/human/confirm') && !page.includes('/cv'),
+    filter: (page) => !['/now-playing', '/human/', '/test/', '/cv'].some((path) => new URL(page).pathname.startsWith(path)),
   })],
   adapter: cloudflare(),
   // The toolbar also renders inside the sidebar iframe and covers it.

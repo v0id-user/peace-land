@@ -10,6 +10,7 @@ const posts = (await getCollection('posts', ({ data }) => {
 ---
 
 <Base>
+  <h1 class="visually-hidden">#V0ID, a technical blog by Fahad Al-Ghamdi</h1>
   <ul class="post-list">
     {posts.map((post) => (
       <li>

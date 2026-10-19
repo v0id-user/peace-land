@@ -1,5 +1,6 @@
 ---
 title: Making PostgreSQL Reactive with Server-Sent Events
+description: "Real-time updates from PostgreSQL using NOTIFY/LISTEN, database triggers, and server-sent events, with no websockets or message broker."
 date: 2024-12-30
 slug: postgresql-reactive-sse
 draft: false
