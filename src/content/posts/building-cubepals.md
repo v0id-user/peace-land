@@ -6,8 +6,6 @@ slug: building-cubepals
 draft: false
 ---
 
-## Well
-
 I've been building things for years, and most of them never went anywhere beyond my own computer. I would get fascinated by something, spend days or weeks understanding it, build whatever I had in mind, and move on. Sometimes I lost interest, sometimes another idea took over, and sometimes I felt I had learned what I wanted to learn. Then I started again. I kept changing what I wanted to build, but I never stopped wanting to build things.
 
 Cubepals was different. It's a Minecraft hosting platform where servers sleep when nobody is playing and wake when someone joins. You create a server, share its address with your friends, and that's it. Nobody has to open a dashboard to turn it on before playing. It sounds simple, which is what I wanted, but it turned into one of the most sophisticated projects I've worked on.
