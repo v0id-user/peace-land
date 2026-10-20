@@ -6,7 +6,9 @@ slug: building-cubepals
 draft: false
 ---
 
+:::note
 [Cubepals](https://cubepals.com) is a Minecraft server hosting service I built and launched. This post is about building it.
+:::
 
 I've been building things for years, and most of them never went anywhere beyond my own computer. I would get fascinated by something, spend days or weeks understanding it, build whatever I had in mind, and move on. Sometimes I lost interest, sometimes another idea took over, and sometimes I felt I had learned what I wanted to learn. Then I started again. I kept changing what I wanted to build, but I never stopped wanting to build things.
 
