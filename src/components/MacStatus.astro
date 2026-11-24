@@ -22,8 +22,9 @@ const sessions = sessionsText(presence);
 ---
 
 <Win title="Fahad's Mac">
+  <a slot="action" class="tbar-action" href="/status.asc" target="_top" title="This whole report, signed by my laptop">verify</a>
   <div class="win-body">
-    <p class="mac-head"><span class="label">{presence ? head : 'no report yet'}</span><a class="mini" href="/status.asc" target="_top" title="The last report, signed by my laptop">verify</a></p>
+    <p class="label mac-head">{presence ? head : 'no report yet'}</p>
     <div class="mono mac-rows">
       {laptop && <div><span class="k">laptop</span>{laptop}</div>}
       {presence?.state === 'awake' && (sessions ? (

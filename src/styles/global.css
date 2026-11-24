@@ -505,21 +505,18 @@ code {
 }
 
 .mac-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
-.mac-head .label {
-  margin: 0;
-}
-
-.mini {
-  border: 1px solid #8c8c8c;
+/* A small button at the right end of a title bar, where old windows had their zoom box:
+   it acts on the whole window. */
+.tbar-action {
+  flex: 0 0 auto;
+  background: #000;
+  border: 1px solid #e8e8e8;
   padding: 0 4px;
   font-size: 10px;
+  line-height: 11px;
   text-decoration: none;
 }
 

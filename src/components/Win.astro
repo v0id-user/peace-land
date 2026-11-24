@@ -15,7 +15,7 @@ const { title, meta, as: Tag = 'section', class: cls, closeHref, role } = Astro.
 ---
 
 <Tag class:list={['win', cls]} role={role}>
-  <div class="tbar">{closeHref ? <a class="close" href={closeHref} aria-label="Close"></a> : <i></i>}<h2>{title}</h2></div>
+  <div class="tbar">{closeHref ? <a class="close" href={closeHref} aria-label="Close"></a> : <i></i>}<h2>{title}</h2><slot name="action" /></div>
   {meta && <div class="win-meta"><span>{meta[0]}</span><span>{meta[1]}</span></div>}
   <slot />
 </Tag>
