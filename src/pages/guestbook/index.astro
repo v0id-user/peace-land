@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Win from '../../components/Win.astro';
 import { env } from 'cloudflare:workers';
 import { APPROVED, entriesText, listEntries, sign, siteHref, siteLabel } from '../../lib/guestbook';
 import { isTerminal, text } from '../../lib/terminal';
@@ -41,32 +42,51 @@ const day = (at: number) => new Date(at).toISOString().slice(0, 10);
 ---
 
 <Base title="Guestbook" description="Leave a note on v0id.me, from the page or from a terminal.">
-  <div class="tree-page">
-    <h1>Guestbook</h1>
-    {sent && <p class="gb-flash">thanks. it shows up once I approve it.</p>}
-    {error && <p class="gb-flash">{error}</p>}
-    {entries.length === 0 && <p class="gb-who">no entries yet.</p>}
-    {entries.map((e) => (
-      <div class="gb-entry">
-        {e.msg}
-        <div class="gb-who">
-          {e.name}{e.site && <> · <a href={siteHref(e.site)} rel="nofollow ugc noopener" target="_blank">{siteLabel(e.site)}</a></>}, {day(e.at)}
-        </div>
+  <h1 class="visually-hidden">Guestbook</h1>
+  <div class="cols book">
+    <Win title="The Book" as="main" class="main" meta={[`${entries.length} ${entries.length === 1 ? 'signature' : 'signatures'}`, 'approved by hand']}>
+      <div class="win-body">
+        {sent && <p class="gb-flash">Thanks. It shows up once I approve it.</p>}
+        {error && <p class="gb-flash">{error}</p>}
+        {entries.length === 0 ? (
+          <div class="gb-empty">
+            <p class="gb-empty-title">Empty.</p>
+            <p class="dim">Nobody has signed. Be the first soul.</p>
+          </div>
+        ) : entries.map((e) => (
+          <div class="gb-entry">
+            <p>“{e.msg}”</p>
+            <p class="gb-who">
+              {e.name}{e.site && <> · <a href={siteHref(e.site)} rel="nofollow ugc noopener" target="_blank">{siteLabel(e.site)}</a></>} · {day(e.at)}
+            </p>
+          </div>
+        ))}
       </div>
-    ))}
-    <form method="post" action="/guestbook/" class="gb-form">
-      <input id="gb-name" name="name" placeholder="name" maxlength="40" required />
-      <input id="gb-site" name="site" placeholder="site (optional)" maxlength="100" />
-      <textarea id="gb-msg" name="msg" rows="3" placeholder="message" maxlength="280" required></textarea>
-      <div class="gb-hp" aria-hidden="true">
-        <label for="gb-email">leave this empty</label>
-        <input id="gb-email" name="email" tabindex="-1" autocomplete="off" />
-      </div>
-      <button type="submit">sign</button>
-    </form>
-    <p class="tree-note">
-      Entries show up once I approve them.<br />
-      From a terminal: <code>curl -d name=you -d msg=hello https://www.v0id.me/guestbook</code>, and <code>curl -L v0id.me/guestbook</code> to read it.
-    </p>
+    </Win>
+    <aside class="side">
+      <Win title="Sign the Book" role="dialog">
+        <form method="post" action="/guestbook/" class="win-body gb-form">
+          <label class="label" for="gb-name">Name</label>
+          <input class="field" id="gb-name" name="name" maxlength="40" required />
+          <label class="label" for="gb-site">Site (optional)</label>
+          <input class="field" id="gb-site" name="site" maxlength="100" />
+          <label class="label" for="gb-msg">Message</label>
+          <textarea class="field" id="gb-msg" name="msg" rows="3" maxlength="280" required></textarea>
+          <div class="gb-hp" aria-hidden="true">
+            <label for="gb-email">leave this empty</label>
+            <input id="gb-email" name="email" tabindex="-1" autocomplete="off" />
+          </div>
+          <div class="gb-send">
+            <span class="small dim">Shows up once I approve it.</span>
+            <button class="btn btn-def" type="submit">Sign</button>
+          </div>
+        </form>
+      </Win>
+      <Win title="From a Terminal">
+        <pre class="win-body mono cmd">$ curl -d name=you -d msg=hello \
+  https://www.v0id.me/guestbook
+$ curl -L v0id.me/guestbook</pre>
+      </Win>
+    </aside>
   </div>
 </Base>

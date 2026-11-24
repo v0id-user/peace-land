@@ -71,7 +71,7 @@ function applyCacheAndClean(response, pathname) {
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers: h });
 }
 // Visit count for the home page (src/lib/visits.ts): page loads by people, not the
-// sidebar iframe, prefetches or bots. Each isolate adds up its visits and writes them
+// /now-playing frame, prefetches or bots. Each isolate adds up its visits and writes them
 // at most every 10 seconds, since KV takes one write per key per second. Isolates that
 // write at the same moment can overwrite each other, so the count is approximate.
 const BOT_RE = /bot|crawl|spider|slurp|preview|facebookexternalhit|curl|wget|httpie|python|go-http|headless|lighthouse|monitor/i;

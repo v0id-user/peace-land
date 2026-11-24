@@ -1,146 +1,37 @@
 ---
 export const prerender = false;
+import '../styles/global.css';
+import NowSpinning from '../components/NowSpinning.astro';
+import MacStatus from '../components/MacStatus.astro';
 import { getNowPlaying } from '../lib/spotify';
 import { getLatestPublicCommit } from '../lib/github';
 import { getPresence } from '../lib/presence';
-import { ago, laptopText, sessionsText, statusWord } from '../lib/status';
+import { statusWord } from '../lib/status';
 import { env as cfEnv } from 'cloudflare:workers';
 
+// Now Spinning and Fahad's Mac, framed into every page by src/components/Live.astro.
+// It reloads itself every 15 seconds, so the status stays current with no client JS.
 const mergedEnv: any = { ...import.meta.env, ...cfEnv };
 const [np, git, presence] = await Promise.all([
-  getNowPlaying(mergedEnv),
+  getNowPlaying(mergedEnv).catch(() => null),
   getLatestPublicCommit(mergedEnv, (p) => Astro.locals.cfContext?.waitUntil(p)),
   getPresence(mergedEnv.SESSION),
 ]);
-const commit = git.commit;
 // Shows in production whether the git row came from a fresh, stale or missing stored answer.
 Astro.response.headers.set('x-git-cache', git.cache);
-const pct = (np.duration_ms && np.progress_ms) ? (np.progress_ms / np.duration_ms * 100) : 0;
-const remainSec = (np.duration_ms && np.progress_ms) ? Math.round((np.duration_ms - np.progress_ms) / 1000) : 0;
-const hasTrack = !!np.title;
-
 const word = statusWord(presence);
 if (word) Astro.response.headers.set('x-fahad', word);
-const laptop = laptopText(presence);
-const sessions = sessionsText(presence);
-const sessionsTitle = 'Claude Code sessions open on my laptop right now';
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="refresh" content="15" />
-    <style>
-      * { margin: 0; padding: 0; }
-      body {
-        font-family: Verdana, Geneva, sans-serif;
-        font-size: 9px;
-        color: #555;
-        background: #fff;
-        overflow: hidden;
-      }
-      a { color: inherit; text-decoration: none; }
-      .np { padding: 2px 0; }
-      .np-track {
-        display: flex;
-        align-items: flex-start;
-        gap: 4px;
-      }
-      .np-icon { flex-shrink: 0; margin-top: 1px; }
-      .np-info { min-width: 0; overflow: hidden; position: relative; }
-      .np-title {
-        display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-weight: bold;
-        color: #000;
-      }
-      .np-artist {
-        display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: #555;
-      }
-      .np-bar { height: 2px; background: #ddd; margin-top: 3px; width: 120px; }
-      .np-fill { height: 100%; background: #000; }
-      .np-fill.playing { animation: progress linear forwards; }
-      @keyframes progress { to { width: 100%; } }
-      .np-idle { color: #999; font-style: italic; }
-      .np-label {
-        display: block;
-        font-style: italic;
-        color: #999;
-        font-size: 8px;
-        margin-top: 2px;
-      }
-      .status {
-        margin-top: 3px;
-        font-family: "Courier New", Courier, monospace;
-        font-size: 9px;
-        line-height: 10px;
-        color: #777;
-      }
-      .ln { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .me { color: #000; font-weight: bold; }
-      .dim { color: #aaa; }
-      .key { display: inline-block; width: 7ch; padding-left: 2ch; color: #aaa; }
-      .ln .u { text-decoration: underline; text-decoration-color: #ccc; }
-      .pause-label {
-        color: #999;
-        font-size: 8px;
-        margin-right: 3px;
-      }
-    </style>
+    <meta name="robots" content="noindex" />
+    <title>Now spinning</title>
   </head>
-  <body>
-    <div class="np">
-      <div class="np-track">
-        <img src="/spotify-pixle-logo-black.svg" alt="" width="12" height="12" class="np-icon" />
-        {hasTrack ? (
-          <div class="np-info">
-            <a href={np.url} target="_blank" rel="noopener" title={`${np.title} · ${np.artist}`}>
-              <span class="np-title">
-                {!np.is_playing && <span class="pause-label">paused</span>}{np.title}
-              </span>
-              <span class="np-artist">{np.artist}</span>
-            </a>
-            <div class="np-bar">
-              <div
-                class:list={["np-fill", { playing: np.is_playing }]}
-                style={np.is_playing ? `width:${pct}%;animation-duration:${remainSec}s` : `width:${pct}%`}
-              ></div>
-            </div>
-          </div>
-        ) : (
-          <span class="np-idle">silence.</span>
-        )}
-      </div>
-      <span class="np-label">currently listening to...</span>
-    </div>
-
-    {(presence || commit) && (
-      <div class="status">
-        <span class="ln">
-          <span class="me">fahad</span>
-          {word && <span class="dim">{word}</span>}
-        </span>
-        {laptop && <span class="ln"><span class="key">laptop</span>{laptop}</span>}
-        {presence && (sessions ? (
-          <>
-            <span class="ln" title={sessionsTitle}><span class="key">claude</span>{sessions.count}</span>
-            <span class="ln" title={sessionsTitle}><span class="key"></span>{sessions.split}</span>
-          </>
-        ) : (
-          <span class="ln" title={sessionsTitle}><span class="key">claude</span><span class="dim">no sessions</span></span>
-        ))}
-        {commit && (
-          <a class="ln" href={commit.url} target="_blank" rel="noopener" title={`${commit.headline} · ${commit.repo}`}>
-            <span class="key">git</span><span class="u">{ago(commit.date.getTime())}</span>
-          </a>
-        )}
-      </div>
-    )}
+  <body class="frame">
+    <NowSpinning np={np} />
+    <MacStatus presence={presence} commit={git.commit} />
   </body>
 </html>

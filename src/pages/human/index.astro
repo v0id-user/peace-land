@@ -2,10 +2,11 @@
 import Base from '../../layouts/Base.astro';
 ---
 
-<Base title="Human" description="Personal writings by #V0ID." noindex={true}>
-  <div class="human-warning">
+<Base title="Human" description="Personal writings by #V0ID." noindex={true} human>
+  <main class="void-text">
+    <h1 class="visually-hidden">Human</h1>
     <p>What follows is not fiction. It is not truth either. Figures may or may not exist. Events may or may not have occurred.</p>
     <p>This is not for you.</p>
-    <a href="/human/confirm/" class="warning-btn">I understand.</a>
-  </div>
+    <form action="/human/confirm/" method="get"><button class="btn95">I understand.</button></form>
+  </main>
 </Base>

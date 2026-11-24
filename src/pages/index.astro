@@ -1,31 +1,68 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getCollection } from 'astro:content';
+import Win from '../components/Win.astro';
+import Logo from '../components/Logo.astro';
+import Live from '../components/Live.astro';
 import { env } from 'cloudflare:workers';
 import { getVisits } from '../lib/visits';
+import { publishedPosts } from '../lib/posts';
+import { APPROVED, listEntries } from '../lib/guestbook';
 
-// Rendered per request for the visit count and for terminals (src/middleware.ts).
+// Rendered per request for the visit count, the guestbook count and for terminals
+// (src/middleware.ts). Music and status come from the live frame.
 export const prerender = false;
-const visits = await getVisits((env as any).SESSION);
 
-const posts = (await getCollection('posts', ({ data }) => {
-  return import.meta.env.PROD ? data.draft !== true : true;
-})).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
+const kv = (env as any).SESSION as KVNamespace | undefined;
+const [visits, posts, signed] = await Promise.all([
+  getVisits(kv),
+  publishedPosts(),
+  kv ? listEntries(kv, APPROVED).catch(() => []) : Promise.resolve([]),
+]);
+
+const num = (n: number) => String(n).padStart(2, '0');
+const size = (body: string | undefined) => `${Math.max(1, Math.round((body?.length ?? 0) / 1024))}K`;
+const souls = visits === null ? null : String(visits).padStart(6, '0');
 ---
 
-<Base>
+<Base marquee right={visits === null ? undefined : `you are soul no. ${visits.toLocaleString('en-US')}`}>
   <h1 class="visually-hidden">#V0ID, a technical blog by Fahad Al-Ghamdi</h1>
-  <ul class="post-list">
-    {posts.map((post) => (
-      <li>
-        <a href={`/posts/${post.data.slug}/`}>
-          <span class="post-title">{post.data.title}</span>
-          <span class="post-date">{post.data.date.toISOString().slice(0, 10)}</span>
-        </a>
-      </li>
-    ))}
-  </ul>
-  <p class="rss-link"><a href="/rss.xml">rss</a>{visits !== null && <span class="visits"> · {visits.toLocaleString('en-US')} visits</span>}</p>
+  <div class="cols">
+    <aside class="side">
+      <Logo visits={visits} />
+      <Live />
+    </aside>
+
+    <Win title="The Writings" as="main" class="main" meta={[`${posts.length} items`, '† on v0id.me']}>
+      <ol class="win-body writings">
+        {posts.map((post, i) => (
+          <li>
+            <span class="n">{num(i + 1)}</span>
+            <a class="t" href={`/posts/${post.data.slug}/`}>{post.data.title}</a>
+            <span class="s">{size(post.body)}</span>
+          </li>
+        ))}
+        <li class="locked">
+          <span class="n">{num(posts.length + 1)}</span>
+          <a class="t" href="/human/" aria-label="Locked">████████ ███ ██████████████</a>
+          <span class="s">[locked]</span>
+        </li>
+      </ol>
+    </Win>
+
+    <aside class="side side-r">
+      <Win title="The Book">
+        <p class="win-body">
+          {signed.length === 0 ? 'Empty. Nobody has signed.' : `${signed.length} ${signed.length === 1 ? 'soul has' : 'souls have'} signed.`}<br />
+          <a href="/guestbook/">Leave your name</a>
+        </p>
+      </Win>
+      {souls && (
+        <Win title="Souls">
+          <div class="win-body digits" role="img" aria-label={`${visits!.toLocaleString('en-US')} visits`}>
+            {[...souls].map((d) => <span>{d}</span>)}
+          </div>
+        </Win>
+      )}
+    </aside>
+  </div>
 </Base>

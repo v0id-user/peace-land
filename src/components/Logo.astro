@@ -1,0 +1,23 @@
+---
+import Win from './Win.astro';
+
+// The #V0ID window at the top of the left column.
+interface Props {
+  // The visit count, shown as a caller number on the home page.
+  visits?: number | null;
+}
+
+const { visits } = Astro.props;
+const LOGO = String.raw`   _  _   __     _____ ___ ____
+ _| || |_ \ \   / / _ \_ _|  _ \
+|_  ..  _| \ \ / / | | | || | | |
+|_      _|  \ V /| |_| | || |_| |
+  |_||_|     \_/  \___/___|____/`;
+---
+
+<Win title="#V0ID">
+  <div class="win-body mono term">
+    <a href="/" class="logo-link" aria-label="#V0ID, home"><pre class="logo">{LOGO}</pre></a>
+    {visits != null && <p>CALLER #{visits.toLocaleString('en-US')}</p>}
+  </div>
+</Win>

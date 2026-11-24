@@ -14,14 +14,16 @@
 
 ## Design rules
 
-- PG-style (paulgraham.com). Verdana font, small text, gray sidebar buttons, underlined links.
-- Zero client JavaScript shipped to readers. No exceptions.
-- No Tailwind. Plain CSS only in src/styles/global.css.
-- No frameworks, no component libraries, no build-time CSS tools.
-- Default browser styling for interactive elements (links, buttons). Do not add custom hover effects or button styles unless specifically asked.
-- Font sizes: h1 = 14px, h2 = 14px, body = 12-13px. Derive from tree page styling when adding new pages.
-- Sidebar nav buttons: gray background, black when active. Post titles truncated to 24 chars.
-- Layout: sidebar left, content right, max-width 960px, 16px left padding. Not edge-to-edge.
+- An old black and white desktop, every page designed for it on a canvas first. Base.astro draws a dithered desktop with a menu bar, gray tabs and 88x31 buttons; each page draws its own black windows with src/components/Win.astro. Design a new page as mockups before coding it, never by wrapping old markup in a window.
+- Human pages pass `human` to Base: pure black, dim gray words as written, a plain gray 90s button, a dim † home in the corner. No tabs, windows, motion or effects; the writing is real and the page does not perform around it.
+- Posts and tests open beside the left column (src/components/Reading.astro): the logo, the live frame with Now Spinning and Fahad's Mac, and the writing list with the open post highlighted. The post window's close box goes back.
+- Every interaction is a click. Nothing asks the reader to type except the guestbook.
+- Icons are pixel art on a small grid (src/components/Pixel.astro): the favicon mark, Spotify, folder, document, key, bomb. Never draw a smooth icon or a new logo.
+- Zero client JavaScript shipped to readers. No exceptions. The only motion is the home page's marquee.
+- No Tailwind. Plain CSS only in src/styles/global.css. Astro components in src/components are fine; no frameworks, no component libraries, no build-time CSS tools.
+- Type: Geneva/Verdana 12px for the desktop, Times for reading (posts 16px), Courier for terminals and Human pieces. Links invert on hover.
+- The home page shows the writing list, the live frame, the guestbook count and the visit count.
+- Human has no tab or named link anywhere. It is the last, blacked-out `[locked]` row of the home page's writing list and still goes through the warning pages.
 
 ## Content collections
 
@@ -37,16 +39,16 @@
 
 ## Spotify now-playing
 
-- SSR iframe at /now-playing with meta refresh every 15 seconds. No client JS.
+- SSR iframe at /now-playing with meta refresh every 15 seconds. No client JS. It draws the Now Spinning and Fahad's Mac windows (src/components/NowSpinning.astro, MacStatus.astro) and is framed into the home page and every post by src/components/Live.astro, 278px tall. Now Spinning says playing, paused or not listening, and links the track.
 - Fetches from Spotify API server-side using refresh token flow.
 - Secrets stored on Cloudflare Workers: SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN.
 - For local dev, secrets go in .dev.vars (gitignored).
-- Progress bar is a static CSS width snapshot — no animation trickery.
+- Playback is optimistic, in CSS only: while a track plays, the bar starts at the snapshot's width and fills to 100% over the seconds left, and the clock counts up from the snapshot's second (an @property integer printed with counters). The frame's next reload corrects both. Paused stays still. Keep this whenever the window is redrawn.
 - Pixel Spotify logo in public/spotify.svg.
 
 ## Laptop status
 
-- Shown in the same /now-playing iframe, under the Spotify block, as a monospace block: `fahad active|away|inactive`, then laptop, claude sessions, and git rows. Iframe is 98px tall.
+- Shown in the /now-playing iframe as the "Fahad's Mac" window (src/components/MacStatus.astro): the state in words with a small verify button, then laptop, claude sessions, and git rows, the git row linking the commit.
 - The design was picked from several rounds of mockups. Change wording or layout only after showing variants.
 - git row: src/lib/github.ts first lists every repo I committed to in the last year (mine and organizations'), keeps only public ones, then fetches my newest default-branch commit from those. GITHUB_TOKEN can read private repos, work ones included, so private repos are dropped before any commit data is fetched. Accounts listed in the GITHUB_SKIP_OWNERS secret are dropped too; the names live in the secret and .dev.vars, never in this repo. The lookup takes about 5 seconds, so it never runs while a reader waits: the answer is stored in KV under `github:latest` and refreshed through `Astro.locals.cfContext.waitUntil` after the response once it is older than 5 minutes. Only an empty KV makes a reader wait. The edge cache (caches.default) was tried first and never filled in production. The `x-git-cache` response header says fresh, stale, miss or off.
 - Laptop and claude rows: scripts/presence.ts stays running on my Mac under launchd (scripts/me.v0id.presence.plist with KeepAlive, installed as ~/.local/bin/v0id-presence.ts). It reads the state every 10 seconds, compares it on the Mac, and POSTs to /presence only when it changed, plus a heartbeat every 15 minutes.
@@ -72,10 +74,10 @@
 
 ## Misc, guestbook and the rest
 
-- The `misc` sidebar button, under tests, opens /misc: terminal commands grouped as status, keys and more. /uses and /colophon are linked from there and written from my public GitHub (setmac's configs are the source for /uses).
+- The Misc tab opens /misc: terminal commands grouped as status, keys and more. /uses and /colophon are linked from there and written from my public GitHub (setmac's configs are the source for /uses).
 - /guestbook takes a plain form post or `curl -d name=… -d msg=… https://www.v0id.me/guestbook`, and `curl -L v0id.me/guestbook` reads it. Entries live in SESSION KV, one key each, with the entry in the key's metadata (src/lib/guestbook.ts). New ones wait under `gb:pending:` until I approve them with `bun run scripts/guestbook.ts`, which signs every request with my key like the presence reports (src/pages/guestbook/admin.ts checks the signature, a 2 minute window and a strictly increasing ts). One post a minute per visitor, a hidden field for bots, at most 100 waiting.
 - Astro's checkOrigin is off because it refuses form posts without an Origin header, which is every curl post. The guestbook refuses a mismatched Origin itself and is the only route that takes form posts.
-- Visit count next to rss: the Worker entry counts page loads by people (not bots, prefetches or the sidebar iframe) into KV key `visits`, batched per isolate and written at most every 10 seconds. Approximate by design.
+- Visit count on the home page (menu bar, caller number and the Souls counter): the Worker entry counts page loads by people (not bots, prefetches or the /now-playing iframe) into KV key `visits`, batched per isolate and written at most every 10 seconds. Approximate by design.
 - /favicon.svg is rendered per request: the pixel mark in black, gray when away, pale when inactive, cached 60 seconds.
 - Link previews: /og.png for the site and /og/<slug>.png for posts, drawn on the Worker with resvg (WebAssembly, bundled; Workers cannot compile wasm at runtime) and DejaVu fonts served from public/og and fetched on first use. They show the status when the image was fetched; apps cache them.
 

@@ -1,0 +1,40 @@
+---
+import Win from './Win.astro';
+import type { LatestCommit } from '../lib/github';
+import type { PresenceView } from '../lib/presence';
+import { ago, laptopText, sessionsText, statusWord } from '../lib/status';
+
+// The laptop status from src/lib/status.ts, with each state said in words.
+interface Props {
+  presence: PresenceView | null;
+  commit: LatestCommit | null;
+}
+
+const { presence, commit } = Astro.props;
+const word = statusWord(presence);
+const head = {
+  active: '■ active, at the keyboard',
+  away: '□ away from the keyboard',
+  inactive: 'z asleep',
+}[word ?? 'inactive'];
+const laptop = laptopText(presence);
+const sessions = sessionsText(presence);
+---
+
+<Win title="Fahad's Mac">
+  <div class="win-body">
+    <p class="mac-head"><span class="label">{presence ? head : 'no report yet'}</span><a class="mini" href="/status.asc" target="_top" title="The last report, signed by my laptop">verify</a></p>
+    <div class="mono mac-rows">
+      {laptop && <div><span class="k">laptop</span>{laptop}</div>}
+      {presence?.state === 'awake' && (sessions ? (
+        <>
+          <div title="Claude Code sessions open on my laptop right now"><span class="k">claude</span>{sessions.count}</div>
+          <div><span class="k"></span>{sessions.split}</div>
+        </>
+      ) : (
+        <div><span class="k">claude</span><span class="dim">no sessions</span></div>
+      ))}
+      {commit && <div><span class="k">git</span><a href={commit.url} target="_blank" rel="noopener" title={`${commit.headline} · ${commit.repo}`}>{ago(commit.date.getTime())}</a></div>}
+    </div>
+  </div>
+</Win>

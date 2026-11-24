@@ -1,0 +1,49 @@
+---
+// Pixel icons drawn on a small grid, in the text color. The mark is the favicon's
+// (src/pages/favicon.svg.ts); the Spotify logo is public/spotify-pixle-logo-black.svg.
+interface Props {
+  name: 'mark' | 'spotify' | 'folder' | 'doc' | 'key' | 'bomb';
+  size?: number;
+  class?: string;
+}
+
+const { name, size = 32, class: cls } = Astro.props;
+
+type Rect = [number, number, number, number];
+const ICONS: Record<Exclude<Props['name'], 'spotify'>, { box: string; rects: Rect[] }> = {
+  mark: {
+    box: '32 96 448 320',
+    rects: [
+      [32, 96, 96, 96], [64, 192, 96, 64], [96, 256, 96, 32], [128, 288, 96, 32],
+      [384, 96, 96, 96], [352, 192, 96, 64], [320, 256, 96, 32], [288, 288, 96, 32],
+      [160, 320, 192, 32], [192, 352, 128, 32], [224, 384, 64, 32],
+    ],
+  },
+  folder: {
+    box: '0 0 16 13',
+    rects: [[1, 0, 5, 1], [6, 1, 1, 1], [7, 2, 8, 1], [0, 1, 1, 12], [15, 2, 1, 11], [0, 12, 16, 1], [1, 4, 14, 1]],
+  },
+  doc: {
+    box: '0 0 12 16',
+    rects: [[0, 0, 8, 1], [0, 0, 1, 16], [0, 15, 12, 1], [11, 4, 1, 12], [8, 1, 1, 1], [9, 2, 1, 1], [10, 3, 1, 1], [7, 0, 1, 4], [7, 3, 4, 1], [2, 7, 8, 1], [2, 9, 8, 1], [2, 11, 5, 1]],
+  },
+  key: {
+    box: '0 0 16 12',
+    rects: [[1, 2, 4, 1], [0, 3, 1, 6], [5, 3, 1, 6], [1, 9, 4, 1], [6, 5, 10, 2], [11, 7, 1, 2], [14, 7, 1, 3]],
+  },
+  bomb: {
+    box: '0 0 16 16',
+    rects: [[5, 4, 5, 1], [3, 5, 9, 1], [2, 6, 11, 6], [3, 12, 9, 1], [5, 13, 5, 1], [9, 3, 2, 1], [11, 2, 1, 1], [12, 1, 1, 1], [14, 0, 1, 1], [14, 2, 1, 1], [15, 1, 1, 1]],
+  },
+};
+
+const SPOTIFY = 'M30.47 9.14h-1.52V6.09h-1.53V4.57H25.9V3.05h-3.05V1.52h-3.04V0h-7.62v1.52H9.14v1.53H6.09v1.52H4.57v1.52H3.04v3.05H1.52v3.05H0v7.62h1.52v3.05h1.52v3.04h1.53v1.53h1.52v1.52h3.05v1.53h3.05V32h7.62v-1.52h3.04v-1.53h3.05v-1.52h1.52V25.9h1.53v-3.04h1.52v-3.05H32v-7.62h-1.53Zm-6.09 18.29h-3.05V25.9h-3.05v-1.52h-7.62v1.52H7.61v-1.52h1.53v-1.52h3.05v-1.53h3.04v1.53h6.1v1.52h1.52v1.52h1.53Zm3.04 -7.62H25.9v1.52h-3.05v-1.52h-3.04v-1.52h-3.05v-1.53h-6.1v1.53H7.61v1.52H4.57v-1.52H3.04v-1.53h3.05v-1.52h3.05v-1.53h9.14v1.53h4.57v1.52h1.53v1.53h3.04Zm1.53 -6.1H25.9v-1.52h-3.05v-1.52h-4.57V9.14h-7.62v1.53H6.09V9.14H4.57V7.62h3.04V6.09h3.05V4.57h9.15v1.52h1.52v1.53h3.05v1.52h1.52v1.53h3.05Z';
+
+const icon = name === 'spotify' ? null : ICONS[name];
+const [, , w, h] = (icon?.box ?? '0 0 32 32').split(' ').map(Number);
+const width = Math.round((size * w) / h);
+---
+
+<svg class:list={['px', cls]} width={width} height={size} viewBox={icon?.box ?? '0 0 32 32'} fill="currentColor" shape-rendering="crispEdges" aria-hidden="true">
+  {icon ? icon.rects.map(([x, y, rw, rh]) => <rect x={x} y={y} width={rw} height={rh} />) : <path d={SPOTIFY} />}
+</svg>

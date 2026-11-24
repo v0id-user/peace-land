@@ -1,211 +1,631 @@
+/* v0id.me: an old black and white desktop. Plain CSS; no JavaScript is sent to readers. */
+
 * {
   margin: 0;
   padding: 0;
 }
 
 body {
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #000;
-  background: #fff;
+  font: 12px/1.45 Geneva, Verdana, sans-serif;
+  color: #e8e8e8;
+  background: #000;
 }
 
 a {
-  color: #000;
+  color: #fff;
   text-decoration: underline;
 }
 
 a:hover {
   color: #000;
+  background: #fff;
 }
 
-.layout {
-  display: flex;
-  align-items: flex-start;
-  padding: 8px 0 0 8px;
+code {
+  font-family: "Courier New", Courier, monospace;
 }
 
-/* --- Sidebar: PG style stacked buttons --- */
-
-.sidebar {
-  padding: 8px 0 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex-shrink: 0;
-}
-
-.brand-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 6px 8px 6px;
-}
-
-.sidebar .brand {
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.avatar {
-  border-radius: 0;
-  text-decoration: none;
-  color: #000;
-}
-
-.sidebar nav {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.sidebar nav a {
-  display: block;
-  background: #888;
-  color: #fff;
-  font-size: 10px;
-  padding: 2px 6px;
-  text-decoration: none;
-  white-space: nowrap;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 160px;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
-.sidebar nav a:hover {
-  background: #666;
+.dim {
+  color: #8c8c8c;
 }
 
-.sidebar nav a.active {
-  background: #000;
+.mono {
+  font-family: "Courier New", Courier, monospace;
 }
 
-/* --- Content --- */
-
-.content {
-  padding: 10px 14px;
-  max-width: 600px;
-  min-width: 0;
-  overflow-wrap: break-word;
-}
-
-/* --- Post list (home) --- */
-
-.post-list {
-  list-style: none;
-}
-
-.post-list li {
-  margin-bottom: 6px;
-}
-
-.post-list li a {
-  color: #000;
-}
-
-.post-list .post-date {
+.small {
   font-size: 11px;
-  color: #999;
-}
-
-.rss-link {
   margin-top: 8px;
+}
+
+.label {
   font-size: 10px;
-}
-
-.rss-link a {
-  color: #999;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  font-style: italic;
+  color: #8c8c8c;
+  margin-bottom: 4px;
 }
 
-.rss-link .visits {
-  color: #999;
+.px {
+  display: block;
+  flex: 0 0 auto;
 }
 
-/* --- Article --- */
-
-.back-link {
-  font-size: 11px;
-  display: inline-block;
-  margin-bottom: 10px;
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
 }
 
-.post-header {
+.row > * {
+  min-width: 0;
+}
+
+/* --- The desktop: menu bar, tabs and 88x31 buttons (Base.astro) --- */
+
+.desk {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  background-image:
+    linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%),
+    linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 2px 2px;
+}
+
+/* Hidden message in page source via CSS content */
+.desk::after {
+  content: "you found nothing... or did you?";
+  position: absolute;
+  left: -9999px;
+  font-size: 0;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  background: #000;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 2px 12px;
+  font-weight: bold;
+  position: relative;
+  z-index: 1;
+}
+
+.bar a {
+  text-decoration: none;
+}
+
+.bar-right {
+  margin-left: auto;
+  font-weight: normal;
+}
+
+.marquee {
+  display: block;
+  background: #000;
+  color: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  font: 12px "Courier New", Courier, monospace;
+  padding: 1px 0;
+}
+
+.wrap {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 14px;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
   margin-bottom: 14px;
 }
 
-.post-header h1 {
-  font-size: 15px;
+.tabs a {
+  background: #c0c0c0;
+  color: #000;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 1px 9px;
+  text-decoration: none;
+  font-size: 11px;
+}
+
+.tabs a:hover {
+  background: #fff;
+}
+
+.tabs a[aria-current="page"] {
+  background: #fff;
+  font-weight: bold;
+  border-color: #404040 #fff #fff #404040;
+}
+
+/* Pressing a tab flashes a border */
+.tabs a:active {
+  outline: 1px solid #000;
+  outline-offset: -1px;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.buttons a {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 88px;
+  height: 31px;
+  border: 2px outset #bbb;
+  background: #000;
+  color: #fff;
+  font: bold 9px/27px Verdana, Geneva, sans-serif;
+  text-align: center;
+  text-decoration: none;
+}
+
+.buttons a.w,
+.buttons a:hover {
+  background: #fff;
+  color: #000;
+}
+
+.cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.cols > * {
+  min-width: 0;
+}
+
+.side {
+  flex: 1 1 290px;
+}
+
+.side-r {
+  flex-basis: 220px;
+}
+
+.main {
+  flex: 999 1 480px;
+}
+
+.w-sm,
+.w-md,
+.w-lg {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.w-sm {
+  max-width: 460px;
+}
+
+.w-md {
+  max-width: 640px;
+}
+
+.w-lg {
+  max-width: 760px;
+}
+
+/* --- Windows (src/components/Win.astro) --- */
+
+.win {
+  background: #000;
+  border: 1px solid #e8e8e8;
+  box-shadow: 2px 2px 0 #e8e8e8;
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.tbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 19px;
+  padding: 0 4px;
+  border-bottom: 1px solid #e8e8e8;
+  background: repeating-linear-gradient(#e8e8e8 0, #e8e8e8 1px, #000 1px, #000 3px);
+  background-clip: content-box;
+}
+
+.tbar i {
+  display: block;
+  flex: 0 0 11px;
+  height: 11px;
+  border: 1px solid #e8e8e8;
+  background: #000;
+  outline: 1px solid #000;
+}
+
+.tbar h2 {
+  margin: 0 auto;
+  padding: 0 7px;
+  background: #000;
+  font-size: 12px;
+  line-height: 17px;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.win-body {
+  padding: 8px 10px;
+}
+
+.win-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-bottom: 3px double #e8e8e8;
+}
+
+.win-foot {
+  border-top: 1px solid #e8e8e8;
+  padding: 5px 10px;
+  font-size: 11px;
+}
+
+.btn {
+  display: inline-block;
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 2px 18px;
+  background: #000;
+  color: #e8e8e8;
+  font: 12px Geneva, Verdana, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-def {
+  outline: 2px solid #e8e8e8;
+  outline-offset: 2px;
   font-weight: bold;
 }
 
-.post-header time {
-  font-size: 11px;
-  color: #999;
+.btn:hover {
+  background: #fff;
+  color: #000;
 }
 
-/* --- Post content --- */
+.field {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  padding: 4px 6px;
+  background: #000;
+  color: #e8e8e8;
+  border: 1px solid #e8e8e8;
+  box-shadow: inset 2px 2px 0 #444;
+  font: 12px Geneva, Verdana, sans-serif;
+}
 
-.post-content {
+.alert {
+  width: 420px;
+  max-width: 100%;
+  box-shadow: 3px 3px 0 #e8e8e8;
+}
+
+.alert-wide {
+  width: 460px;
+}
+
+.alert-body {
+  padding: 18px 20px;
   font-size: 13px;
   line-height: 1.6;
 }
 
-.post-content h2 {
-  font-size: 14px;
-  font-weight: bold;
-  margin-top: 20px;
-  margin-bottom: 6px;
+.alert-body p {
+  margin-bottom: 12px;
 }
 
-.post-content h3 {
+.alert-actions {
+  text-align: right;
+  margin-top: 16px;
+}
+
+/* --- Home --- */
+
+.term {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.logo {
+  font: bold 12px/1.05 "Courier New", Courier, monospace;
+  color: #fff;
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+
+.writings {
+  list-style: none;
+  font: 15px/1.45 "Times New Roman", Times, serif;
+}
+
+.writings li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 2px 0;
+}
+
+.writings .n {
+  flex: 0 0 22px;
+  font-size: 11px;
+}
+
+.writings .t {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.writings .s {
+  flex: 0 0 auto;
+  font-size: 11px;
+}
+
+.writings .locked .t {
+  overflow: hidden;
+  white-space: nowrap;
+  text-decoration: none;
+  font: 13px "Courier New", Courier, monospace;
+}
+
+.digits {
+  text-align: center;
+}
+
+.digits span {
+  display: inline-block;
+  width: 17px;
+  margin-right: 1px;
+  background: #fff;
+  color: #000;
+  border: 1px solid #8c8c8c;
+  font: bold 17px/24px "Courier New", Courier, monospace;
+  text-align: center;
+}
+
+/* Now Spinning and Fahad's Mac (src/components/NowSpinning.astro, MacStatus.astro) */
+
+.spin {
+  align-items: flex-start;
+}
+
+.spin .label {
+  margin: 0;
+}
+
+.spin-info {
+  flex: 1 1 auto;
+}
+
+.spin-title {
   font-size: 13px;
   font-weight: bold;
-  margin-top: 14px;
-  margin-bottom: 4px;
 }
 
-.post-content p {
-  margin-bottom: 10px;
+.spin-artist {
+  display: block;
 }
 
-.post-content ul,
-.post-content ol {
-  margin-bottom: 10px;
-  padding-left: 20px;
-}
-
-.post-content li {
-  margin-bottom: 2px;
-}
-
-.post-content blockquote {
-  border-left: 2px solid #ccc;
-  padding-left: 10px;
-  margin: 10px 0;
+.px.off {
   color: #555;
 }
 
-.post-content pre {
-  background: #f6f6f6;
-  border: 1px solid #ddd;
-  padding: 8px 10px;
-  overflow-x: auto;
-  margin: 10px 0;
+.prog {
+  height: 7px;
+  border: 1px solid #e8e8e8;
+  margin: 6px 0 3px;
+}
+
+.prog i {
+  display: block;
+  height: 100%;
+  background: #e8e8e8;
+}
+
+.prog-times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+}
+
+/* Optimistic playback: from the snapshot the Worker sent, the bar fills to 100% over the
+   seconds left in the track. The next reload of the frame corrects it. */
+.prog i.running {
+  animation: fill var(--left) linear forwards;
+}
+
+@keyframes fill {
+  to { width: 100%; }
+}
+
+/* The clock counts up the same way: an integer property animated from the snapshot's
+   second to the track's last, printed as m:ss with CSS counters. Browsers without
+   @property or mod() keep the snapshot text. */
+@property --sec {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@supports (width: mod(5px, 2px)) {
+  .clock.running {
+    --sec: var(--at);
+    animation: tick var(--left) linear forwards;
+    counter-reset: min calc((var(--sec) - mod(var(--sec), 60)) / 60) sec mod(var(--sec), 60);
+  }
+
+  .clock.running::before {
+    content: counter(min) ":" counter(sec, decimal-leading-zero);
+  }
+
+  .clock.running .clock-still {
+    display: none;
+  }
+}
+
+@keyframes tick {
+  from { --sec: var(--at); }
+  to { --sec: var(--end); }
+}
+
+.mac-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.mac-head .label {
+  margin: 0;
+}
+
+.mini {
+  border: 1px solid #8c8c8c;
+  padding: 0 4px;
+  font-size: 10px;
+  text-decoration: none;
+}
+
+.mac-rows {
   font-size: 12px;
   line-height: 1.4;
 }
 
+.k {
+  display: inline-block;
+  width: 7ch;
+  color: #8c8c8c;
+}
+
+/* --- Posts and tests (src/components/Article.astro) --- */
+
+.article {
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.article-body {
+  padding: 12px 20px 18px;
+}
+
+.article-back {
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.article-title {
+  font: bold 26px/1.2 "Times New Roman", Times, serif;
+  color: #fff;
+  margin: 4px 0 14px;
+}
+
+.article-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px dotted #8c8c8c;
+  padding-top: 8px;
+  margin-top: 18px;
+  font-size: 12px;
+}
+
+.post-content {
+  font: 16px/1.65 "Times New Roman", Times, serif;
+  color: #d6d6d6;
+  overflow-wrap: break-word;
+}
+
+.post-content h2 {
+  font-size: 19px;
+  color: #fff;
+  margin: 22px 0 6px;
+}
+
+.post-content h3 {
+  font-size: 16px;
+  color: #fff;
+  margin: 16px 0 4px;
+}
+
+.post-content p {
+  margin-bottom: 12px;
+}
+
+.post-content ul,
+.post-content ol {
+  margin-bottom: 12px;
+  padding-left: 22px;
+}
+
+.post-content li {
+  margin-bottom: 3px;
+}
+
+.post-content blockquote {
+  border-left: 2px solid #8c8c8c;
+  padding-left: 12px;
+  margin: 12px 0;
+  color: #bdbdbd;
+}
+
+.post-content pre {
+  border: 1px solid #8c8c8c;
+  padding: 10px 12px;
+  overflow-x: auto;
+  margin: 12px 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .post-content code {
-  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+}
+
+.post-content pre code {
   font-size: 12px;
 }
 
 .post-content p code,
 .post-content li code {
-  background: #f6f6f6;
+  background: #222;
   padding: 0 3px;
 }
 
@@ -215,148 +635,370 @@ a:hover {
   margin: 8px 0;
 }
 
-.post-content a {
+.post-content hr {
+  border: none;
+  border-top: 1px dotted #8c8c8c;
+  margin: 16px 0;
+}
+
+/* Shiki paints its own background; the window is the frame. */
+.post-content pre.astro-code {
+  background: #000 !important;
+}
+
+/* --- Directives (src/plugins/remark-callouts.ts) --- */
+
+.directive {
+  position: relative;
+  margin: 18px 0;
+  padding: 12px 14px 10px;
+  border: 1px solid #8c8c8c;
+  font: 13px/1.6 Geneva, Verdana, sans-serif;
+}
+
+.directive p {
+  margin: 0;
+}
+
+.directive-warning {
+  border: 1px dashed #fff;
+}
+
+.directive-tldr {
+  border-color: #e8e8e8;
+}
+
+.directive-tldr-label {
+  position: absolute;
+  top: -8px;
+  left: 10px;
+  padding: 0 5px;
+  background: #000;
+  font: bold 10px Geneva, Verdana, sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #e8e8e8;
+}
+
+.directive-codelabel {
+  font: 11px "Courier New", Courier, monospace;
+  color: #8c8c8c;
+  margin: 16px 0 -8px;
+}
+
+.diagram-label {
+  font: 10px "Courier New", Courier, monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8c8c8c;
+  margin-bottom: 10px;
+}
+
+.diagram-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+
+.diagram-box {
+  display: inline-block;
+  border: 1px solid #e8e8e8;
+  padding: 4px 10px;
+  font: 11px "Courier New", Courier, monospace;
+  white-space: nowrap;
+}
+
+.diagram-arrow {
+  display: inline-block;
+  padding: 0 6px;
+  color: #8c8c8c;
+}
+
+.directive-sep {
+  text-align: center;
+  color: #8c8c8c;
+  letter-spacing: 0.3em;
+  margin: 28px 0;
+  font-size: 12px;
+}
+
+/* --- Human: black, dim words, a plain 90s button. Nothing moves. --- */
+
+.void {
+  min-height: 100vh;
+  background: #000;
+  color: #6e6e6e;
+  font: 13px/1.8 Geneva, Verdana, sans-serif;
+}
+
+.void a {
+  color: #7a7a7a;
+}
+
+.void a:hover {
+  background: transparent;
+  color: #b0b0b0;
+}
+
+.void-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.void-top a {
+  color: #3a3a3a;
+  text-decoration: none;
+}
+
+.void-text {
+  max-width: 360px;
+  margin: 110px auto 60px;
+  padding: 0 16px;
+}
+
+.void-text p {
+  margin-bottom: 14px;
+}
+
+.void-text form {
+  margin-top: 22px;
+}
+
+.btn95 {
+  font: 11px Arial, Helvetica, sans-serif;
+  color: #000;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  box-shadow: 1px 1px 0 #000;
+  padding: 3px 12px;
+  cursor: pointer;
+}
+
+.btn95:active {
+  border-color: #404040 #fff #fff #404040;
+}
+
+.void-list {
+  max-width: 320px;
+  margin: 60px auto;
+  padding: 0 16px;
+}
+
+.void-list ol {
+  list-style: none;
+  font: 13px/1.9 "Courier New", Courier, monospace;
+}
+
+.void-piece {
+  max-width: 560px;
+  margin: 60px auto;
+  padding: 0 16px;
+  font: 14px/1.85 "Courier New", Courier, monospace;
+  overflow-wrap: break-word;
+}
+
+.void-piece h1 {
+  font: inherit;
+  color: #3a3a3a;
+  margin-bottom: 24px;
+}
+
+.void-piece p {
+  margin-bottom: 16px;
+}
+
+/* --- About and PGP: info windows --- */
+
+.info {
+  padding: 14px 16px;
+}
+
+.info-head {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  border-bottom: 1px solid #e8e8e8;
+  padding-bottom: 12px;
+  margin-bottom: 10px;
+}
+
+.info-head h1 {
+  font-size: 15px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 5px 10px;
+}
+
+.info-grid dt {
+  color: #8c8c8c;
+  text-align: right;
+}
+
+.info .label {
+  margin-top: 14px;
+}
+
+.fingerprint {
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+.fingerprint span {
+  white-space: nowrap;
+}
+
+.keyblock {
+  margin-top: 14px;
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid #8c8c8c;
+  padding: 8px 10px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* --- Links and tests: folders of icons --- */
+
+.icons {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 8px;
+  justify-content: center;
+  padding: 18px 10px;
+}
+
+.ico {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 92px;
+  font-size: 11px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.ico span {
+  padding: 0 3px;
+}
+
+.ico:hover {
+  background: transparent;
+  color: #fff;
+}
+
+.ico:hover span {
+  background: #fff;
   color: #000;
 }
 
-.post-content hr {
-  border: none;
-  border-top: 1px solid #ddd;
-  margin: 14px 0;
-}
-
-/* Override Shiki */
-.post-content pre.astro-code {
-  background: #f6f6f6 !important;
-  border: 1px solid #ddd;
-}
-
-/* --- Now Playing (iframe) --- */
-
-.np-frame {
-  width: 150px;
-  height: 98px;
-  border: none;
-  overflow: hidden;
-  margin-bottom: 4px;
-}
-
-/* --- Tree page --- */
-
-.tree-page h1 {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.tree-links {
-  list-style: none;
-}
-
-.tree-links li {
-  margin-bottom: 3px;
-}
-
-.tree-links a {
-  font-size: 12px;
-}
-
-.tree-links-item--inactive a {
-  color: #999;
+.alias span {
   font-style: italic;
 }
 
-.tree-links-item--inactive a:visited {
-  color: #999;
+.archived {
+  opacity: 0.4;
 }
 
-.tree-links-item--inactive a:hover {
-  color: #777;
+/* --- Uses: control panel groups --- */
+
+.panels {
+  padding: 6px 16px 14px;
+  line-height: 1.55;
 }
 
-.tree-links-status {
-  font-size: 9px;
-  font-style: normal;
-  color: #aaa;
-}
-
-.tree-note {
-  margin-top: 16px;
-  font-size: 10px;
-  color: #999;
-  line-height: 1.5;
-}
-
-.pgp-key {
+.group {
+  border: 1px solid #8c8c8c;
+  padding: 8px 12px;
   margin-top: 12px;
-  font-size: 12px;
-  overflow-x: auto;
+  min-width: 0;
 }
 
-.pgp-before em {
-  display: block;
-  margin-top: 4px;
-}
-
-/* --- Misc, uses, colophon --- */
-
-.section-label {
-  margin: 12px 0 2px;
-  font-size: 12px;
+.group legend {
+  padding: 0 5px;
+  font-size: 11px;
   font-weight: bold;
 }
 
-.section-cmd {
-  font-size: 11px;
-  overflow-x: auto;
+.group ul {
+  padding-left: 16px;
 }
 
-.section-links {
-  font-size: 11px;
+.group li {
+  margin-bottom: 4px;
 }
 
-.section-list li {
-  font-size: 12px;
-  line-height: 1.5;
-  max-width: 62ch;
+.pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+}
+
+.pair > .group {
+  flex: 1 1 260px;
 }
 
 /* --- Guestbook --- */
 
-.gb-entry {
-  margin: 8px 0;
-  font-size: 12px;
-}
-
-.gb-who {
-  font-size: 11px;
-  color: #777;
-}
-
-.gb-who a {
-  color: #777;
+.book {
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 .gb-flash {
-  margin-bottom: 8px;
-  font-size: 11px;
+  border: 1px solid #e8e8e8;
+  padding: 4px 8px;
+  margin-bottom: 10px;
+}
+
+.gb-empty {
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.gb-empty-title {
+  font: 18px "Times New Roman", Times, serif;
+  color: #fff;
+}
+
+.gb-entry {
+  border-bottom: 1px dotted #8c8c8c;
+  padding: 8px 0;
+  font: 15px/1.5 "Times New Roman", Times, serif;
+  color: #d6d6d6;
+}
+
+.gb-who {
+  font: 11px Geneva, Verdana, sans-serif;
+  color: #8c8c8c;
 }
 
 .gb-form {
-  display: grid;
-  gap: 4px;
-  max-width: 320px;
-  margin-top: 16px;
+  padding: 12px 14px;
 }
 
-.gb-form input,
 .gb-form textarea {
-  font: inherit;
-  font-size: 12px;
+  resize: vertical;
 }
 
-.gb-form button {
-  justify-self: start;
+.gb-send {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.gb-send .small {
+  margin: 0;
 }
 
 /* Hidden from people; bots that fill every field give themselves away. */
@@ -365,206 +1007,213 @@ a:hover {
   left: -9999px;
 }
 
-/* --- About page --- */
-
-.about-page h1 {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 8px;
+.cmd {
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-x: auto;
 }
 
-.about-page p {
-  font-size: 12px;
-  line-height: 1.6;
+/* --- Misc: commands to run yourself --- */
+
+.commands {
+  padding: 12px 16px;
 }
 
-/* --- Human warning pages --- */
-
-.human-warning {
-  max-width: 400px;
-}
-
-.human-warning h1 {
-  font-size: 14px;
-  font-weight: bold;
+.commands > p {
   margin-bottom: 10px;
 }
 
-.human-warning p {
-  font-size: 11px;
-  line-height: 1.6;
-  color: #666;
-  margin-bottom: 16px;
-}
-
-.warning-btn {
-  font-size: 11px;
-}
-
-/* Secret cursor on post dates */
-.post-list .post-date:hover {
-  cursor: crosshair;
-}
-
-/* Hidden message in page source via CSS content */
-.layout::after {
-  content: "you found nothing... or did you?";
-  position: absolute;
-  left: -9999px;
-  font-size: 0;
-}
-
-/* The 7th click-drag on sidebar reveals a border flash */
-.sidebar nav a:active {
-  outline: 1px solid #000;
-  outline-offset: -1px;
-}
-
-/* --- Directives --- */
-
-.directive {
-  margin: 16px 0;
-  padding: 10px 14px;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.directive p {
-  margin: 0;
-}
-
-.directive-note {
-  border-left: 2px solid #999;
-  background: #f7f7f7;
-}
-
-.directive-warning {
-  border-left: 2px solid #c00;
-  background: #fdf5f5;
-}
-
-.directive-tldr {
-  border-left: 2px solid #000;
-  background: #f5f5f5;
-}
-
-.directive-tldr-label {
-  font-variant: small-caps;
-  font-weight: bold;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: #555;
-  margin-bottom: 4px;
-}
-
-.directive-codelabel {
-  font-family: 'Courier New', monospace;
-  font-size: 11px;
-  color: #888;
-  margin-bottom: -12px;
-  margin-top: 16px;
-}
-
-.directive-diagram {
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  padding: 14px 16px 12px;
-}
-
-.diagram-label {
-  font-family: 'Courier New', monospace;
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  color: #888;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-}
-
-.diagram-flow {
+.command {
   display: flex;
-  align-items: center;
-  gap: 0;
   flex-wrap: wrap;
-  margin: 4px 0;
+  justify-content: space-between;
+  gap: 2px 12px;
+  align-items: baseline;
+  padding: 4px 0;
+  border-bottom: 1px dotted #333;
 }
 
-.diagram-box {
-  display: inline-block;
-  border: 1px solid #999;
-  padding: 4px 10px;
-  font-family: 'Courier New', monospace;
+.command code {
+  font-size: 13px;
+  color: #fff;
+}
+
+.command dd {
   font-size: 11px;
-  background: #fff;
-  white-space: nowrap;
+  color: #8c8c8c;
 }
 
-.diagram-arrow {
-  display: inline-block;
-  padding: 0 6px;
-  color: #999;
+/* --- Colophon --- */
+
+.readme {
+  padding: 12px 18px 8px;
+  line-height: 1.6;
+}
+
+.readme p {
+  margin-bottom: 10px;
+}
+
+.readme .label {
+  margin: 14px 0 4px;
+}
+
+.readme code {
+  background: #222;
+  padding: 0 3px;
+}
+
+/* --- 404 and 500 (src/components/SystemError.astro) --- */
+
+.error {
+  max-width: 440px;
+  margin: 40px auto 30px;
+}
+
+.error-row {
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.error h1 {
   font-size: 13px;
 }
 
-.directive-sep {
-  text-align: center;
-  color: #ccc;
-  letter-spacing: 0.3em;
-  margin: 28px 0;
-  font-size: 12px;
+.error .alert-body p {
+  margin-bottom: 0;
 }
 
-/* --- Responsive --- */
+/* --- The live frame: Now Spinning and Fahad's Mac (src/pages/now-playing.astro) --- */
+
+/* The frame cannot grow with its content without JavaScript, so both windows have a
+   fixed height and the frame matches it exactly, whatever is playing. */
+.live {
+  display: block;
+  width: 100%;
+  height: 265px;
+  border: 0;
+  margin-bottom: 12px;
+}
+
+body.frame {
+  overflow: hidden;
+  padding: 0 3px 3px 0;
+  background: transparent;
+}
+
+.frame .win-body {
+  box-sizing: border-box;
+  height: 102px;
+  overflow: hidden;
+}
+
+.frame .win + .win .win-body {
+  height: 104px;
+}
+
+.frame .win:last-child {
+  margin-bottom: 0;
+}
+
+.frame .spin:not(:has(.spin-info)) {
+  height: 100%;
+  align-items: center;
+}
+
+.spin-title,
+.spin-artist {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Reading: the left column beside an open post (src/components/Reading.astro) --- */
+
+.logo-link,
+.logo-link:hover {
+  display: block;
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+}
+
+.logo-link:hover .logo {
+  color: #8c8c8c;
+}
+
+.term p {
+  margin-top: 4px;
+}
+
+.tbar .close {
+  display: block;
+  flex: 0 0 11px;
+  height: 11px;
+  border: 1px solid #e8e8e8;
+  background: #000;
+  outline: 1px solid #000;
+}
+
+.tbar .close:hover {
+  background: #e8e8e8;
+}
+
+.shelf {
+  display: grid;
+  gap: 1px;
+  padding: 6px;
+}
+
+.shelf a {
+  display: flex;
+  gap: 8px;
+  padding: 2px 6px;
+  text-decoration: none;
+  font: 13px/1.35 "Times New Roman", Times, serif;
+}
+
+.shelf .n {
+  flex: 0 0 18px;
+  font: 10px/1.9 Geneva, Verdana, sans-serif;
+  color: #8c8c8c;
+}
+
+.shelf a[aria-current="page"],
+.shelf a[aria-current="page"] .n {
+  background: #fff;
+  color: #000;
+}
+
+.shelf .locked {
+  font-family: "Courier New", Courier, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.reading .main {
+  min-width: 0;
+}
+
+.reading .article {
+  max-width: none;
+}
+
+/* --- Small screens --- */
 
 @media (max-width: 480px) {
-  .layout {
-    flex-direction: column;
+  .wrap {
+    padding: 10px 8px;
   }
-  .sidebar {
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding: 6px;
-    gap: 2px;
+  .article-body {
+    padding: 10px 12px 14px;
   }
-  .sidebar .brand {
-    width: 100%;
-    padding-bottom: 4px;
+  .article-title {
+    font-size: 22px;
   }
-  .content {
-    padding: 10px;
+  .void-text {
+    margin-top: 60px;
   }
 }
 
-/* --- Error Pages --- */
-.error-page {
-  padding-top: 60px;
-  text-align: left;
-}
-.error-art {
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
-  line-height: 1.2;
-  color: #000;
-  margin-bottom: 20px;
-}
-.error-msg {
-  font-size: 13px;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-.error-sub {
-  font-size: 11px;
-  color: #666;
-  margin-bottom: 16px;
-  line-height: 1.5;
-}
-.error-page a {
-  font-size: 12px;
-}
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}

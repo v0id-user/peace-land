@@ -1,30 +1,27 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getCollection, render } from 'astro:content';
+import Article from '../../components/Article.astro';
+import Reading from '../../components/Reading.astro';
+import { render } from 'astro:content';
+import { publishedPosts } from '../../lib/posts';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts', ({ data }) => {
-    return import.meta.env.PROD ? data.draft !== true : true;
-  });
-  return posts.map((post) => ({
+  const posts = await publishedPosts();
+  const link = (p?: (typeof posts)[number]) => p && { title: p.data.title, href: `/posts/${p.data.slug}/` };
+  return posts.map((post, i) => ({
     params: { slug: post.data.slug },
-    props: { post },
+    props: { post, newer: link(posts[i - 1]), older: link(posts[i + 1]) },
   }));
 }
 
-const { post } = Astro.props;
+const { post, newer, older } = Astro.props;
 const { Content } = await render(post);
 ---
 
 <Base title={post.data.title} description={post.data.description} type="article" publishedDate={post.data.date.toISOString()} ogSlug={post.data.slug}>
-  <a href="/" class="back-link">&larr; back</a>
-  <article>
-    <header class="post-header">
-      <h1>{post.data.title}</h1>
-      <time>{post.data.date.toISOString().slice(0, 10)}</time>
-    </header>
-    <div class="post-content">
+  <Reading current={post.data.slug}>
+    <Article slug={post.data.slug} title={post.data.title} date={post.data.date} body={post.body} back={{ title: 'The Writings', href: '/' }} newer={newer} older={older}>
       <Content />
-    </div>
-  </article>
+    </Article>
+  </Reading>
 </Base>

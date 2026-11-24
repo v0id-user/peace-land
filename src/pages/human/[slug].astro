@@ -12,12 +12,10 @@ if (!entry) {
 const html = renderHumanMarkdown(entry.body);
 ---
 
-<Base title={entry.title} type="article" noindex={true}>
-  <a href="/human/all" class="back-link">&larr; back</a>
-  <article>
-    <header class="post-header">
-      <h1>{entry.title}</h1>
-    </header>
-    <div class="post-content" set:html={html} />
+<Base title={entry.title} type="article" noindex={true} human>
+  <a slot="bar" href="/human/all">back</a>
+  <article class="void-piece">
+    <h1>{entry.title}</h1>
+    <div set:html={html} />
   </article>
 </Base>

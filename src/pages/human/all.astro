@@ -7,13 +7,13 @@ import { env as cfEnv } from 'cloudflare:workers';
 const entries = await getHumanEntries({ ...import.meta.env, ...cfEnv });
 ---
 
-<Base title="Human" noindex={true}>
-  <div class="tree-page">
-    <h1>Human</h1>
-    <ul class="tree-links">
+<Base title="Human" noindex={true} human>
+  <main class="void-list">
+    <h1 class="visually-hidden">Human</h1>
+    <ol>
       {entries.map((entry) => (
         <li><a href={`/human/${entry.slug}`}>{entry.title}</a></li>
       ))}
-    </ul>
-  </div>
+    </ol>
+  </main>
 </Base>

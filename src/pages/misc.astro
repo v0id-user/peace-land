@@ -1,20 +1,35 @@
 ---
 import Base from '../layouts/Base.astro';
+import Win from '../components/Win.astro';
+
+// Commands to run in your own terminal. Each one that has a page says where to click instead.
+const commands = [
+  { cmd: 'curl -L v0id.me', what: 'the site as plain text' },
+  { cmd: 'curl -L v0id.me/status', what: 'the status block', href: '/status' },
+  { cmd: 'curl -sL v0id.me/status.asc | gpg -d', what: 'the last signed report', href: '/status.asc' },
+  { cmd: 'gpg --locate-keys hey@v0id.me', what: 'my key, by address', href: '/pgp/' },
+  { cmd: 'curl -s https://pgp.v0id.me | gpg --import', what: 'my key, by URL', href: 'https://pgp.v0id.me' },
+  { cmd: 'curl -L v0id.me/guestbook', what: 'read the guestbook', href: '/guestbook/' },
+];
 ---
 
 <Base title="Misc" description="What v0id.me does besides pages: status from a terminal, a signed status, my key by address, and a guestbook.">
-  <div class="tree-page">
-    <h1>Misc</h1>
-    <p class="section-label">status</p>
-    <pre class="section-cmd">curl -L v0id.me
-curl -L v0id.me/status
-curl -sL v0id.me/status.asc | gpg -d</pre>
-    <p class="section-label">keys</p>
-    <pre class="section-cmd">gpg --locate-keys hey@v0id.me
-curl -s https://pgp.v0id.me | gpg --import</pre>
-    <p class="section-label">more</p>
-    <p class="section-links">
-      <a href="/guestbook/">guestbook</a> · <a href="/uses/">uses</a> · <a href="/colophon/">colophon</a> · <a href="/.well-known/security.txt">security.txt</a> · <a href="/rss.xml">rss</a>
-    </p>
-  </div>
+  <Win title="Misc" as="main" class="w-lg">
+    <h1 class="visually-hidden">Misc</h1>
+    <div class="win-body commands">
+      <p>Run these in your own terminal.</p>
+      <dl>
+        {commands.map((c) => (
+          <div class="command">
+            <dt><code>{c.cmd}</code></dt>
+            <dd>{c.href ? <a href={c.href}>{c.what}</a> : c.what}</dd>
+          </div>
+        ))}
+      </dl>
+      <fieldset class="group">
+        <legend>Also here</legend>
+        <a href="/guestbook/">guestbook</a> · <a href="/uses/">uses</a> · <a href="/colophon/">colophon</a> · <a href="/.well-known/security.txt">security.txt</a> · <a href="/rss.xml">rss</a>
+      </fieldset>
+    </div>
+  </Win>
 </Base>

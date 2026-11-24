@@ -17,7 +17,7 @@ export default defineConfig({
   // `curl -d ... v0id.me/guestbook`. The guestbook checks Origin itself instead, and
   // is the only route that takes form posts.
   security: { checkOrigin: false },
-  // The toolbar also renders inside the sidebar iframe and covers it.
+  // The toolbar also renders inside the /now-playing iframe and covers it.
   devToolbar: { enabled: false },
   build: {
     // global.css (~6.5KB) exceeds Vite's default inline limit (~4KB), so "auto"
@@ -31,7 +31,8 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: {
-      theme: 'github-light',
+      // Grayscale, to sit inside the black windows.
+      theme: 'min-dark',
     },
     remarkPlugins: [remarkUnescape, remarkDirective, remarkCallouts],
   },

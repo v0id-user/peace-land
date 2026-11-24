@@ -1,0 +1,21 @@
+---
+// One desktop window: a striped title bar, an optional info strip, then the page's content.
+interface Props {
+  title: string;
+  // Left and right text of the strip under the title bar.
+  meta?: [string, string];
+  as?: 'section' | 'main' | 'article' | 'aside' | 'div';
+  class?: string;
+  // The close box links here when set, like closing a document back to the desktop.
+  closeHref?: string;
+  role?: string;
+}
+
+const { title, meta, as: Tag = 'section', class: cls, closeHref, role } = Astro.props;
+---
+
+<Tag class:list={['win', cls]} role={role}>
+  <div class="tbar">{closeHref ? <a class="close" href={closeHref} aria-label="Close"></a> : <i></i>}<h2>{title}</h2></div>
+  {meta && <div class="win-meta"><span>{meta[0]}</span><span>{meta[1]}</span></div>}
+  <slot />
+</Tag>
