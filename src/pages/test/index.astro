@@ -1,5 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Win from '../../components/Win.astro';
+import Pixel from '../../components/Pixel.astro';
 import { getCollection } from 'astro:content';
 
 const entries = (await getCollection('test')).sort(
@@ -8,12 +10,17 @@ const entries = (await getCollection('test')).sort(
 ---
 
 <Base title="Test" noindex={true}>
-  <div class="tree-page">
-    <h1>Test</h1>
-    <ul class="tree-links">
+  <Win title="Tests" as="main" class="w-sm" meta={[`${entries.length} items`, 'pages that check the renderer']}>
+    <h1 class="visually-hidden">Tests</h1>
+    <ul class="win-body icons">
       {entries.map((entry) => (
-        <li><a href={`/test/${entry.data.slug}/`}>{entry.data.title}</a></li>
+        <li>
+          <a class="ico" href={`/test/${entry.data.slug}/`}>
+            <Pixel name="doc" size={32} />
+            <span>{entry.data.title}</span>
+          </a>
+        </li>
       ))}
     </ul>
-  </div>
+  </Win>
 </Base>

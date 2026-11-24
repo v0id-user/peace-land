@@ -1,0 +1,39 @@
+---
+import Win from './Win.astro';
+
+// A post or test page: one reading window titled like a file, with an info strip,
+// the article, and links to the neighbours.
+interface Neighbour {
+  title: string;
+  href: string;
+}
+interface Props {
+  slug: string;
+  title: string;
+  date: Date;
+  body: string | undefined;
+  back: Neighbour;
+  newer?: Neighbour;
+  older?: Neighbour;
+}
+
+const { slug, title, date, body, back, newer, older } = Astro.props;
+const size = `${Math.max(1, Math.round((body?.length ?? 0) / 1024))}K`;
+const minutes = Math.max(1, Math.round((body ?? '').split(/\s+/).length / 220));
+---
+
+<Win title={`${slug}.txt`} as="article" class="article" meta={[`${size} · ${minutes} min read`, date.toISOString().slice(0, 10)]}>
+  <div class="article-body">
+    <p class="article-back"><a href={back.href}>← {back.title}</a></p>
+    <h1 class="article-title">{title}</h1>
+    <div class="post-content">
+      <slot />
+    </div>
+    {(newer || older) && (
+      <nav class="article-nav" aria-label="More posts">
+        {older ? <a href={older.href}>← {older.title}</a> : <span></span>}
+        {newer && <a href={newer.href}>{newer.title} →</a>}
+      </nav>
+    )}
+  </div>
+</Win>

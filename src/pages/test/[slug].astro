@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Article from '../../components/Article.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -15,14 +16,7 @@ const { Content } = await render(entry);
 ---
 
 <Base title={entry.data.title} noindex={true}>
-  <a href="/test/" class="back-link">&larr; back</a>
-  <article>
-    <header class="post-header">
-      <h1>{entry.data.title}</h1>
-      <time>{entry.data.date.toISOString().slice(0, 10)}</time>
-    </header>
-    <div class="post-content">
-      <Content />
-    </div>
-  </article>
+  <Article slug={entry.data.slug} title={entry.data.title} date={entry.data.date} body={entry.body} back={{ title: 'Tests', href: '/test/' }}>
+    <Content />
+  </Article>
 </Base>

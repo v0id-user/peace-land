@@ -1,20 +1,32 @@
 ---
 import Base from '../layouts/Base.astro';
+import Win from '../components/Win.astro';
 ---
 
 <Base title="Misc" description="What v0id.me does besides pages: status from a terminal, a signed status, my key by address, and a guestbook.">
-  <div class="tree-page">
-    <h1>Misc</h1>
-    <p class="section-label">status</p>
-    <pre class="section-cmd">curl -L v0id.me
-curl -L v0id.me/status
-curl -sL v0id.me/status.asc | gpg -d</pre>
-    <p class="section-label">keys</p>
-    <pre class="section-cmd">gpg --locate-keys hey@v0id.me
-curl -s https://pgp.v0id.me | gpg --import</pre>
-    <p class="section-label">more</p>
-    <p class="section-links">
-      <a href="/guestbook/">guestbook</a> · <a href="/uses/">uses</a> · <a href="/colophon/">colophon</a> · <a href="/.well-known/security.txt">security.txt</a> · <a href="/rss.xml">rss</a>
-    </p>
-  </div>
+  <Win title="Terminal: misc" as="main" class="w-lg">
+    <h1 class="visually-hidden">Misc</h1>
+    <div class="win-body mono session">
+      <p class="dim"># status, as text and signed</p>
+      <p>visitor@v0id:~$ curl -L v0id.me</p>
+      <p>visitor@v0id:~$ curl -L v0id.me/status</p>
+      <p>visitor@v0id:~$ curl -sL v0id.me/status.asc | gpg -d</p>
+      <br />
+      <p class="dim"># my key, by address or by URL</p>
+      <p>visitor@v0id:~$ gpg --locate-keys hey@v0id.me</p>
+      <p>visitor@v0id:~$ curl -s https://pgp.v0id.me | gpg --import</p>
+      <br />
+      <p class="dim"># everything else</p>
+      <p>visitor@v0id:~$ ls</p>
+      <p class="ls">
+        <a href="/guestbook/">guestbook/</a>
+        <a href="/uses/">uses/</a>
+        <a href="/colophon/">colophon/</a>
+        <a href="/.well-known/security.txt">security.txt</a>
+        <a href="/rss.xml">rss.xml</a>
+      </p>
+      <br />
+      <p class="prompt">visitor@v0id:~$ <span class="cursor"></span></p>
+    </div>
+  </Win>
 </Base>

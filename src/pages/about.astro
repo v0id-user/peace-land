@@ -1,12 +1,23 @@
 ---
 import Base from '../layouts/Base.astro';
+import Win from '../components/Win.astro';
+import Pixel from '../components/Pixel.astro';
 ---
 
 <Base title="About" description="Fahad Al-Ghamdi, backend engineer. TypeScript day to day, Go at work, Rust when it matters.">
-  <div class="about-page">
-    <h1>About</h1>
-    <p>Fahad Al-Ghamdi. Backend engineer at <a href="http://www.thmanyah.com/" target="_blank" rel="noopener">Thmanyah</a>.</p>
-    <p>TypeScript day to day. Go at work. Rust when it matters.</p>
-    <p><a href="mailto:hey@v0id.me">hey@v0id.me</a></p>
-  </div>
+  <Win title="About This Fahad" as="main" class="w-sm">
+    <div class="win-body info">
+      <div class="info-head">
+        <Pixel name="mark" size={30} />
+        <div><h1>Fahad Al-Ghamdi</h1><span class="dim">#V0ID</span></div>
+      </div>
+      <dl class="info-grid">
+        <dt>Kind:</dt><dd>Backend engineer</dd>
+        <dt>Where:</dt><dd><a href="http://www.thmanyah.com/" target="_blank" rel="noopener">Thmanyah</a></dd>
+        <dt>Speaks:</dt><dd>TypeScript day to day. Go at work. Rust when it matters.</dd>
+        <dt>Mail:</dt><dd><a href="mailto:hey@v0id.me">hey@v0id.me</a></dd>
+        <dt>Key:</dt><dd><a href="/pgp/">1F4F 0EDA 6461 9E19</a></dd>
+      </dl>
+    </div>
+  </Win>
 </Base>

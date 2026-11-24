@@ -1,15 +1,18 @@
 ---
 import Base from '../layouts/Base.astro';
+import Win from '../components/Win.astro';
+import NowSpinning from '../components/NowSpinning.astro';
+import MacStatus from '../components/MacStatus.astro';
 import { env } from 'cloudflare:workers';
 import { getVisits } from '../lib/visits';
 import { publishedPosts } from '../lib/posts';
 import { getPresence } from '../lib/presence';
 import { getLatestPublicCommit } from '../lib/github';
 import { getNowPlaying } from '../lib/spotify';
-import { statusText, statusWord } from '../lib/status';
+import { statusWord } from '../lib/status';
 import { APPROVED, listEntries } from '../lib/guestbook';
 
-// Rendered per request for the visit count, the status and for terminals (src/middleware.ts).
+// Rendered per request for the visit count, music, status and for terminals (src/middleware.ts).
 export const prerender = false;
 
 const mergedEnv: any = { ...import.meta.env, ...env };
@@ -24,8 +27,6 @@ const [visits, posts, presence, git, np, signed] = await Promise.all([
 
 const word = statusWord(presence);
 if (word) Astro.response.headers.set('x-fahad', word);
-const status = statusText(presence, git.commit);
-const spinning = np?.title ? `${np.is_playing ? '' : 'paused: '}${np.title} · ${np.artist}` : 'silence.';
 
 const LOGO = String.raw`   _  _   __     _____ ___ ____
  _| || |_ \ \   / / _ \_ _|  _ \
@@ -38,66 +39,54 @@ const size = (body: string | undefined) => `${Math.max(1, Math.round((body?.leng
 const souls = visits === null ? null : String(visits).padStart(6, '0');
 ---
 
-<Base bare marquee right={visits === null ? undefined : `you are soul no. ${visits.toLocaleString('en-US')}`}>
-      <h1 class="visually-hidden">#V0ID, a technical blog by Fahad Al-Ghamdi</h1>
+<Base marquee right={visits === null ? undefined : `you are soul no. ${visits.toLocaleString('en-US')}`}>
+  <h1 class="visually-hidden">#V0ID, a technical blog by Fahad Al-Ghamdi</h1>
+  <div class="cols">
+    <aside class="side">
+      <Win title="Terminal: node 1">
+        <div class="win-body mono term">
+          <pre class="logo" aria-label="#V0ID">{LOGO}</pre>
+          <p>{visits !== null && <>CALLER #{visits.toLocaleString('en-US')}<br /></>}SYSOP: FAHAD AL-GHAMDI</p>
+        </div>
+      </Win>
+      <NowSpinning np={np} />
+      <MacStatus presence={presence} commit={git.commit} />
+    </aside>
 
-      <div class="home-cols">
-        <aside class="home-side">
-          <section class="win">
-            <div class="tbar"><i></i><h2>Terminal: node 1</h2></div>
-            <div class="win-body home-term">
-              <pre class="home-logo" aria-label="#V0ID">{LOGO}</pre>
-              <p>{visits !== null && <>CALLER #{visits.toLocaleString('en-US')}<br /></>}SYSOP: FAHAD AL-GHAMDI</p>
-            </div>
-          </section>
-          <section class="win">
-            <div class="tbar"><i></i><h2>The Keeper</h2></div>
-            <div class="win-body">
-              <pre class="home-status">{spinning}{'\n\n'}{status}</pre>
-              <p class="home-small"><a href="/status.asc">verify the signature</a></p>
-            </div>
-          </section>
-        </aside>
+    <Win title="The Writings" as="main" class="main" meta={[`${posts.length} items`, '† on v0id.me']}>
+      <ol class="win-body writings">
+        {posts.map((post, i) => (
+          <li>
+            <span class="n">{num(i + 1)}</span>
+            <a class="t" href={`/posts/${post.data.slug}/`}>{post.data.title}</a>
+            <span class="s">{size(post.body)}</span>
+          </li>
+        ))}
+        <li class="locked">
+          <span class="n">{num(posts.length + 1)}</span>
+          <a class="t" href="/human/" aria-label="Locked">████████ ███ ██████████████</a>
+          <span class="s">[locked]</span>
+        </li>
+      </ol>
+    </Win>
 
-        <main class="win home-main">
-          <div class="tbar"><i></i><h2>The Writings</h2></div>
-          <div class="win-meta"><span>{posts.length} items</span><span>† on v0id.me</span></div>
-          <ol class="win-body home-posts">
-            {posts.map((post, i) => (
-              <li>
-                <span class="n">{num(i + 1)}</span>
-                <a class="t" href={`/posts/${post.data.slug}/`}>{post.data.title}</a>
-                <span class="s">{size(post.body)}</span>
-              </li>
-            ))}
-            <li class="locked">
-              <span class="n">{num(posts.length + 1)}</span>
-              <a class="t" href="/human/" aria-label="Locked">████████ ███ ██████████████</a>
-              <span class="s">[locked]</span>
-            </li>
-          </ol>
-        </main>
-
-        <aside class="home-side home-side-r">
-          <section class="win">
-            <div class="tbar"><i></i><h2>About This Fahad</h2></div>
-            <p class="win-body">Backend engineer at <a href="http://www.thmanyah.com/" target="_blank" rel="noopener">Thmanyah</a>. TypeScript day to day. Go at work. Rust when it matters.</p>
-          </section>
-          <section class="win">
-            <div class="tbar"><i></i><h2>The Book</h2></div>
-            <p class="win-body">
-              {signed.length === 0 ? 'Empty. Nobody has signed.' : `${signed.length} ${signed.length === 1 ? 'soul has' : 'souls have'} signed.`}<br />
-              <a href="/guestbook/">Leave your name</a>
-            </p>
-          </section>
-          {souls && (
-            <section class="win">
-              <div class="tbar"><i></i><h2>Souls</h2></div>
-              <div class="win-body home-digits" aria-label={`${visits!.toLocaleString('en-US')} visits`}>
-                {[...souls].map((d) => <span>{d}</span>)}
-              </div>
-            </section>
-          )}
-        </aside>
-      </div>
+    <aside class="side side-r">
+      <Win title="About This Fahad">
+        <p class="win-body">Backend engineer at <a href="http://www.thmanyah.com/" target="_blank" rel="noopener">Thmanyah</a>. TypeScript day to day. Go at work. Rust when it matters.</p>
+      </Win>
+      <Win title="The Book">
+        <p class="win-body">
+          {signed.length === 0 ? 'Empty. Nobody has signed.' : `${signed.length} ${signed.length === 1 ? 'soul has' : 'souls have'} signed.`}<br />
+          <a href="/guestbook/">Leave your name</a>
+        </p>
+      </Win>
+      {souls && (
+        <Win title="Souls">
+          <div class="win-body digits" role="img" aria-label={`${visits!.toLocaleString('en-US')} visits`}>
+            {[...souls].map((d) => <span>{d}</span>)}
+          </div>
+        </Win>
+      )}
+    </aside>
+  </div>
 </Base>

@@ -1,19 +1,23 @@
 ---
 import Base from '../layouts/Base.astro';
+import Win from '../components/Win.astro';
+import Pixel from '../components/Pixel.astro';
 import { PGP_PUBLIC_KEY_ARMORED } from '../lib/pgpKey';
 ---
 
 <Base title="PGP" description="OpenPGP public key for #V0ID (hey@v0id.me) for signing and encryption.">
-  <div class="tree-page">
-    <h1>PGP</h1>
-    <p class="tree-note">
-      #V0ID &lt;hey@v0id.me&gt;, OpenPGP key for signing and encryption.<br />
-      6BEC 93C9 0963 3B56 534E 2DCE 1F4F 0EDA 6461 9E19
-    </p>
-    <p class="tree-note pgp-before">
-      Raw: <a href="https://pgp.v0id.me">pgp.v0id.me</a> · <a href="https://gpg.v0id.me">gpg.v0id.me</a>.
-      <em>Import Key: gpg --fetch-keys https://pgp.v0id.me</em>
-    </p>
-    <pre class="pgp-key">{PGP_PUBLIC_KEY_ARMORED}</pre>
-  </div>
+  <Win title="Key Chain" as="main" class="w-lg">
+    <div class="win-body info">
+      <div class="info-head">
+        <Pixel name="key" size={24} />
+        <div><h1>#V0ID &lt;hey@v0id.me&gt;</h1><span class="dim">OpenPGP key for signing and encryption</span></div>
+      </div>
+      <p class="label">Fingerprint</p>
+      <p class="mono fingerprint"><span>6BEC 93C9 0963</span> <span>3B56 534E 2DCE</span> <span>1F4F 0EDA 6461 9E19</span></p>
+      <p class="label">Get it</p>
+      <p class="mono">$ gpg --fetch-keys https://pgp.v0id.me</p>
+      <p class="small">Raw: <a href="https://pgp.v0id.me">pgp.v0id.me</a> · <a href="https://gpg.v0id.me">gpg.v0id.me</a></p>
+      <pre class="mono keyblock">{PGP_PUBLIC_KEY_ARMORED}</pre>
+    </div>
+  </Win>
 </Base>

@@ -1,19 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
+import SystemError from '../components/SystemError.astro';
 ---
 
 <Base title="404" noindex={true}>
-  <div class="error-page">
-    <pre class="error-art">
-    _  _    ___  _  _
-   | || |  / _ \| || |
-   | || |_| | | | || |_
-   |__   _| | | |__   _|
-      | | | |_| |  | |
-      |_|  \___/   |_|
-    </pre>
-    <p class="error-msg">there's nothing here.</p>
-    <p class="error-sub">you either mistyped something or i broke something.<br/>either way, not your fault. probably.</p>
-    <a href="/">&larr; go home</a>
-  </div>
+  <SystemError code={404} message="there's nothing here." sub="you either mistyped something or i broke something. either way, not your fault. probably." />
 </Base>

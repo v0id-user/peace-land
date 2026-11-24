@@ -9,14 +9,14 @@ interface Props {
   noindex?: boolean;
   // A post's slug picks its own preview image; every other page uses the site's.
   ogSlug?: string;
-  // The home page draws its own windows; every other page sits in one document window.
-  bare?: boolean;
-  // Right side of the menu bar, and the scrolling line under it.
+  // Right side of the menu bar (or the "bar" slot), and the scrolling line under it.
   right?: string;
   marquee?: boolean;
+  // Human pages: no tabs or buttons, moving static behind one window.
+  human?: boolean;
 }
 
-const { title, description, type = 'website', publishedDate, noindex = false, ogSlug, bare = false, right, marquee = false } = Astro.props;
+const { title, description, type = 'website', publishedDate, noindex = false, ogSlug, right, marquee = false, human = false } = Astro.props;
 
 // Human has no tab: the home page's locked row is the only way in.
 const tabs = [
@@ -91,27 +91,31 @@ const jsonLd = type === 'article'
     <link rel="alternate" type="application/rss+xml" title="#V0ID" href="/rss.xml" />
   </head>
   <body>
-    <div class="home">
-      <nav class="home-bar" aria-label="Menu bar">
+    {human ? (
+      <div class="static">
+        <nav class="bar" aria-label="Menu bar">
+          <a href="/" aria-label="Home">†</a>
+          {Astro.slots.has('bar') ? <span class="bar-right"><slot name="bar" /></span> : right && <span class="bar-right">{right}</span>}
+        </nav>
+        <div class="static-room">
+          <slot />
+        </div>
+      </div>
+    ) : (
+    <div class="desk">
+      <nav class="bar" aria-label="Menu bar">
         <a href="/">#V0ID</a>
-        {right && <span>{right}</span>}
+        {right && <span class="bar-right">{right}</span>}
       </nav>
-      {marquee && <marquee class="home-marquee" scrollamount="3">no javascript was sent to you ··· this status is gpg signed ··· sign the guestbook ··· curl -L v0id.me ···</marquee>}
-      <div class="home-wrap">
-        <nav class="home-tabs" aria-label="Sections">
+      {marquee && <marquee class="marquee" scrollamount="3">no javascript was sent to you ··· this status is gpg signed ··· sign the guestbook ··· curl -L v0id.me ···</marquee>}
+      <div class="wrap">
+        <nav class="tabs" aria-label="Sections">
           {tabs.map(([label, href]) => (
             <a href={href} aria-current={current(href) ? 'page' : undefined}>{label}</a>
           ))}
         </nav>
-        {bare ? <slot /> : (
-          <main class="win paper page-win">
-            <div class="tbar"><i></i><h2>{title ?? '#V0ID'}</h2></div>
-            <div class="content">
-              <slot />
-            </div>
-          </main>
-        )}
-        <footer class="home-buttons">
+        <slot />
+        <footer class="buttons">
           <a class="w" href="/">#V0ID</a>
           <a href="/colophon/">NO JS</a>
           <a href="/pgp/">GPG SIGNED</a>
@@ -121,5 +125,6 @@ const jsonLd = type === 'article'
         </footer>
       </div>
     </div>
+    )}
   </body>
 </html>

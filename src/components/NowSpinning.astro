@@ -1,0 +1,45 @@
+---
+import Win from './Win.astro';
+import Pixel from './Pixel.astro';
+import type { NowPlaying } from '../lib/spotify';
+
+// What I am listening to, drawn when the page loads: playing, paused, or nothing.
+// null means Spotify did not answer.
+interface Props {
+  np: NowPlaying | null;
+}
+
+const { np } = Astro.props;
+const track = np?.title ? np : null;
+const clock = (ms = 0) => {
+  const s = Math.floor(ms / 1000);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+};
+const pct = track?.duration_ms ? Math.min(100, ((track.progress_ms ?? 0) / track.duration_ms) * 100) : 0;
+---
+
+<Win title="Now Spinning">
+  <div class="win-body">
+    {track ? (
+      <div class="row spin">
+        <Pixel name="spotify" size={24} />
+        <div class="spin-info">
+          <p class="label">{track.is_playing ? '▶ playing on Spotify' : '❚❚ paused on Spotify'}</p>
+          <a class="spin-title" href={track.url} target="_blank" rel="noopener">{track.title}</a>
+          <span class="spin-artist">{track.artist}</span>
+          <div class="prog" role="img" aria-label={`${clock(track.progress_ms)} of ${clock(track.duration_ms)}`}><i style={`width:${pct.toFixed(1)}%`}></i></div>
+          <div class="prog-times dim"><span>{clock(track.progress_ms)}</span><span>{clock(track.duration_ms)}{!track.is_playing && ', paused'}</span></div>
+        </div>
+      </div>
+    ) : (
+      <div class="row spin">
+        <Pixel name="spotify" size={24} class="off" />
+        <div>
+          <b>Not listening right now.</b><br />
+          <span class="dim">{np ? 'Spotify is quiet.' : 'Spotify did not answer.'}</span>
+        </div>
+      </div>
+    )}
+    <p class="small dim">Checked when this page loaded.</p>
+  </div>
+</Win>

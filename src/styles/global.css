@@ -1,486 +1,30 @@
+/* v0id.me: an old black and white desktop. Plain CSS; no JavaScript is sent to readers. */
+
 * {
   margin: 0;
   padding: 0;
 }
 
 body {
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #000;
-  background: #fff;
+  font: 12px/1.45 Geneva, Verdana, sans-serif;
+  color: #e8e8e8;
+  background: #000;
 }
 
 a {
-  color: #000;
+  color: #fff;
   text-decoration: underline;
 }
 
 a:hover {
   color: #000;
-}
-
-/* --- Content: the white document window every page but home sits in --- */
-
-.content {
-  padding: 12px 18px 16px;
-  min-width: 0;
-  overflow-wrap: break-word;
-  font-family: Verdana, Geneva, sans-serif;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-/* --- Post list (home) --- */
-
-.post-list {
-  list-style: none;
-}
-
-.post-list li {
-  margin-bottom: 6px;
-}
-
-.post-list li a {
-  color: #000;
-}
-
-.post-list .post-date {
-  font-size: 11px;
-  color: #999;
-}
-
-.rss-link {
-  margin-top: 8px;
-  font-size: 10px;
-}
-
-.rss-link a {
-  color: #999;
-  text-transform: uppercase;
-  font-style: italic;
-}
-
-.rss-link .visits {
-  color: #999;
-}
-
-/* --- Article --- */
-
-.back-link {
-  font-size: 11px;
-  display: inline-block;
-  margin-bottom: 10px;
-}
-
-.post-header {
-  margin-bottom: 14px;
-}
-
-.post-header h1 {
-  font-size: 15px;
-  font-weight: bold;
-}
-
-.post-header time {
-  font-size: 11px;
-  color: #999;
-}
-
-/* --- Post content --- */
-
-.post-content {
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-.post-content h2 {
-  font-size: 14px;
-  font-weight: bold;
-  margin-top: 20px;
-  margin-bottom: 6px;
-}
-
-.post-content h3 {
-  font-size: 13px;
-  font-weight: bold;
-  margin-top: 14px;
-  margin-bottom: 4px;
-}
-
-.post-content p {
-  margin-bottom: 10px;
-}
-
-.post-content ul,
-.post-content ol {
-  margin-bottom: 10px;
-  padding-left: 20px;
-}
-
-.post-content li {
-  margin-bottom: 2px;
-}
-
-.post-content blockquote {
-  border-left: 2px solid #ccc;
-  padding-left: 10px;
-  margin: 10px 0;
-  color: #555;
-}
-
-.post-content pre {
-  background: #f6f6f6;
-  border: 1px solid #ddd;
-  padding: 8px 10px;
-  overflow-x: auto;
-  margin: 10px 0;
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.post-content code {
-  font-family: "Courier New", Courier, monospace;
-  font-size: 12px;
-}
-
-.post-content p code,
-.post-content li code {
-  background: #f6f6f6;
-  padding: 0 3px;
-}
-
-.post-content img {
-  max-width: 100%;
-  height: auto;
-  margin: 8px 0;
-}
-
-.post-content a {
-  color: #000;
-}
-
-.post-content hr {
-  border: none;
-  border-top: 1px solid #ddd;
-  margin: 14px 0;
-}
-
-/* Override Shiki */
-.post-content pre.astro-code {
-  background: #f6f6f6 !important;
-  border: 1px solid #ddd;
-}
-
-/* --- Tree page --- */
-
-.tree-page h1 {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.tree-links {
-  list-style: none;
-}
-
-.tree-links li {
-  margin-bottom: 3px;
-}
-
-.tree-links a {
-  font-size: 12px;
-}
-
-.tree-links-item--inactive a {
-  color: #999;
-  font-style: italic;
-}
-
-.tree-links-item--inactive a:visited {
-  color: #999;
-}
-
-.tree-links-item--inactive a:hover {
-  color: #777;
-}
-
-.tree-links-status {
-  font-size: 9px;
-  font-style: normal;
-  color: #aaa;
-}
-
-.tree-note {
-  margin-top: 16px;
-  font-size: 10px;
-  color: #999;
-  line-height: 1.5;
-}
-
-.pgp-key {
-  margin-top: 12px;
-  font-size: 12px;
-  overflow-x: auto;
-}
-
-.pgp-before em {
-  display: block;
-  margin-top: 4px;
-}
-
-/* --- Misc, uses, colophon --- */
-
-.section-label {
-  margin: 12px 0 2px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.section-cmd {
-  font-size: 11px;
-  overflow-x: auto;
-}
-
-.section-links {
-  font-size: 11px;
-}
-
-.section-list li {
-  font-size: 12px;
-  line-height: 1.5;
-  max-width: 62ch;
-}
-
-/* --- Guestbook --- */
-
-.gb-entry {
-  margin: 8px 0;
-  font-size: 12px;
-}
-
-.gb-who {
-  font-size: 11px;
-  color: #777;
-}
-
-.gb-who a {
-  color: #777;
-}
-
-.gb-flash {
-  margin-bottom: 8px;
-  font-size: 11px;
-}
-
-.gb-form {
-  display: grid;
-  gap: 4px;
-  max-width: 320px;
-  margin-top: 16px;
-}
-
-.gb-form input,
-.gb-form textarea {
-  font: inherit;
-  font-size: 12px;
-}
-
-.gb-form button {
-  justify-self: start;
-}
-
-/* Hidden from people; bots that fill every field give themselves away. */
-.gb-hp {
-  position: absolute;
-  left: -9999px;
-}
-
-/* --- About page --- */
-
-.about-page h1 {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.about-page p {
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-/* --- Human warning pages --- */
-
-.human-warning {
-  max-width: 400px;
-}
-
-.human-warning h1 {
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.human-warning p {
-  font-size: 11px;
-  line-height: 1.6;
-  color: #666;
-  margin-bottom: 16px;
-}
-
-.warning-btn {
-  font-size: 11px;
-}
-
-/* Secret cursor on post dates */
-.post-list .post-date:hover {
-  cursor: crosshair;
-}
-
-/* Hidden message in page source via CSS content */
-.home::after {
-  content: "you found nothing... or did you?";
-  position: absolute;
-  left: -9999px;
-  font-size: 0;
-}
-
-/* Pressing a tab flashes a border */
-.home .home-tabs a:active {
-  outline: 1px solid #000;
-  outline-offset: -1px;
-}
-
-/* --- Directives --- */
-
-.directive {
-  margin: 16px 0;
-  padding: 10px 14px;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.directive p {
-  margin: 0;
-}
-
-.directive-note {
-  border-left: 2px solid #999;
-  background: #f7f7f7;
-}
-
-.directive-warning {
-  border-left: 2px solid #c00;
-  background: #fdf5f5;
-}
-
-.directive-tldr {
-  border-left: 2px solid #000;
-  background: #f5f5f5;
-}
-
-.directive-tldr-label {
-  font-variant: small-caps;
-  font-weight: bold;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: #555;
-  margin-bottom: 4px;
-}
-
-.directive-codelabel {
-  font-family: 'Courier New', monospace;
-  font-size: 11px;
-  color: #888;
-  margin-bottom: -12px;
-  margin-top: 16px;
-}
-
-.directive-diagram {
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  padding: 14px 16px 12px;
-}
-
-.diagram-label {
-  font-family: 'Courier New', monospace;
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  color: #888;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-}
-
-.diagram-flow {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  flex-wrap: wrap;
-  margin: 4px 0;
-}
-
-.diagram-box {
-  display: inline-block;
-  border: 1px solid #999;
-  padding: 4px 10px;
-  font-family: 'Courier New', monospace;
-  font-size: 11px;
   background: #fff;
-  white-space: nowrap;
 }
 
-.diagram-arrow {
-  display: inline-block;
-  padding: 0 6px;
-  color: #999;
-  font-size: 13px;
+code {
+  font-family: "Courier New", Courier, monospace;
 }
 
-.directive-sep {
-  text-align: center;
-  color: #ccc;
-  letter-spacing: 0.3em;
-  margin: 28px 0;
-  font-size: 12px;
-}
-
-/* --- Responsive --- */
-
-@media (max-width: 480px) {
-  .home-wrap {
-    padding: 10px 8px;
-  }
-  .content {
-    padding: 10px;
-  }
-}
-
-/* --- Error Pages --- */
-.error-page {
-  padding-top: 60px;
-  text-align: left;
-}
-.error-art {
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
-  line-height: 1.2;
-  color: #000;
-  margin-bottom: 20px;
-}
-.error-msg {
-  font-size: 13px;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-.error-sub {
-  font-size: 11px;
-  color: #666;
-  margin-bottom: 16px;
-  line-height: 1.5;
-}
-.error-page a {
-  font-size: 12px;
-}
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -490,20 +34,48 @@ a:hover {
   white-space: nowrap;
 }
 
-/* --- The desktop: menu bar, tabs and windows around every page (Base.astro) --- */
-
-body {
-  background: #000;
+.dim {
+  color: #8c8c8c;
 }
 
-.home {
+.mono {
+  font-family: "Courier New", Courier, monospace;
+}
+
+.small {
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #8c8c8c;
+  margin-bottom: 4px;
+}
+
+.px {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.row > * {
+  min-width: 0;
+}
+
+/* --- The desktop: menu bar, tabs and 88x31 buttons (Base.astro) --- */
+
+.desk {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  color: #e8e8e8;
-  font-family: Geneva, Verdana, sans-serif;
-  font-size: 12px;
-  line-height: 1.45;
   background-color: #000;
   background-image:
     linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%),
@@ -512,17 +84,15 @@ body {
   background-position: 0 0, 2px 2px;
 }
 
-/* :where keeps these at element weight, so page rules inside the document window win. */
-:where(.home) a {
-  color: #fff;
+/* Hidden message in page source via CSS content */
+.desk::after {
+  content: "you found nothing... or did you?";
+  position: absolute;
+  left: -9999px;
+  font-size: 0;
 }
 
-:where(.home) a:hover {
-  color: #000;
-  background: #fff;
-}
-
-.home-bar {
+.bar {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 16px;
@@ -530,18 +100,20 @@ body {
   border-bottom: 1px solid #e8e8e8;
   padding: 2px 12px;
   font-weight: bold;
+  position: relative;
+  z-index: 1;
 }
 
-.home-bar a {
+.bar a {
   text-decoration: none;
 }
 
-.home-bar span {
+.bar-right {
   margin-left: auto;
   font-weight: normal;
 }
 
-.home-marquee {
+.marquee {
   display: block;
   background: #000;
   color: #fff;
@@ -550,7 +122,8 @@ body {
   padding: 1px 0;
 }
 
-.home-wrap {
+.wrap {
+  flex: 1 1 auto;
   width: 100%;
   max-width: 1200px;
   box-sizing: border-box;
@@ -558,15 +131,15 @@ body {
   padding: 14px;
 }
 
-.home-tabs {
+.tabs {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 2px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
-.home .home-tabs a {
+.tabs a {
   background: #c0c0c0;
   color: #000;
   border: 2px solid;
@@ -576,38 +149,99 @@ body {
   font-size: 11px;
 }
 
-.home .home-tabs a:hover {
+.tabs a:hover {
   background: #fff;
 }
 
-.home-cols {
+.tabs a[aria-current="page"] {
+  background: #fff;
+  font-weight: bold;
+  border-color: #404040 #fff #fff #404040;
+}
+
+/* Pressing a tab flashes a border */
+.tabs a:active {
+  outline: 1px solid #000;
+  outline-offset: -1px;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.buttons a {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 88px;
+  height: 31px;
+  border: 2px outset #bbb;
+  background: #000;
+  color: #fff;
+  font: bold 9px/27px Verdana, Geneva, sans-serif;
+  text-align: center;
+  text-decoration: none;
+}
+
+.buttons a.w,
+.buttons a:hover {
+  background: #fff;
+  color: #000;
+}
+
+.cols {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   align-items: flex-start;
 }
 
-.home-cols > * {
+.cols > * {
   min-width: 0;
 }
 
-.home-side {
-  flex: 1 1 300px;
+.side {
+  flex: 1 1 290px;
 }
 
-.home-side-r {
+.side-r {
   flex-basis: 220px;
 }
 
-.home-main {
-  flex: 999 1 500px;
+.main {
+  flex: 999 1 480px;
 }
+
+.w-sm,
+.w-md,
+.w-lg {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.w-sm {
+  max-width: 460px;
+}
+
+.w-md {
+  max-width: 640px;
+}
+
+.w-lg {
+  max-width: 760px;
+}
+
+/* --- Windows (src/components/Win.astro) --- */
 
 .win {
   background: #000;
   border: 1px solid #e8e8e8;
   box-shadow: 2px 2px 0 #e8e8e8;
   margin-bottom: 12px;
+  min-width: 0;
 }
 
 .tbar {
@@ -646,113 +280,135 @@ body {
   padding: 8px 10px;
 }
 
-/* A document window: white page, black chrome, so every page's own styles read as before. */
-.page-win {
-  max-width: 820px;
-  margin: 0 auto 12px;
-}
-
-.paper {
-  background: #fff;
-  color: #000;
-}
-
-.paper .tbar {
-  border-bottom-color: #000;
-  background: repeating-linear-gradient(#000 0, #000 1px, #fff 1px, #fff 3px);
-  background-clip: content-box;
-}
-
-.paper .tbar i {
-  border-color: #000;
-  background: #fff;
-  outline-color: #fff;
-}
-
-.paper .tbar h2 {
-  background: #fff;
-  color: #000;
-}
-
-:where(.paper) a {
-  color: #000;
-}
-
-:where(.paper) a:hover {
-  color: #fff;
-  background: #000;
-}
-
-.home-tabs a[aria-current="page"] {
-  font-weight: bold;
-}
-
 .win-meta {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
   font-size: 11px;
   padding: 2px 10px;
   border-bottom: 3px double #e8e8e8;
 }
 
-.home-term {
-  font: 13px/1.4 "Courier New", Courier, monospace;
+.win-foot {
+  border-top: 1px solid #e8e8e8;
+  padding: 5px 10px;
+  font-size: 11px;
 }
 
-.home-logo {
+.btn {
+  display: inline-block;
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 2px 18px;
+  background: #000;
+  color: #e8e8e8;
+  font: 12px Geneva, Verdana, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-def {
+  outline: 2px solid #e8e8e8;
+  outline-offset: 2px;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+.field {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  padding: 4px 6px;
+  background: #000;
+  color: #e8e8e8;
+  border: 1px solid #e8e8e8;
+  box-shadow: inset 2px 2px 0 #444;
+  font: 12px Geneva, Verdana, sans-serif;
+}
+
+.alert {
+  width: 420px;
+  max-width: 100%;
+  box-shadow: 3px 3px 0 #e8e8e8;
+}
+
+.alert-wide {
+  width: 460px;
+}
+
+.alert-body {
+  padding: 18px 20px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.alert-body p {
+  margin-bottom: 12px;
+}
+
+.alert-actions {
+  text-align: right;
+  margin-top: 16px;
+}
+
+/* --- Home --- */
+
+.term {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.logo {
   font: bold 12px/1.05 "Courier New", Courier, monospace;
   color: #fff;
   overflow-x: auto;
   margin-bottom: 8px;
 }
 
-.home-status {
-  font: 11px/1.3 "Courier New", Courier, monospace;
-  white-space: pre;
-  overflow-x: auto;
-}
-
-.home-small {
-  margin-top: 6px;
-  font-size: 11px;
-}
-
-.home-posts {
+.writings {
   list-style: none;
-  font-family: "Times New Roman", Times, serif;
-  font-size: 15px;
+  font: 15px/1.45 "Times New Roman", Times, serif;
 }
 
-.home-posts li {
+.writings li {
   display: flex;
   gap: 10px;
   align-items: baseline;
   padding: 2px 0;
 }
 
-.home-posts .n {
+.writings .n {
   flex: 0 0 22px;
   font-size: 11px;
 }
 
-.home-posts .t {
+.writings .t {
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.home-posts .s {
+.writings .s {
   flex: 0 0 auto;
   font-size: 11px;
 }
 
-.home-posts .locked .t {
+.writings .locked .t {
   overflow: hidden;
   white-space: nowrap;
   text-decoration: none;
   font: 13px "Courier New", Courier, monospace;
 }
 
-.home-digits span {
+.digits {
+  text-align: center;
+}
+
+.digits span {
   display: inline-block;
   width: 17px;
   margin-right: 1px;
@@ -763,33 +419,716 @@ body {
   text-align: center;
 }
 
-.home-digits {
-  text-align: center;
+/* Now Spinning and Fahad's Mac (src/components/NowSpinning.astro, MacStatus.astro) */
+
+.spin {
+  align-items: flex-start;
 }
 
-.home-buttons {
+.spin .label {
+  margin: 0;
+}
+
+.spin-info {
+  flex: 1 1 auto;
+}
+
+.spin-title {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.spin-artist {
+  display: block;
+}
+
+.px.off {
+  color: #555;
+}
+
+.prog {
+  height: 7px;
+  border: 1px solid #e8e8e8;
+  margin: 6px 0 3px;
+}
+
+.prog i {
+  display: block;
+  height: 100%;
+  background: #e8e8e8;
+}
+
+.prog-times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+}
+
+.mac-rows {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.k {
+  display: inline-block;
+  width: 7ch;
+  color: #8c8c8c;
+}
+
+/* --- Posts and tests (src/components/Article.astro) --- */
+
+.article {
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.article-body {
+  padding: 12px 20px 18px;
+}
+
+.article-back {
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.article-title {
+  font: bold 26px/1.2 "Times New Roman", Times, serif;
+  color: #fff;
+  margin: 4px 0 14px;
+}
+
+.article-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px dotted #8c8c8c;
+  padding-top: 8px;
+  margin-top: 18px;
+  font-size: 12px;
+}
+
+.post-content {
+  font: 16px/1.65 "Times New Roman", Times, serif;
+  color: #d6d6d6;
+  overflow-wrap: break-word;
+}
+
+.post-content h2 {
+  font-size: 19px;
+  color: #fff;
+  margin: 22px 0 6px;
+}
+
+.post-content h3 {
+  font-size: 16px;
+  color: #fff;
+  margin: 16px 0 4px;
+}
+
+.post-content p {
+  margin-bottom: 12px;
+}
+
+.post-content ul,
+.post-content ol {
+  margin-bottom: 12px;
+  padding-left: 22px;
+}
+
+.post-content li {
+  margin-bottom: 3px;
+}
+
+.post-content blockquote {
+  border-left: 2px solid #8c8c8c;
+  padding-left: 12px;
+  margin: 12px 0;
+  color: #bdbdbd;
+}
+
+.post-content pre {
+  border: 1px solid #8c8c8c;
+  padding: 10px 12px;
+  overflow-x: auto;
+  margin: 12px 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.post-content code {
+  font-size: 13px;
+}
+
+.post-content pre code {
+  font-size: 12px;
+}
+
+.post-content p code,
+.post-content li code {
+  background: #222;
+  padding: 0 3px;
+}
+
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  margin: 8px 0;
+}
+
+.post-content hr {
+  border: none;
+  border-top: 1px dotted #8c8c8c;
+  margin: 16px 0;
+}
+
+/* Shiki paints its own background; the window is the frame. */
+.post-content pre.astro-code {
+  background: #000 !important;
+}
+
+/* --- Directives (src/plugins/remark-callouts.ts) --- */
+
+.directive {
+  position: relative;
+  margin: 18px 0;
+  padding: 12px 14px 10px;
+  border: 1px solid #8c8c8c;
+  font: 13px/1.6 Geneva, Verdana, sans-serif;
+}
+
+.directive p {
+  margin: 0;
+}
+
+.directive-warning {
+  border: 1px dashed #fff;
+}
+
+.directive-tldr {
+  border-color: #e8e8e8;
+}
+
+.directive-tldr-label {
+  position: absolute;
+  top: -8px;
+  left: 10px;
+  padding: 0 5px;
+  background: #000;
+  font: bold 10px Geneva, Verdana, sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #e8e8e8;
+}
+
+.directive-codelabel {
+  font: 11px "Courier New", Courier, monospace;
+  color: #8c8c8c;
+  margin: 16px 0 -8px;
+}
+
+.diagram-label {
+  font: 10px "Courier New", Courier, monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8c8c8c;
+  margin-bottom: 10px;
+}
+
+.diagram-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+
+.diagram-box {
+  display: inline-block;
+  border: 1px solid #e8e8e8;
+  padding: 4px 10px;
+  font: 11px "Courier New", Courier, monospace;
+  white-space: nowrap;
+}
+
+.diagram-arrow {
+  display: inline-block;
+  padding: 0 6px;
+  color: #8c8c8c;
+}
+
+.directive-sep {
+  text-align: center;
+  color: #8c8c8c;
+  letter-spacing: 0.3em;
+  margin: 28px 0;
+  font-size: 12px;
+}
+
+/* --- Human: moving static, one window, labels that come and go --- */
+
+.static {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  background: #000;
+}
+
+/* Snow: a dithered noise tile that jumps every few frames. */
+.static::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .6 0 0 0 0 .6 0 0 0 0 .6 0 0 0 10 -5.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 440px 440px;
+  image-rendering: pixelated;
+  opacity: 0.55;
+  animation: snow 0.36s steps(1) infinite;
+}
+
+/* Scanlines over the snow, and a pale band rolling down like a bad signal. */
+.static::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(transparent, rgba(255, 255, 255, 0.09) 50%, transparent),
+    repeating-linear-gradient(rgba(0, 0, 0, 0.7) 0 1px, transparent 1px 3px);
+  background-size: 100% 220px, 100% 3px;
+  background-repeat: no-repeat, repeat;
+  animation: roll 6s linear infinite;
+}
+
+@keyframes snow {
+  0% { background-position: 0 0; }
+  25% { background-position: -97px 41px; }
+  50% { background-position: 53px -88px; }
+  75% { background-position: -31px -19px; }
+}
+
+@keyframes roll {
+  from { background-position: 0 -220px, 0 0; }
+  to { background-position: 0 100vh, 0 0; }
+}
+
+.static-room {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 16px 40px;
+}
+
+.files {
+  width: 540px;
+  max-width: 100%;
+  box-shadow: 3px 3px 0 #e8e8e8;
+}
+
+.file-list {
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  padding: 12px 16px;
+}
+
+.file-list li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.file-list .n {
+  flex: 0 0 22px;
+  font: 11px "Courier New", Courier, monospace;
+  color: #8c8c8c;
+}
+
+/* Each label blinks between blacked out and readable on its own clock (human/all.astro). */
+.hf {
+  font: 13px "Courier New", Courier, monospace;
+  text-decoration: none;
+  padding: 0 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  animation-duration: var(--t);
+  animation-delay: var(--d);
+  animation-iteration-count: infinite;
+  animation-timing-function: steps(1);
+}
+
+.hf-1 { animation-name: redact-1; }
+.hf-2 { animation-name: redact-2; }
+.hf-3 { animation-name: redact-3; }
+
+@keyframes redact-1 {
+  0% { background: #e8e8e8; color: #e8e8e8; }
+  38% { background: transparent; color: #fff; }
+  44% { background: #e8e8e8; color: #e8e8e8; }
+  80% { background: transparent; color: #fff; }
+  86% { background: #e8e8e8; color: #e8e8e8; }
+}
+
+@keyframes redact-2 {
+  0% { background: transparent; color: #fff; }
+  12% { background: #e8e8e8; color: #e8e8e8; }
+  15% { background: transparent; color: #fff; }
+  18% { background: #e8e8e8; color: #e8e8e8; }
+  64% { background: transparent; color: #fff; }
+}
+
+@keyframes redact-3 {
+  0% { background: #e8e8e8; color: #e8e8e8; }
+  70% { background: transparent; color: #fff; }
+  73% { background: #e8e8e8; color: #e8e8e8; }
+  76% { background: transparent; color: #fff; }
+  79% { background: #e8e8e8; color: #e8e8e8; }
+}
+
+/* Pointing at the list makes the rest panic; the one you point at holds still and readable. */
+.file-list:hover .hf {
+  animation-duration: calc(var(--t) / 3);
+}
+
+.file-list .hf:hover,
+.file-list .hf:focus-visible {
+  animation: none;
+  background: transparent;
+  color: #fff;
+  text-decoration: underline;
+}
+
+.piece {
+  width: 620px;
+  max-width: 100%;
+  box-shadow: 3px 3px 0 #e8e8e8;
+}
+
+.piece .win-meta {
+  font-family: "Courier New", Courier, monospace;
+}
+
+.piece-body {
+  padding: 20px 26px 6px;
+  font: 14px/1.75 "Courier New", Courier, monospace;
+  color: #d6d6d6;
+  overflow-wrap: break-word;
+}
+
+.piece-body p {
+  margin-bottom: 14px;
+}
+
+.piece-end {
+  text-align: center;
+  padding: 10px 0 18px;
+  font: 12px "Courier New", Courier, monospace;
+}
+
+/* --- About and PGP: info windows --- */
+
+.info {
+  padding: 14px 16px;
+}
+
+.info-head {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  border-bottom: 1px solid #e8e8e8;
+  padding-bottom: 12px;
+  margin-bottom: 10px;
+}
+
+.info-head h1 {
+  font-size: 15px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 5px 10px;
+}
+
+.info-grid dt {
+  color: #8c8c8c;
+  text-align: right;
+}
+
+.info .label {
+  margin-top: 14px;
+}
+
+.fingerprint {
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+.fingerprint span {
+  white-space: nowrap;
+}
+
+.keyblock {
+  margin-top: 14px;
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid #8c8c8c;
+  padding: 8px 10px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* --- Links and tests: folders of icons --- */
+
+.icons {
+  list-style: none;
   display: flex;
   flex-wrap: wrap;
+  gap: 18px 8px;
   justify-content: center;
-  gap: 5px;
-  margin-top: 4px;
+  padding: 18px 10px;
 }
 
-.home .home-buttons a {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 88px;
-  height: 31px;
-  border: 2px outset #bbb;
-  background: #000;
-  color: #fff;
-  font: bold 9px/27px Verdana, Geneva, sans-serif;
+.ico {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 92px;
+  font-size: 11px;
   text-align: center;
   text-decoration: none;
 }
 
-.home .home-buttons a.w,
-.home .home-buttons a:hover {
+.ico span {
+  padding: 0 3px;
+}
+
+.ico:hover {
+  background: transparent;
+  color: #fff;
+}
+
+.ico:hover span {
   background: #fff;
   color: #000;
+}
+
+.alias span {
+  font-style: italic;
+}
+
+.archived {
+  opacity: 0.4;
+}
+
+/* --- Uses: control panel groups --- */
+
+.panels {
+  padding: 6px 16px 14px;
+  line-height: 1.55;
+}
+
+.group {
+  border: 1px solid #8c8c8c;
+  padding: 8px 12px;
+  margin-top: 12px;
+  min-width: 0;
+}
+
+.group legend {
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.group ul {
+  padding-left: 16px;
+}
+
+.group li {
+  margin-bottom: 4px;
+}
+
+.pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+}
+
+.pair > .group {
+  flex: 1 1 260px;
+}
+
+/* --- Guestbook --- */
+
+.book {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.gb-flash {
+  border: 1px solid #e8e8e8;
+  padding: 4px 8px;
+  margin-bottom: 10px;
+}
+
+.gb-empty {
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.gb-empty-title {
+  font: 18px "Times New Roman", Times, serif;
+  color: #fff;
+}
+
+.gb-entry {
+  border-bottom: 1px dotted #8c8c8c;
+  padding: 8px 0;
+  font: 15px/1.5 "Times New Roman", Times, serif;
+  color: #d6d6d6;
+}
+
+.gb-who {
+  font: 11px Geneva, Verdana, sans-serif;
+  color: #8c8c8c;
+}
+
+.gb-form {
+  padding: 12px 14px;
+}
+
+.gb-form textarea {
+  resize: vertical;
+}
+
+.gb-send {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.gb-send .small {
+  margin: 0;
+}
+
+/* Hidden from people; bots that fill every field give themselves away. */
+.gb-hp {
+  position: absolute;
+  left: -9999px;
+}
+
+.cmd {
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* --- Misc: a terminal session --- */
+
+.session {
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 12px 14px;
+  overflow-x: auto;
+}
+
+.ls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 18px;
+}
+
+.prompt {
+  color: #fff;
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: #e8e8e8;
+  vertical-align: -2px;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { background: transparent; }
+}
+
+/* --- Colophon --- */
+
+.readme {
+  padding: 12px 18px 8px;
+  line-height: 1.6;
+}
+
+.readme p {
+  margin-bottom: 10px;
+}
+
+.readme .label {
+  margin: 14px 0 4px;
+}
+
+.readme code {
+  background: #222;
+  padding: 0 3px;
+}
+
+/* --- 404 and 500 (src/components/SystemError.astro) --- */
+
+.error {
+  max-width: 440px;
+  margin: 40px auto 30px;
+}
+
+.error-row {
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.error h1 {
+  font-size: 13px;
+}
+
+.error .alert-body p {
+  margin-bottom: 0;
+}
+
+/* --- Small screens and reduced motion --- */
+
+@media (max-width: 480px) {
+  .wrap {
+    padding: 10px 8px;
+  }
+  .article-body {
+    padding: 10px 12px 14px;
+  }
+  .article-title {
+    font-size: 22px;
+  }
+  .piece-body {
+    padding: 16px;
+  }
+  .static-room {
+    padding: 40px 10px 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .static::before,
+  .static::after,
+  .hf,
+  .cursor {
+    animation: none;
+  }
 }

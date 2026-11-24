@@ -1,23 +1,27 @@
 ---
 export const prerender = false;
 import Base from '../../layouts/Base.astro';
-import { getHumanEntry, renderHumanMarkdown } from '../../lib/human';
+import Win from '../../components/Win.astro';
+import { getHumanEntries, renderHumanMarkdown } from '../../lib/human';
 import { env as cfEnv } from 'cloudflare:workers';
 
 const { slug } = Astro.params;
-const entry = await getHumanEntry(slug!, { ...import.meta.env, ...cfEnv });
-if (!entry) {
+// The list is cached per isolate (src/lib/human.ts), so finding the file number is free.
+const entries = await getHumanEntries({ ...import.meta.env, ...cfEnv });
+const index = entries.findIndex((e) => e.slug === slug);
+if (index === -1) {
   return new Response('Not found', { status: 404 });
 }
+const entry = entries[index];
 const html = renderHumanMarkdown(entry.body);
+const stamp = entry.date.getTime() > 0 ? entry.date.toISOString().slice(0, 10) : '';
 ---
 
-<Base title={entry.title} type="article" noindex={true}>
-  <a href="/human/all" class="back-link">&larr; back</a>
-  <article>
-    <header class="post-header">
-      <h1>{entry.title}</h1>
-    </header>
-    <div class="post-content" set:html={html} />
-  </article>
+<Base title={entry.title} type="article" noindex={true} human>
+  <a slot="bar" href="/human/all">← the files</a>
+  <Win title={entry.title} as="article" class="piece" closeBox={false} meta={[`FILE ${String(index + 1).padStart(2, '0')}`, stamp]}>
+    <h1 class="visually-hidden">{entry.title}</h1>
+    <div class="piece-body" set:html={html} />
+    <p class="piece-end dim">— end of file —</p>
+  </Win>
 </Base>

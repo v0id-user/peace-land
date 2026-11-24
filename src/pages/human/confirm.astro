@@ -2,13 +2,16 @@
 import Base from '../../layouts/Base.astro';
 ---
 
-<Base title="Human" noindex={true}>
-  <div class="human-warning">
-    <p>Content beyond this point was written without a filter. It may cause discomfort. It may break something you assumed about the person behind it.</p>
-    <p>The author is not seeking advice. These are not invitations for correction.</p>
-    <p>What is welcomed is curiosity. The willingness to sit with discomfort rather than resolve it. To ask why something exists, not how to remove it.</p>
-    <p>No one here stands higher than anyone else.</p>
-    <p>There is no going back to not knowing.</p>
-    <a href="/human/all" class="warning-btn">I totally understand.</a>
-  </div>
+<Base title="Human" noindex={true} human>
+  <section class="win alert alert-wide" role="alertdialog" aria-labelledby="human-title">
+    <h1 id="human-title" class="visually-hidden">Human</h1>
+    <div class="alert-body">
+      <p>Content beyond this point was written without a filter. It may cause discomfort. It may break something you assumed about the person behind it.</p>
+      <p>The author is not seeking advice. These are not invitations for correction.</p>
+      <p>What is welcomed is curiosity. The willingness to sit with discomfort rather than resolve it. To ask why something exists, not how to remove it.</p>
+      <p>No one here stands higher than anyone else.</p>
+      <p>There is no going back to not knowing.</p>
+      <div class="alert-actions"><a class="btn btn-def" href="/human/all">I totally understand.</a></div>
+    </div>
+  </section>
 </Base>

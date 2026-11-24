@@ -1,0 +1,27 @@
+---
+import Pixel from './Pixel.astro';
+
+// The 404 and 500 pages: an old system error dialog whose only button goes home.
+interface Props {
+  code: number;
+  message: string;
+  sub: string;
+}
+
+const { code, message, sub } = Astro.props;
+---
+
+<section class="win alert error" role="alertdialog" aria-labelledby="error-title">
+  <div class="alert-body">
+    <div class="row error-row">
+      <Pixel name="bomb" size={36} />
+      <div>
+        <h1 id="error-title">Sorry, a system error occurred.</h1>
+        <p>{message}</p>
+        <p class="small dim">{sub}</p>
+        <p class="small dim mono">ID = {code}</p>
+      </div>
+    </div>
+    <div class="alert-actions"><a class="btn btn-def" href="/">Restart</a></div>
+  </div>
+</section>

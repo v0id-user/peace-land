@@ -1,5 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
+import Win from '../components/Win.astro';
+import Pixel from '../components/Pixel.astro';
 
 const links = [
   { name: 'GitHub', url: 'https://github.com/v0id-user' },
@@ -12,25 +14,22 @@ const links = [
   { name: 'PGP key', url: 'https://pgp.v0id.me' },
   { name: 'Book a Call', url: 'https://cal.com/v0id-user/30min' },
 ];
+const archived = links.filter((l) => l.inactive).length;
 ---
 
 <Base title="Tree" description="Links and social profiles for #V0ID: GitHub, X, LinkedIn, email, and more.">
-  <div class="tree-page">
-    <h1>Links</h1>
-    <ul class="tree-links">
+  <Win title="Links" as="main" class="w-md" meta={[`${links.length} aliases`, `${archived} archived`]}>
+    <h1 class="visually-hidden">Links</h1>
+    <ul class="win-body icons">
       {links.map((link) => (
-        <li class:list={[{ 'tree-links-item--inactive': link.inactive }]}>
-          <a href={link.url} target="_blank" rel="noopener">{link.name}</a>
-          {link.inactive && (
-            <span class="tree-links-status"> (inactive/archived)</span>
-          )}
+        <li>
+          <a class:list={['ico', 'alias', { archived: link.inactive }]} href={link.url} target="_blank" rel="noopener">
+            <Pixel name="doc" size={32} />
+            <span>{link.name}{link.inactive && <><br />(archived)</>}</span>
+          </a>
         </li>
       ))}
     </ul>
-    <p class="tree-note">
-      Mostly inactive on socials.<br />
-      Email has the highest chance of a response.<br />
-      LinkedIn and Reddit work too.
-    </p>
-  </div>
+    <p class="win-foot">Mostly inactive on socials. Email has the highest chance of a response. LinkedIn and Reddit work too.</p>
+  </Win>
 </Base>

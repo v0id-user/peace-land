@@ -14,14 +14,13 @@
 
 ## Design rules
 
-- An old black and white desktop, picked from mockups. Base.astro draws it around every page: a menu bar, gray tabs, then the page, then 88x31 buttons. Its CSS is the desktop section of global.css.
-- Every page but home sits in one white document window titled with the page title, so page styles stay black on white: Verdana, small text, underlined links. The home page passes `bare` and draws its own black windows.
-- Zero client JavaScript shipped to readers. No exceptions.
-- No Tailwind. Plain CSS only in src/styles/global.css.
-- No frameworks, no component libraries, no build-time CSS tools.
-- Links invert on hover (white on black inside documents, black on white on the desktop). Do not add other custom hover effects or button styles unless asked.
-- Font sizes inside documents: h1 = 14px, h2 = 14px, body = 12-13px. Derive from tree page styling when adding new pages.
-- The home page shows the writing list, the status block as text, the guestbook count and the visit count in black windows.
+- An old black and white desktop, every page designed for it on a canvas first. Base.astro draws a dithered desktop with a menu bar, gray tabs and 88x31 buttons; each page draws its own black windows with src/components/Win.astro. Design a new page as mockups before coding it, never by wrapping old markup in a window.
+- Human pages pass `human` to Base: no tabs or buttons, moving CSS static (snow and a rolling band) behind one window. The list of pieces flickers between blacked-out and readable labels on random clocks set per request; the one you point at holds still and readable.
+- Icons are pixel art on a small grid (src/components/Pixel.astro): the favicon mark, Spotify, folder, document, key, bomb. Never draw a smooth icon or a new logo.
+- Zero client JavaScript shipped to readers. No exceptions. Motion is CSS only and stops under prefers-reduced-motion.
+- No Tailwind. Plain CSS only in src/styles/global.css. Astro components in src/components are fine; no frameworks, no component libraries, no build-time CSS tools.
+- Type: Geneva/Verdana 12px for the desktop, Times for reading (posts 16px), Courier for terminals and Human pieces. Links invert on hover.
+- The home page shows the writing list, Now Spinning (music, with its state in words), Fahad's Mac (status), the guestbook count and the visit count.
 - Human has no tab or named link anywhere. It is the last, blacked-out `[locked]` row of the home page's writing list and still goes through the warning pages.
 
 ## Content collections
@@ -47,7 +46,7 @@
 
 ## Laptop status
 
-- Shown on the home page in "The Keeper" window (rendered per request from src/lib/status.ts, under the Spotify line), and in the /now-playing iframe, which nothing embeds now, as a monospace block: `fahad active|away|inactive`, then laptop, claude sessions, and git rows. Iframe is 98px tall.
+- Shown on the home page in the "Fahad's Mac" window (src/components/MacStatus.astro, rendered per request, with the state said in words and a link to the commit), and in the /now-playing iframe, which nothing embeds now, as a monospace block: `fahad active|away|inactive`, then laptop, claude sessions, and git rows. Iframe is 98px tall.
 - The design was picked from several rounds of mockups. Change wording or layout only after showing variants.
 - git row: src/lib/github.ts first lists every repo I committed to in the last year (mine and organizations'), keeps only public ones, then fetches my newest default-branch commit from those. GITHUB_TOKEN can read private repos, work ones included, so private repos are dropped before any commit data is fetched. Accounts listed in the GITHUB_SKIP_OWNERS secret are dropped too; the names live in the secret and .dev.vars, never in this repo. The lookup takes about 5 seconds, so it never runs while a reader waits: the answer is stored in KV under `github:latest` and refreshed through `Astro.locals.cfContext.waitUntil` after the response once it is older than 5 minutes. Only an empty KV makes a reader wait. The edge cache (caches.default) was tried first and never filled in production. The `x-git-cache` response header says fresh, stale, miss or off.
 - Laptop and claude rows: scripts/presence.ts stays running on my Mac under launchd (scripts/me.v0id.presence.plist with KeepAlive, installed as ~/.local/bin/v0id-presence.ts). It reads the state every 10 seconds, compares it on the Mac, and POSTs to /presence only when it changed, plus a heartbeat every 15 minutes.
