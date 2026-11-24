@@ -464,6 +464,25 @@ code {
   font-size: 10px;
 }
 
+.mac-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.mac-head .label {
+  margin: 0;
+}
+
+.mini {
+  border: 1px solid #8c8c8c;
+  padding: 0 4px;
+  font-size: 10px;
+  text-decoration: none;
+}
+
 .mac-rows {
   font-size: 12px;
   line-height: 1.4;
