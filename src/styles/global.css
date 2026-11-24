@@ -464,6 +464,46 @@ code {
   font-size: 10px;
 }
 
+/* Optimistic playback: from the snapshot the Worker sent, the bar fills to 100% over the
+   seconds left in the track. The next reload of the frame corrects it. */
+.prog i.running {
+  animation: fill var(--left) linear forwards;
+}
+
+@keyframes fill {
+  to { width: 100%; }
+}
+
+/* The clock counts up the same way: an integer property animated from the snapshot's
+   second to the track's last, printed as m:ss with CSS counters. Browsers without
+   @property or mod() keep the snapshot text. */
+@property --sec {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@supports (width: mod(5px, 2px)) {
+  .clock.running {
+    --sec: var(--at);
+    animation: tick var(--left) linear forwards;
+    counter-reset: min calc((var(--sec) - mod(var(--sec), 60)) / 60) sec mod(var(--sec), 60);
+  }
+
+  .clock.running::before {
+    content: counter(min) ":" counter(sec, decimal-leading-zero);
+  }
+
+  .clock.running .clock-still {
+    display: none;
+  }
+}
+
+@keyframes tick {
+  from { --sec: var(--at); }
+  to { --sec: var(--end); }
+}
+
 .mac-head {
   display: flex;
   justify-content: space-between;

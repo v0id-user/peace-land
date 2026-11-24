@@ -43,7 +43,7 @@
 - Fetches from Spotify API server-side using refresh token flow.
 - Secrets stored on Cloudflare Workers: SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN.
 - For local dev, secrets go in .dev.vars (gitignored).
-- Progress bar is a static CSS width snapshot — no animation trickery.
+- Playback is optimistic, in CSS only: while a track plays, the bar starts at the snapshot's width and fills to 100% over the seconds left, and the clock counts up from the snapshot's second (an @property integer printed with counters). The frame's next reload corrects both. Paused stays still. Keep this whenever the window is redrawn.
 - Pixel Spotify logo in public/spotify.svg.
 
 ## Laptop status

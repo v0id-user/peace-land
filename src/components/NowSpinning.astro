@@ -16,6 +16,12 @@ const clock = (ms = 0) => {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 };
 const pct = track?.duration_ms ? Math.min(100, ((track.progress_ms ?? 0) / track.duration_ms) * 100) : 0;
+// While playing, CSS carries on from this snapshot until the frame reloads: the bar fills
+// to the end over the seconds left, and the clock counts up one second at a time.
+const at = Math.floor((track?.progress_ms ?? 0) / 1000);
+const end = Math.floor((track?.duration_ms ?? 0) / 1000);
+const live = !!track?.is_playing && end > at;
+const motion = live ? `--at:${at};--end:${end};--left:${end - at}s` : '';
 ---
 
 <Win title="Now Spinning">
@@ -27,8 +33,8 @@ const pct = track?.duration_ms ? Math.min(100, ((track.progress_ms ?? 0) / track
           <p class="label">{track.is_playing ? '▶ playing on Spotify' : '❚❚ paused on Spotify'}</p>
           <a class="spin-title" href={track.url} target="_blank" rel="noopener">{track.title}</a>
           <span class="spin-artist">{track.artist}</span>
-          <div class="prog" role="img" aria-label={`${clock(track.progress_ms)} of ${clock(track.duration_ms)}`}><i style={`width:${pct.toFixed(1)}%`}></i></div>
-          <div class="prog-times dim"><span>{clock(track.progress_ms)}</span><span>{clock(track.duration_ms)}{!track.is_playing && ', paused'}</span></div>
+          <div class="prog" role="img" aria-label={`${clock(track.progress_ms)} of ${clock(track.duration_ms)}`}><i class:list={{ running: live }} style={`width:${pct.toFixed(1)}%;${motion}`}></i></div>
+          <div class="prog-times dim"><span class:list={['clock', { running: live }]} style={motion}><span class="clock-still">{clock(track.progress_ms)}</span></span><span>{clock(track.duration_ms)}{!track.is_playing && ', paused'}</span></div>
         </div>
       </div>
     ) : (
