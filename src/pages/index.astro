@@ -33,28 +33,13 @@ const LOGO = String.raw`   _  _   __     _____ ___ ____
 |_      _|  \ V /| |_| | || |_| |
   |_||_|     \_/  \___/___|____/`;
 
-const tabs = [
-  ['About', '/about/'], ['Links', '/tree/'], ['Uses', '/uses/'], ['Guestbook', '/guestbook/'],
-  ['PGP', '/pgp/'], ['Tests', '/test/'], ['Colophon', '/colophon/'], ['Misc', '/misc/'],
-];
 const num = (n: number) => String(n).padStart(2, '0');
 const size = (body: string | undefined) => `${Math.max(1, Math.round((body?.length ?? 0) / 1024))}K`;
 const souls = visits === null ? null : String(visits).padStart(6, '0');
 ---
 
-<Base bare>
-  <div class="home">
-    <nav class="home-bar" aria-label="Menu bar">
-      <a href="/">#V0ID</a>
-      {visits !== null && <span>you are soul no. {visits.toLocaleString('en-US')}</span>}
-    </nav>
-    <marquee class="home-marquee" scrollamount="3">no javascript was sent to you ··· this status is gpg signed ··· sign the guestbook ··· curl -L v0id.me ···</marquee>
-
-    <div class="home-wrap">
+<Base bare marquee right={visits === null ? undefined : `you are soul no. ${visits.toLocaleString('en-US')}`}>
       <h1 class="visually-hidden">#V0ID, a technical blog by Fahad Al-Ghamdi</h1>
-      <nav class="home-tabs" aria-label="Sections">
-        {tabs.map(([label, href]) => <a href={href}>{label}</a>)}
-      </nav>
 
       <div class="home-cols">
         <aside class="home-side">
@@ -115,15 +100,4 @@ const souls = visits === null ? null : String(visits).padStart(6, '0');
           )}
         </aside>
       </div>
-
-      <footer class="home-buttons">
-        <a class="w" href="/">#V0ID</a>
-        <a href="/colophon/">NO JS</a>
-        <a href="/pgp/">GPG SIGNED</a>
-        <a href="/rss.xml">RSS</a>
-        <a href="/misc/">CURL ME</a>
-        <a href="/guestbook/">SIGN ME</a>
-      </footer>
-    </div>
-  </div>
 </Base>

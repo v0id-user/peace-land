@@ -9,13 +9,13 @@ import Base from '../layouts/Base.astro';
     <p class="section-label">the site</p>
     <ul class="tree-links section-list">
       <li>Astro on Cloudflare Workers. Every page is plain HTML and CSS; no JavaScript is sent to readers.</li>
-      <li>Verdana, small text, gray buttons, laid out after paulgraham.com.</li>
+      <li>An old black and white desktop drawn in plain CSS: a menu bar, gray tabs, windows and 88x31 buttons. Pages open in white document windows in Verdana, small text.</li>
       <li>Posts are markdown files, edited directly or through Sveltia CMS. The source is <a href="https://github.com/v0id-user/peace-land">on GitHub</a>.</li>
     </ul>
 
-    <p class="section-label">the sidebar</p>
+    <p class="section-label">the keeper</p>
     <ul class="tree-links section-list">
-      <li>The Spotify block and the status under it are a small page the sidebar reloads every 15 seconds. The Worker asks Spotify for what is playing; nothing runs in your browser.</li>
+      <li>The Spotify line and the status under it are drawn by the Worker each time the home page loads. The Worker asks Spotify for what is playing; nothing runs in your browser.</li>
       <li>The status comes from a reporter on my Mac. It reads the lid, whether I am at the keyboard, and my Claude Code sessions, and sends only what changed. Before the Mac sleeps it says so.</li>
       <li>Every report is signed with <a href="/pgp/">my OpenPGP key</a>. The Worker holds only the public key and drops anything it cannot verify, and anyone can check the last report with <code>curl -sL v0id.me/status.asc | gpg -d</code>.</li>
       <li>The git row shows my newest commit in a public repo. Private repos are filtered out before any commit is looked at.</li>

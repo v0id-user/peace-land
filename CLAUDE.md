@@ -14,16 +14,15 @@
 
 ## Design rules
 
-- PG-style (paulgraham.com). Verdana font, small text, gray sidebar buttons, underlined links.
+- An old black and white desktop, picked from mockups. Base.astro draws it around every page: a menu bar, gray tabs, then the page, then 88x31 buttons. Its CSS is the desktop section of global.css.
+- Every page but home sits in one white document window titled with the page title, so page styles stay black on white: Verdana, small text, underlined links. The home page passes `bare` and draws its own black windows.
 - Zero client JavaScript shipped to readers. No exceptions.
 - No Tailwind. Plain CSS only in src/styles/global.css.
 - No frameworks, no component libraries, no build-time CSS tools.
-- Default browser styling for interactive elements (links, buttons). Do not add custom hover effects or button styles unless specifically asked.
-- Font sizes: h1 = 14px, h2 = 14px, body = 12-13px. Derive from tree page styling when adding new pages.
-- Sidebar nav buttons: gray background, black when active. Post titles truncated to 24 chars.
-- Layout: sidebar left, content right, max-width 960px, 16px left padding. Not edge-to-edge.
-- The home page is the exception: a black and white desktop with windows, picked from mockups. Base.astro's `bare` prop drops the sidebar, and its CSS lives under `.home` in global.css. It shows the writing list, the status block as text, the guestbook count and the visit count. Its hover styles, tabs and 88x31 buttons are part of that design.
-- Human has no named link on the home page. It sits as the last, blacked-out `[locked]` row of the writing list and still goes through the warning pages.
+- Links invert on hover (white on black inside documents, black on white on the desktop). Do not add other custom hover effects or button styles unless asked.
+- Font sizes inside documents: h1 = 14px, h2 = 14px, body = 12-13px. Derive from tree page styling when adding new pages.
+- The home page shows the writing list, the status block as text, the guestbook count and the visit count in black windows.
+- Human has no tab or named link anywhere. It is the last, blacked-out `[locked]` row of the home page's writing list and still goes through the warning pages.
 
 ## Content collections
 
@@ -48,7 +47,7 @@
 
 ## Laptop status
 
-- Shown in the same /now-playing iframe, under the Spotify block, as a monospace block: `fahad active|away|inactive`, then laptop, claude sessions, and git rows. Iframe is 98px tall.
+- Shown on the home page in "The Keeper" window (rendered per request from src/lib/status.ts, under the Spotify line), and in the /now-playing iframe, which nothing embeds now, as a monospace block: `fahad active|away|inactive`, then laptop, claude sessions, and git rows. Iframe is 98px tall.
 - The design was picked from several rounds of mockups. Change wording or layout only after showing variants.
 - git row: src/lib/github.ts first lists every repo I committed to in the last year (mine and organizations'), keeps only public ones, then fetches my newest default-branch commit from those. GITHUB_TOKEN can read private repos, work ones included, so private repos are dropped before any commit data is fetched. Accounts listed in the GITHUB_SKIP_OWNERS secret are dropped too; the names live in the secret and .dev.vars, never in this repo. The lookup takes about 5 seconds, so it never runs while a reader waits: the answer is stored in KV under `github:latest` and refreshed through `Astro.locals.cfContext.waitUntil` after the response once it is older than 5 minutes. Only an empty KV makes a reader wait. The edge cache (caches.default) was tried first and never filled in production. The `x-git-cache` response header says fresh, stale, miss or off.
 - Laptop and claude rows: scripts/presence.ts stays running on my Mac under launchd (scripts/me.v0id.presence.plist with KeepAlive, installed as ~/.local/bin/v0id-presence.ts). It reads the state every 10 seconds, compares it on the Mac, and POSTs to /presence only when it changed, plus a heartbeat every 15 minutes.
@@ -74,10 +73,10 @@
 
 ## Misc, guestbook and the rest
 
-- The `misc` sidebar button, under tests, opens /misc: terminal commands grouped as status, keys and more. /uses and /colophon are linked from there and written from my public GitHub (setmac's configs are the source for /uses).
+- The Misc tab opens /misc: terminal commands grouped as status, keys and more. /uses and /colophon are linked from there and written from my public GitHub (setmac's configs are the source for /uses).
 - /guestbook takes a plain form post or `curl -d name=… -d msg=… https://www.v0id.me/guestbook`, and `curl -L v0id.me/guestbook` reads it. Entries live in SESSION KV, one key each, with the entry in the key's metadata (src/lib/guestbook.ts). New ones wait under `gb:pending:` until I approve them with `bun run scripts/guestbook.ts`, which signs every request with my key like the presence reports (src/pages/guestbook/admin.ts checks the signature, a 2 minute window and a strictly increasing ts). One post a minute per visitor, a hidden field for bots, at most 100 waiting.
 - Astro's checkOrigin is off because it refuses form posts without an Origin header, which is every curl post. The guestbook refuses a mismatched Origin itself and is the only route that takes form posts.
-- Visit count on the home page (menu bar, caller number and the Souls counter): the Worker entry counts page loads by people (not bots, prefetches or the sidebar iframe) into KV key `visits`, batched per isolate and written at most every 10 seconds. Approximate by design.
+- Visit count on the home page (menu bar, caller number and the Souls counter): the Worker entry counts page loads by people (not bots, prefetches or the /now-playing iframe) into KV key `visits`, batched per isolate and written at most every 10 seconds. Approximate by design.
 - /favicon.svg is rendered per request: the pixel mark in black, gray when away, pale when inactive, cached 60 seconds.
 - Link previews: /og.png for the site and /og/<slug>.png for posts, drawn on the Worker with resvg (WebAssembly, bundled; Workers cannot compile wasm at runtime) and DejaVu fonts served from public/og and fetched on first use. They show the status when the image was fetched; apps cache them.
 

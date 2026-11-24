@@ -20,74 +20,15 @@ a:hover {
   color: #000;
 }
 
-.layout {
-  display: flex;
-  align-items: flex-start;
-  padding: 8px 0 0 8px;
-}
-
-/* --- Sidebar: PG style stacked buttons --- */
-
-.sidebar {
-  padding: 8px 0 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex-shrink: 0;
-}
-
-.brand-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 6px 8px 6px;
-}
-
-.sidebar .brand {
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.avatar {
-  border-radius: 0;
-  text-decoration: none;
-  color: #000;
-}
-
-.sidebar nav {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.sidebar nav a {
-  display: block;
-  background: #888;
-  color: #fff;
-  font-size: 10px;
-  padding: 2px 6px;
-  text-decoration: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 160px;
-}
-
-.sidebar nav a:hover {
-  background: #666;
-}
-
-.sidebar nav a.active {
-  background: #000;
-}
-
-/* --- Content --- */
+/* --- Content: the white document window every page but home sits in --- */
 
 .content {
-  padding: 10px 14px;
-  max-width: 600px;
+  padding: 12px 18px 16px;
   min-width: 0;
   overflow-wrap: break-word;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 /* --- Post list (home) --- */
@@ -229,16 +170,6 @@ a:hover {
 .post-content pre.astro-code {
   background: #f6f6f6 !important;
   border: 1px solid #ddd;
-}
-
-/* --- Now Playing (iframe) --- */
-
-.np-frame {
-  width: 150px;
-  height: 98px;
-  border: none;
-  overflow: hidden;
-  margin-bottom: 4px;
 }
 
 /* --- Tree page --- */
@@ -407,15 +338,15 @@ a:hover {
 }
 
 /* Hidden message in page source via CSS content */
-.layout::after {
+.home::after {
   content: "you found nothing... or did you?";
   position: absolute;
   left: -9999px;
   font-size: 0;
 }
 
-/* The 7th click-drag on sidebar reveals a border flash */
-.sidebar nav a:active {
+/* Pressing a tab flashes a border */
+.home .home-tabs a:active {
   outline: 1px solid #000;
   outline-offset: -1px;
 }
@@ -516,18 +447,8 @@ a:hover {
 /* --- Responsive --- */
 
 @media (max-width: 480px) {
-  .layout {
-    flex-direction: column;
-  }
-  .sidebar {
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding: 6px;
-    gap: 2px;
-  }
-  .sidebar .brand {
-    width: 100%;
-    padding-bottom: 4px;
+  .home-wrap {
+    padding: 10px 8px;
   }
   .content {
     padding: 10px;
@@ -569,11 +490,10 @@ a:hover {
   white-space: nowrap;
 }
 
-/* --- Home: a black and white desktop with windows (index.astro) --- */
+/* --- The desktop: menu bar, tabs and windows around every page (Base.astro) --- */
 
-body.bare {
+body {
   background: #000;
-  color-scheme: dark;
 }
 
 .home {
@@ -592,11 +512,12 @@ body.bare {
   background-position: 0 0, 2px 2px;
 }
 
-.home a {
+/* :where keeps these at element weight, so page rules inside the document window win. */
+:where(.home) a {
   color: #fff;
 }
 
-.home a:hover {
+:where(.home) a:hover {
   color: #000;
   background: #fff;
 }
@@ -716,10 +637,54 @@ body.bare {
   font-size: 12px;
   line-height: 17px;
   white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .win-body {
   padding: 8px 10px;
+}
+
+/* A document window: white page, black chrome, so every page's own styles read as before. */
+.page-win {
+  max-width: 820px;
+  margin: 0 auto 12px;
+}
+
+.paper {
+  background: #fff;
+  color: #000;
+}
+
+.paper .tbar {
+  border-bottom-color: #000;
+  background: repeating-linear-gradient(#000 0, #000 1px, #fff 1px, #fff 3px);
+  background-clip: content-box;
+}
+
+.paper .tbar i {
+  border-color: #000;
+  background: #fff;
+  outline-color: #fff;
+}
+
+.paper .tbar h2 {
+  background: #fff;
+  color: #000;
+}
+
+:where(.paper) a {
+  color: #000;
+}
+
+:where(.paper) a:hover {
+  color: #fff;
+  background: #000;
+}
+
+.home-tabs a[aria-current="page"] {
+  font-weight: bold;
 }
 
 .win-meta {

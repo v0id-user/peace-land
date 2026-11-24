@@ -1,12 +1,5 @@
 ---
 import '../styles/global.css';
-import { getCollection } from 'astro:content';
-
-const posts = (await getCollection('posts', ({ data }) => {
-  return import.meta.env.PROD ? data.draft !== true : true;
-})).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
 
 interface Props {
   title?: string;
@@ -16,11 +9,22 @@ interface Props {
   noindex?: boolean;
   // A post's slug picks its own preview image; every other page uses the site's.
   ogSlug?: string;
-  // The home page draws its own screen and skips the sidebar.
+  // The home page draws its own windows; every other page sits in one document window.
   bare?: boolean;
+  // Right side of the menu bar, and the scrolling line under it.
+  right?: string;
+  marquee?: boolean;
 }
 
-const { title, description, type = 'website', publishedDate, noindex = false, ogSlug, bare = false } = Astro.props;
+const { title, description, type = 'website', publishedDate, noindex = false, ogSlug, bare = false, right, marquee = false } = Astro.props;
+
+// Human has no tab: the home page's locked row is the only way in.
+const tabs = [
+  ['Home', '/'], ['About', '/about/'], ['Links', '/tree/'], ['Uses', '/uses/'], ['Guestbook', '/guestbook/'],
+  ['PGP', '/pgp/'], ['Tests', '/test/'], ['Colophon', '/colophon/'], ['Misc', '/misc/'],
+];
+const path = Astro.url.pathname;
+const current = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 const pageTitle = title ? `${title} · #V0ID` : '#V0ID · Fahad Al-Ghamdi';
 const metaDescription = description || 'Technical blog by Fahad Al-Ghamdi (#V0ID): backend engineering, Rust, TypeScript, Cloudflare, and systems programming.';
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.v0id.me');
@@ -86,41 +90,36 @@ const jsonLd = type === 'article'
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <link rel="alternate" type="application/rss+xml" title="#V0ID" href="/rss.xml" />
   </head>
-  <body class={bare ? 'bare' : undefined}>
-    {bare ? <slot /> : (
-    <div class="layout">
-      <aside class="sidebar">
-        <div class="brand-row">
-          <a href="https://github.com/v0id-user" target="_blank" rel="noopener" aria-label="GitHub profile"><img src="/avatar" alt="GitHub avatar" width="24" height="24" class="avatar" /></a>
-          <a href="/" class="brand">#V0ID</a>
-        </div>
-        <iframe
-          src="/now-playing"
-          class="np-frame"
-          title="Now playing on Spotify"
-        ></iframe>
-        <nav>
-          {posts.map((post) => (
-            <a
-              href={`/posts/${post.data.slug}/`}
-              class={Astro.url.pathname.includes(post.data.slug) ? 'active' : ''}
-            >
-              {post.data.title}
-            </a>
+  <body>
+    <div class="home">
+      <nav class="home-bar" aria-label="Menu bar">
+        <a href="/">#V0ID</a>
+        {right && <span>{right}</span>}
+      </nav>
+      {marquee && <marquee class="home-marquee" scrollamount="3">no javascript was sent to you ··· this status is gpg signed ··· sign the guestbook ··· curl -L v0id.me ···</marquee>}
+      <div class="home-wrap">
+        <nav class="home-tabs" aria-label="Sections">
+          {tabs.map(([label, href]) => (
+            <a href={href} aria-current={current(href) ? 'page' : undefined}>{label}</a>
           ))}
-          <a href="/about/" class={Astro.url.pathname.startsWith('/about') ? 'active' : ''} style="margin-top: 6px;">about</a>
-          <a href="/tree/" class={Astro.url.pathname.startsWith('/tree') ? 'active' : ''}>tree</a>
-          <a href="/pgp/" class={Astro.url.pathname.startsWith('/pgp') ? 'active' : ''}>pgp</a>
-          <a href="/human/" class={Astro.url.pathname.startsWith('/human') ? 'active' : ''} style="margin-top: 6px;">human</a>
-          <a href="/test/" class={Astro.url.pathname.startsWith('/test') ? 'active' : ''} style="margin-top: 16px;">tests</a>
-          <a href="/misc/" class={Astro.url.pathname.startsWith('/misc') ? 'active' : ''}>misc</a>
         </nav>
-      </aside>
-
-      <main class="content">
-        <slot />
-      </main>
+        {bare ? <slot /> : (
+          <main class="win paper page-win">
+            <div class="tbar"><i></i><h2>{title ?? '#V0ID'}</h2></div>
+            <div class="content">
+              <slot />
+            </div>
+          </main>
+        )}
+        <footer class="home-buttons">
+          <a class="w" href="/">#V0ID</a>
+          <a href="/colophon/">NO JS</a>
+          <a href="/pgp/">GPG SIGNED</a>
+          <a href="/rss.xml">RSS</a>
+          <a href="/misc/">CURL ME</a>
+          <a href="/guestbook/">SIGN ME</a>
+        </footer>
+      </div>
     </div>
-    )}
   </body>
 </html>
