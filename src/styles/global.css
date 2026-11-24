@@ -568,3 +568,263 @@ a:hover {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* --- Home: a black and white desktop with windows (index.astro) --- */
+
+body.bare {
+  background: #000;
+  color-scheme: dark;
+}
+
+.home {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: #e8e8e8;
+  font-family: Geneva, Verdana, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+  background-color: #000;
+  background-image:
+    linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%),
+    linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 2px 2px;
+}
+
+.home a {
+  color: #fff;
+}
+
+.home a:hover {
+  color: #000;
+  background: #fff;
+}
+
+.home-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  background: #000;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 2px 12px;
+  font-weight: bold;
+}
+
+.home-bar a {
+  text-decoration: none;
+}
+
+.home-bar span {
+  margin-left: auto;
+  font-weight: normal;
+}
+
+.home-marquee {
+  display: block;
+  background: #000;
+  color: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  font: 12px "Courier New", Courier, monospace;
+  padding: 1px 0;
+}
+
+.home-wrap {
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 14px;
+}
+
+.home-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.home .home-tabs a {
+  background: #c0c0c0;
+  color: #000;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  padding: 1px 9px;
+  text-decoration: none;
+  font-size: 11px;
+}
+
+.home .home-tabs a:hover {
+  background: #fff;
+}
+
+.home-cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.home-cols > * {
+  min-width: 0;
+}
+
+.home-side {
+  flex: 1 1 300px;
+}
+
+.home-side-r {
+  flex-basis: 220px;
+}
+
+.home-main {
+  flex: 999 1 500px;
+}
+
+.win {
+  background: #000;
+  border: 1px solid #e8e8e8;
+  box-shadow: 2px 2px 0 #e8e8e8;
+  margin-bottom: 12px;
+}
+
+.tbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 19px;
+  padding: 0 4px;
+  border-bottom: 1px solid #e8e8e8;
+  background: repeating-linear-gradient(#e8e8e8 0, #e8e8e8 1px, #000 1px, #000 3px);
+  background-clip: content-box;
+}
+
+.tbar i {
+  display: block;
+  flex: 0 0 11px;
+  height: 11px;
+  border: 1px solid #e8e8e8;
+  background: #000;
+  outline: 1px solid #000;
+}
+
+.tbar h2 {
+  margin: 0 auto;
+  padding: 0 7px;
+  background: #000;
+  font-size: 12px;
+  line-height: 17px;
+  white-space: nowrap;
+}
+
+.win-body {
+  padding: 8px 10px;
+}
+
+.win-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-bottom: 3px double #e8e8e8;
+}
+
+.home-term {
+  font: 13px/1.4 "Courier New", Courier, monospace;
+}
+
+.home-logo {
+  font: bold 12px/1.05 "Courier New", Courier, monospace;
+  color: #fff;
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+
+.home-status {
+  font: 11px/1.3 "Courier New", Courier, monospace;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.home-small {
+  margin-top: 6px;
+  font-size: 11px;
+}
+
+.home-posts {
+  list-style: none;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 15px;
+}
+
+.home-posts li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 2px 0;
+}
+
+.home-posts .n {
+  flex: 0 0 22px;
+  font-size: 11px;
+}
+
+.home-posts .t {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.home-posts .s {
+  flex: 0 0 auto;
+  font-size: 11px;
+}
+
+.home-posts .locked .t {
+  overflow: hidden;
+  white-space: nowrap;
+  text-decoration: none;
+  font: 13px "Courier New", Courier, monospace;
+}
+
+.home-digits span {
+  display: inline-block;
+  width: 17px;
+  margin-right: 1px;
+  background: #fff;
+  color: #000;
+  border: 1px solid #8c8c8c;
+  font: bold 17px/24px "Courier New", Courier, monospace;
+  text-align: center;
+}
+
+.home-digits {
+  text-align: center;
+}
+
+.home-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.home .home-buttons a {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 88px;
+  height: 31px;
+  border: 2px outset #bbb;
+  background: #000;
+  color: #fff;
+  font: bold 9px/27px Verdana, Geneva, sans-serif;
+  text-align: center;
+  text-decoration: none;
+}
+
+.home .home-buttons a.w,
+.home .home-buttons a:hover {
+  background: #fff;
+  color: #000;
+}

@@ -16,9 +16,11 @@ interface Props {
   noindex?: boolean;
   // A post's slug picks its own preview image; every other page uses the site's.
   ogSlug?: string;
+  // The home page draws its own screen and skips the sidebar.
+  bare?: boolean;
 }
 
-const { title, description, type = 'website', publishedDate, noindex = false, ogSlug } = Astro.props;
+const { title, description, type = 'website', publishedDate, noindex = false, ogSlug, bare = false } = Astro.props;
 const pageTitle = title ? `${title} · #V0ID` : '#V0ID · Fahad Al-Ghamdi';
 const metaDescription = description || 'Technical blog by Fahad Al-Ghamdi (#V0ID): backend engineering, Rust, TypeScript, Cloudflare, and systems programming.';
 const canonicalURL = new URL(Astro.url.pathname, 'https://www.v0id.me');
@@ -84,7 +86,8 @@ const jsonLd = type === 'article'
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     <link rel="alternate" type="application/rss+xml" title="#V0ID" href="/rss.xml" />
   </head>
-  <body>
+  <body class={bare ? 'bare' : undefined}>
+    {bare ? <slot /> : (
     <div class="layout">
       <aside class="sidebar">
         <div class="brand-row">
@@ -118,5 +121,6 @@ const jsonLd = type === 'article'
         <slot />
       </main>
     </div>
+    )}
   </body>
 </html>

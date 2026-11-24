@@ -22,6 +22,8 @@
 - Font sizes: h1 = 14px, h2 = 14px, body = 12-13px. Derive from tree page styling when adding new pages.
 - Sidebar nav buttons: gray background, black when active. Post titles truncated to 24 chars.
 - Layout: sidebar left, content right, max-width 960px, 16px left padding. Not edge-to-edge.
+- The home page is the exception: a black and white desktop with windows, picked from mockups. Base.astro's `bare` prop drops the sidebar, and its CSS lives under `.home` in global.css. It shows the writing list, the status block as text, the guestbook count and the visit count. Its hover styles, tabs and 88x31 buttons are part of that design.
+- Human has no named link on the home page. It sits as the last, blacked-out `[locked]` row of the writing list and still goes through the warning pages.
 
 ## Content collections
 
@@ -75,7 +77,7 @@
 - The `misc` sidebar button, under tests, opens /misc: terminal commands grouped as status, keys and more. /uses and /colophon are linked from there and written from my public GitHub (setmac's configs are the source for /uses).
 - /guestbook takes a plain form post or `curl -d name=… -d msg=… https://www.v0id.me/guestbook`, and `curl -L v0id.me/guestbook` reads it. Entries live in SESSION KV, one key each, with the entry in the key's metadata (src/lib/guestbook.ts). New ones wait under `gb:pending:` until I approve them with `bun run scripts/guestbook.ts`, which signs every request with my key like the presence reports (src/pages/guestbook/admin.ts checks the signature, a 2 minute window and a strictly increasing ts). One post a minute per visitor, a hidden field for bots, at most 100 waiting.
 - Astro's checkOrigin is off because it refuses form posts without an Origin header, which is every curl post. The guestbook refuses a mismatched Origin itself and is the only route that takes form posts.
-- Visit count next to rss: the Worker entry counts page loads by people (not bots, prefetches or the sidebar iframe) into KV key `visits`, batched per isolate and written at most every 10 seconds. Approximate by design.
+- Visit count on the home page (menu bar, caller number and the Souls counter): the Worker entry counts page loads by people (not bots, prefetches or the sidebar iframe) into KV key `visits`, batched per isolate and written at most every 10 seconds. Approximate by design.
 - /favicon.svg is rendered per request: the pixel mark in black, gray when away, pale when inactive, cached 60 seconds.
 - Link previews: /og.png for the site and /og/<slug>.png for posts, drawn on the Worker with resvg (WebAssembly, bundled; Workers cannot compile wasm at runtime) and DejaVu fonts served from public/og and fetched on first use. They show the status when the image was fetched; apps cache them.
 
