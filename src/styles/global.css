@@ -1046,18 +1046,39 @@ code {
 
 /* --- The live frame: Now Spinning and Fahad's Mac (src/pages/now-playing.astro) --- */
 
+/* The frame cannot grow with its content without JavaScript, so both windows have a
+   fixed height and the frame matches it exactly, whatever is playing. */
 .live {
   display: block;
   width: 100%;
-  height: 278px;
+  height: 265px;
   border: 0;
   margin-bottom: 12px;
 }
 
-/* Inside the frame: no page around the two windows, and nothing to scroll. */
 body.frame {
   overflow: hidden;
   padding: 0 3px 3px 0;
+  background: transparent;
+}
+
+.frame .win-body {
+  box-sizing: border-box;
+  height: 102px;
+  overflow: hidden;
+}
+
+.frame .win + .win .win-body {
+  height: 104px;
+}
+
+.frame .win:last-child {
+  margin-bottom: 0;
+}
+
+.frame .spin:not(:has(.spin-info)) {
+  height: 100%;
+  align-items: center;
 }
 
 .spin-title,
