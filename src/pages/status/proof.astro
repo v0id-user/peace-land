@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import Win from '../../components/Win.astro';
+import Pixel from '../../components/Pixel.astro';
+import { env } from 'cloudflare:workers';
+import { PRESENCE_KEY, type Presence } from '../../lib/presence';
+import { signedByMe } from '../../lib/signed';
+import { ago } from '../../lib/status';
+
+// The proof behind the lock on Fahad's Mac: the laptop's last report exactly as signed,
+// checked again against my key on every load, so nobody has to run gpg to trust it.
+export const prerender = false;
+
+const kv = (env as any).SESSION as KVNamespace | undefined;
+const p = await kv?.get<Presence>(PRESENCE_KEY, { type: 'json', cacheTtl: 30 });
+const valid = p?.body && p.sig ? await signedByMe(new TextEncoder().encode(p.body), p.sig) : null;
+let pretty = p?.body ?? '';
+try {
+  pretty = JSON.stringify(JSON.parse(pretty), null, 2);
+} catch {}
+const stamp = (ms: number) => new Date(ms).toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+---
+
+<Base title="Proof" description="The last status report from my laptop, as signed, checked against my key." noindex={true}>
+  <Win title="Proof" as="main" class="w-lg">
+    <div class="win-body info">
+      <div class="info-head">
+        <Pixel name={valid ? 'lock' : 'unlock'} size={24} />
+        <div>
+          <h1>{valid ? 'The signature checks out.' : valid === false ? 'The signature does not check out.' : 'No signed report yet.'}</h1>
+          <span class="dim">{valid ? 'Checked again against my key just now.' : 'Nothing below can be trusted.'}</span>
+        </div>
+      </div>
+      {p?.body && p.sig && (
+        <>
+          <dl class="info-grid proof-grid">
+            <dt>Signed by:</dt><dd>#V0ID &lt;hey@v0id.me&gt;</dd>
+            <dt>Key:</dt><dd class="mono"><a href="/pgp/">6BEC 93C9 0963 3B56 534E 2DCE 1F4F 0EDA 6461 9E19</a></dd>
+            <dt>Signed at:</dt><dd>{stamp(p.ts * 1000)}, on my laptop's clock</dd>
+            <dt>Arrived:</dt><dd>{stamp(p.at)}, {ago(p.at)}</dd>
+          </dl>
+          <p class="label">what the laptop signed</p>
+          <pre class="mono keyblock">{pretty}</pre>
+          <p class="label">the signature</p>
+          <pre class="mono keyblock sigblock">{p.sig}</pre>
+          <p class="small dim">Check it yourself: <code>curl -sL v0id.me/status.asc | gpg -d</code></p>
+        </>
+      )}
+    </div>
+  </Win>
+</Base>
