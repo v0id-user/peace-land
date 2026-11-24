@@ -1,10 +1,13 @@
 ---
 import Win from './Win.astro';
+import Pixel from './Pixel.astro';
 import type { LatestCommit } from '../lib/github';
 import type { PresenceView } from '../lib/presence';
 import { ago, laptopText, sessionsText, statusWord } from '../lib/status';
 
-// The laptop status from src/lib/status.ts, with each state said in words.
+// The laptop status from src/lib/status.ts, with each state said in words. A pixel lock
+// in the title bar says the report is signed; pointing at it explains, clicking it opens
+// /status/proof. The server stores a report only after its signature checks out.
 interface Props {
   presence: PresenceView | null;
   commit: LatestCommit | null;
@@ -19,10 +22,34 @@ const head = {
 }[word ?? 'inactive'];
 const laptop = laptopText(presence);
 const sessions = sessionsText(presence);
+const signed = presence?.state === 'awake' && !!presence.sig;
+const when = presence ? ago(presence.at) : null;
 ---
 
 <Win title="Fahad's Mac">
-  <a slot="action" class="tbar-action" href="/status.asc" target="_top" title="This whole report, signed by my laptop">verify</a>
+  <a slot="action" class:list={['tbar-lock', { open: !signed }]} href="/status/proof" target="_top" aria-label={signed ? 'Signed report, see the proof' : 'No fresh signed report'}>
+    <Pixel name={signed ? 'lock' : 'unlock'} size={11} />
+  </a>
+  <div class="lock-panel" aria-hidden="true">
+    {signed ? (
+      <>
+        <p class="label">signed</p>
+        <p>This report was signed on my laptop with my key, and the server checked the signature when it arrived, {when}.</p>
+        <p class="mono dim">key 1F4F 0EDA 6461 9E19</p>
+      </>
+    ) : presence ? (
+      <>
+        <p class="label">nothing new</p>
+        <p>The last signed report from my laptop came {when}. Nothing since, so it reads as asleep.</p>
+      </>
+    ) : (
+      <>
+        <p class="label">unsigned</p>
+        <p>No signed report from my laptop yet.</p>
+      </>
+    )}
+    <p class="small">Click the lock for the proof.</p>
+  </div>
   <div class="win-body">
     <p class="label mac-head">{presence ? head : 'no report yet'}</p>
     <div class="mono mac-rows">

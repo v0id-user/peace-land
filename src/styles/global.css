@@ -510,14 +510,59 @@ code {
 
 /* A small button at the right end of a title bar, where old windows had their zoom box:
    it acts on the whole window. */
-.tbar-action {
+/* The lock at the right end of Fahad's Mac's title bar, where old windows had their zoom
+   box. Pointing at it lays a panel over the window, in CSS only; clicking opens the proof. */
+.tbar-lock {
+  display: block;
   flex: 0 0 auto;
   background: #000;
-  border: 1px solid #e8e8e8;
-  padding: 0 4px;
-  font-size: 10px;
-  line-height: 11px;
-  text-decoration: none;
+  padding: 1px 3px;
+  line-height: 0;
+}
+
+.tbar-lock:hover,
+.tbar-lock:focus-visible {
+  background: #e8e8e8;
+  color: #000;
+}
+
+.tbar-lock.open {
+  color: #8c8c8c;
+}
+
+.win:has(> .tbar .tbar-lock) {
+  position: relative;
+}
+
+.lock-panel {
+  display: none;
+  position: absolute;
+  inset: 20px 0 0;
+  z-index: 1;
+  padding: 8px 10px;
+  background: #000;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.lock-panel p {
+  margin-bottom: 4px;
+}
+
+.win:has(.tbar-lock:hover) .lock-panel,
+.win:has(.tbar-lock:focus-visible) .lock-panel {
+  display: block;
+}
+
+.proof-grid {
+  margin-bottom: 4px;
+  grid-template-columns: 90px 1fr;
+}
+
+.sigblock {
+  word-break: break-all;
+  white-space: pre-wrap;
+  max-height: 120px;
 }
 
 .mac-rows {
