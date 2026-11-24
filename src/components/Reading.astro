@@ -1,0 +1,40 @@
+---
+import Win from './Win.astro';
+import Logo from './Logo.astro';
+import Live from './Live.astro';
+import { publishedPosts } from '../lib/posts';
+
+// A post open on the desktop: the left column keeps the logo, music, status and the
+// writing list (the open post highlighted); the post's window sits on the right.
+interface Props {
+  // The open post's slug, highlighted in the list.
+  current?: string;
+}
+
+const { current } = Astro.props;
+const posts = await publishedPosts();
+---
+
+<div class="cols reading">
+  <aside class="side">
+    <Logo />
+    <Live />
+    <Win title="The Writings">
+      <nav class="win-body shelf" aria-label="Writings">
+        {posts.map((post, i) => (
+          <a href={`/posts/${post.data.slug}/`} aria-current={post.data.slug === current ? 'page' : undefined}>
+            <span class="n">{String(i + 1).padStart(2, '0')}</span>
+            <span>{post.data.title}</span>
+          </a>
+        ))}
+        <a href="/human/" class="locked" aria-label="Locked">
+          <span class="n">{String(posts.length + 1).padStart(2, '0')}</span>
+          <span>████████ ███ ██████</span>
+        </a>
+      </nav>
+    </Win>
+  </aside>
+  <div class="main">
+    <slot />
+  </div>
+</div>

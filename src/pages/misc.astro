@@ -1,32 +1,35 @@
 ---
 import Base from '../layouts/Base.astro';
 import Win from '../components/Win.astro';
+
+// Commands to run in your own terminal. Each one that has a page says where to click instead.
+const commands = [
+  { cmd: 'curl -L v0id.me', what: 'the site as plain text' },
+  { cmd: 'curl -L v0id.me/status', what: 'the status block', href: '/status' },
+  { cmd: 'curl -sL v0id.me/status.asc | gpg -d', what: 'the last signed report', href: '/status.asc' },
+  { cmd: 'gpg --locate-keys hey@v0id.me', what: 'my key, by address', href: '/pgp/' },
+  { cmd: 'curl -s https://pgp.v0id.me | gpg --import', what: 'my key, by URL', href: 'https://pgp.v0id.me' },
+  { cmd: 'curl -L v0id.me/guestbook', what: 'read the guestbook', href: '/guestbook/' },
+];
 ---
 
 <Base title="Misc" description="What v0id.me does besides pages: status from a terminal, a signed status, my key by address, and a guestbook.">
-  <Win title="Terminal: misc" as="main" class="w-lg">
+  <Win title="Misc" as="main" class="w-lg">
     <h1 class="visually-hidden">Misc</h1>
-    <div class="win-body mono session">
-      <p class="dim"># status, as text and signed</p>
-      <p>visitor@v0id:~$ curl -L v0id.me</p>
-      <p>visitor@v0id:~$ curl -L v0id.me/status</p>
-      <p>visitor@v0id:~$ curl -sL v0id.me/status.asc | gpg -d</p>
-      <br />
-      <p class="dim"># my key, by address or by URL</p>
-      <p>visitor@v0id:~$ gpg --locate-keys hey@v0id.me</p>
-      <p>visitor@v0id:~$ curl -s https://pgp.v0id.me | gpg --import</p>
-      <br />
-      <p class="dim"># everything else</p>
-      <p>visitor@v0id:~$ ls</p>
-      <p class="ls">
-        <a href="/guestbook/">guestbook/</a>
-        <a href="/uses/">uses/</a>
-        <a href="/colophon/">colophon/</a>
-        <a href="/.well-known/security.txt">security.txt</a>
-        <a href="/rss.xml">rss.xml</a>
-      </p>
-      <br />
-      <p class="prompt">visitor@v0id:~$ <span class="cursor"></span></p>
+    <div class="win-body commands">
+      <p>Run these in your own terminal.</p>
+      <dl>
+        {commands.map((c) => (
+          <div class="command">
+            <dt><code>{c.cmd}</code></dt>
+            <dd>{c.href ? <a href={c.href}>{c.what}</a> : c.what}</dd>
+          </div>
+        ))}
+      </dl>
+      <fieldset class="group">
+        <legend>Also here</legend>
+        <a href="/guestbook/">guestbook</a> · <a href="/uses/">uses</a> · <a href="/colophon/">colophon</a> · <a href="/.well-known/security.txt">security.txt</a> · <a href="/rss.xml">rss</a>
+      </fieldset>
     </div>
   </Win>
 </Base>

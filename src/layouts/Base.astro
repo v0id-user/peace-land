@@ -12,7 +12,7 @@ interface Props {
   // Right side of the menu bar (or the "bar" slot), and the scrolling line under it.
   right?: string;
   marquee?: boolean;
-  // Human pages: no tabs or buttons, moving static behind one window.
+  // Human pages: black, dim words, nothing else. No tabs, buttons or windows.
   human?: boolean;
 }
 
@@ -92,14 +92,12 @@ const jsonLd = type === 'article'
   </head>
   <body>
     {human ? (
-      <div class="static">
-        <nav class="bar" aria-label="Menu bar">
+      <div class="void">
+        <nav class="void-top" aria-label="Way out">
           <a href="/" aria-label="Home">†</a>
-          {Astro.slots.has('bar') ? <span class="bar-right"><slot name="bar" /></span> : right && <span class="bar-right">{right}</span>}
+          <slot name="bar" />
         </nav>
-        <div class="static-room">
-          <slot />
-        </div>
+        <slot />
       </div>
     ) : (
     <div class="desk">

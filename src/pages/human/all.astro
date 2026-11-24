@@ -1,31 +1,19 @@
 ---
 export const prerender = false;
 import Base from '../../layouts/Base.astro';
-import Win from '../../components/Win.astro';
 import { getHumanEntries } from '../../lib/human';
 import { env as cfEnv } from 'cloudflare:workers';
 
 const entries = await getHumanEntries({ ...import.meta.env, ...cfEnv });
-
-// Every label flickers between blacked out and readable on its own clock, picked per
-// request, so the list never settles. The one you point at holds still and readable.
-const flicker = () => {
-  const t = 2.5 + Math.random() * 5;
-  return `--t:${t.toFixed(2)}s;--d:${(-Math.random() * t).toFixed(2)}s`;
-};
-const pattern = () => `hf-${1 + Math.floor(Math.random() * 3)}`;
 ---
 
-<Base title="Human" noindex={true} human right="the files">
-  <Win title="Human" as="main" class="files" closeBox={false} meta={[`${entries.length} files`, 'labels come and go']}>
+<Base title="Human" noindex={true} human>
+  <main class="void-list">
     <h1 class="visually-hidden">Human</h1>
-    <ol class="win-body file-list">
-      {entries.map((entry, i) => (
-        <li>
-          <span class="n">{String(i + 1).padStart(2, '0')}</span>
-          <a class:list={['hf', pattern()]} style={flicker()} href={`/human/${entry.slug}`}>{entry.title}</a>
-        </li>
+    <ol>
+      {entries.map((entry) => (
+        <li><a href={`/human/${entry.slug}`}>{entry.title}</a></li>
       ))}
     </ol>
-  </Win>
+  </main>
 </Base>

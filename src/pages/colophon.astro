@@ -8,11 +8,11 @@ import Win from '../components/Win.astro';
     <h1 class="visually-hidden">Colophon</h1>
     <div class="win-body readme">
       <p class="label">the site</p>
-      <p>Astro on Cloudflare Workers. Every page is plain HTML and CSS; no JavaScript is sent to readers. The desktop, the windows, the static and the 88x31 buttons are all CSS.</p>
+      <p>Astro on Cloudflare Workers. Every page is plain HTML and CSS; no JavaScript is sent to readers. The desktop, the windows and the 88x31 buttons are all CSS.</p>
       <p>Posts are markdown files, edited directly or through Sveltia CMS. The source is <a href="https://github.com/v0id-user/peace-land">on GitHub</a>.</p>
 
       <p class="label">now spinning and fahad's mac</p>
-      <p>The Worker asks Spotify for what is playing when the home page loads, and says whether it is playing, paused or quiet.</p>
+      <p>The two windows in the left column are a small page that reloads itself every 15 seconds. The Worker asks Spotify for what is playing, and says whether it is playing, paused or quiet; nothing runs in your browser.</p>
       <p>The status comes from a reporter on my Mac. It reads the lid, whether I am at the keyboard, and my Claude Code sessions, and sends only what changed. Before the Mac sleeps it says so.</p>
       <p>Every report is signed with <a href="/pgp/">my OpenPGP key</a>. The Worker holds only the public key and drops anything it cannot verify, and anyone can check the last report with <code>curl -sL v0id.me/status.asc | gpg -d</code>.</p>
       <p>The git row shows my newest commit in a public repo. Private repos are filtered out before any commit is looked at. The tab icon fades to gray when I am away and pale when the laptop sleeps.</p>

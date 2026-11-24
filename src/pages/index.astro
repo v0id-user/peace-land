@@ -1,38 +1,23 @@
 ---
 import Base from '../layouts/Base.astro';
 import Win from '../components/Win.astro';
-import NowSpinning from '../components/NowSpinning.astro';
-import MacStatus from '../components/MacStatus.astro';
+import Logo from '../components/Logo.astro';
+import Live from '../components/Live.astro';
 import { env } from 'cloudflare:workers';
 import { getVisits } from '../lib/visits';
 import { publishedPosts } from '../lib/posts';
-import { getPresence } from '../lib/presence';
-import { getLatestPublicCommit } from '../lib/github';
-import { getNowPlaying } from '../lib/spotify';
-import { statusWord } from '../lib/status';
 import { APPROVED, listEntries } from '../lib/guestbook';
 
-// Rendered per request for the visit count, music, status and for terminals (src/middleware.ts).
+// Rendered per request for the visit count, the guestbook count and for terminals
+// (src/middleware.ts). Music and status come from the live frame.
 export const prerender = false;
 
-const mergedEnv: any = { ...import.meta.env, ...env };
-const [visits, posts, presence, git, np, signed] = await Promise.all([
-  getVisits(mergedEnv.SESSION),
+const kv = (env as any).SESSION as KVNamespace | undefined;
+const [visits, posts, signed] = await Promise.all([
+  getVisits(kv),
   publishedPosts(),
-  getPresence(mergedEnv.SESSION),
-  getLatestPublicCommit(mergedEnv, (p) => Astro.locals.cfContext?.waitUntil(p)),
-  getNowPlaying(mergedEnv).catch(() => null),
-  mergedEnv.SESSION ? listEntries(mergedEnv.SESSION, APPROVED).catch(() => []) : Promise.resolve([]),
+  kv ? listEntries(kv, APPROVED).catch(() => []) : Promise.resolve([]),
 ]);
-
-const word = statusWord(presence);
-if (word) Astro.response.headers.set('x-fahad', word);
-
-const LOGO = String.raw`   _  _   __     _____ ___ ____
- _| || |_ \ \   / / _ \_ _|  _ \
-|_  ..  _| \ \ / / | | | || | | |
-|_      _|  \ V /| |_| | || |_| |
-  |_||_|     \_/  \___/___|____/`;
 
 const num = (n: number) => String(n).padStart(2, '0');
 const size = (body: string | undefined) => `${Math.max(1, Math.round((body?.length ?? 0) / 1024))}K`;
@@ -43,14 +28,8 @@ const souls = visits === null ? null : String(visits).padStart(6, '0');
   <h1 class="visually-hidden">#V0ID, a technical blog by Fahad Al-Ghamdi</h1>
   <div class="cols">
     <aside class="side">
-      <Win title="Terminal: node 1">
-        <div class="win-body mono term">
-          <pre class="logo" aria-label="#V0ID">{LOGO}</pre>
-          <p>{visits !== null && <>CALLER #{visits.toLocaleString('en-US')}<br /></>}SYSOP: FAHAD AL-GHAMDI</p>
-        </div>
-      </Win>
-      <NowSpinning np={np} />
-      <MacStatus presence={presence} commit={git.commit} />
+      <Logo visits={visits} />
+      <Live />
     </aside>
 
     <Win title="The Writings" as="main" class="main" meta={[`${posts.length} items`, '† on v0id.me']}>

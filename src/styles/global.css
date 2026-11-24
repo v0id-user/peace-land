@@ -683,169 +683,92 @@ code {
   font-size: 12px;
 }
 
-/* --- Human: moving static, one window, labels that come and go --- */
+/* --- Human: black, dim words, a plain 90s button. Nothing moves. --- */
 
-.static {
-  position: relative;
-  isolation: isolate;
+.void {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
   background: #000;
+  color: #6e6e6e;
+  font: 13px/1.8 Geneva, Verdana, sans-serif;
 }
 
-/* Snow: a dithered noise tile that jumps every few frames. */
-.static::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .6 0 0 0 0 .6 0 0 0 0 .6 0 0 0 10 -5.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 440px 440px;
-  image-rendering: pixelated;
-  opacity: 0.55;
-  animation: snow 0.36s steps(1) infinite;
+.void a {
+  color: #7a7a7a;
 }
 
-/* Scanlines over the snow, and a pale band rolling down like a bad signal. */
-.static::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image:
-    linear-gradient(transparent, rgba(255, 255, 255, 0.09) 50%, transparent),
-    repeating-linear-gradient(rgba(0, 0, 0, 0.7) 0 1px, transparent 1px 3px);
-  background-size: 100% 220px, 100% 3px;
-  background-repeat: no-repeat, repeat;
-  animation: roll 6s linear infinite;
-}
-
-@keyframes snow {
-  0% { background-position: 0 0; }
-  25% { background-position: -97px 41px; }
-  50% { background-position: 53px -88px; }
-  75% { background-position: -31px -19px; }
-}
-
-@keyframes roll {
-  from { background-position: 0 -220px, 0 0; }
-  to { background-position: 0 100vh, 0 0; }
-}
-
-.static-room {
-  flex: 1 1 auto;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 80px 16px 40px;
-}
-
-.files {
-  width: 540px;
-  max-width: 100%;
-  box-shadow: 3px 3px 0 #e8e8e8;
-}
-
-.file-list {
-  list-style: none;
-  display: grid;
-  gap: 4px;
-  padding: 12px 16px;
-}
-
-.file-list li {
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-}
-
-.file-list .n {
-  flex: 0 0 22px;
-  font: 11px "Courier New", Courier, monospace;
-  color: #8c8c8c;
-}
-
-/* Each label blinks between blacked out and readable on its own clock (human/all.astro). */
-.hf {
-  font: 13px "Courier New", Courier, monospace;
-  text-decoration: none;
-  padding: 0 2px;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  animation-duration: var(--t);
-  animation-delay: var(--d);
-  animation-iteration-count: infinite;
-  animation-timing-function: steps(1);
-}
-
-.hf-1 { animation-name: redact-1; }
-.hf-2 { animation-name: redact-2; }
-.hf-3 { animation-name: redact-3; }
-
-@keyframes redact-1 {
-  0% { background: #e8e8e8; color: #e8e8e8; }
-  38% { background: transparent; color: #fff; }
-  44% { background: #e8e8e8; color: #e8e8e8; }
-  80% { background: transparent; color: #fff; }
-  86% { background: #e8e8e8; color: #e8e8e8; }
-}
-
-@keyframes redact-2 {
-  0% { background: transparent; color: #fff; }
-  12% { background: #e8e8e8; color: #e8e8e8; }
-  15% { background: transparent; color: #fff; }
-  18% { background: #e8e8e8; color: #e8e8e8; }
-  64% { background: transparent; color: #fff; }
-}
-
-@keyframes redact-3 {
-  0% { background: #e8e8e8; color: #e8e8e8; }
-  70% { background: transparent; color: #fff; }
-  73% { background: #e8e8e8; color: #e8e8e8; }
-  76% { background: transparent; color: #fff; }
-  79% { background: #e8e8e8; color: #e8e8e8; }
-}
-
-/* Pointing at the list makes the rest panic; the one you point at holds still and readable. */
-.file-list:hover .hf {
-  animation-duration: calc(var(--t) / 3);
-}
-
-.file-list .hf:hover,
-.file-list .hf:focus-visible {
-  animation: none;
+.void a:hover {
   background: transparent;
-  color: #fff;
-  text-decoration: underline;
+  color: #b0b0b0;
 }
 
-.piece {
-  width: 620px;
-  max-width: 100%;
-  box-shadow: 3px 3px 0 #e8e8e8;
+.void-top {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px;
+  font-size: 12px;
 }
 
-.piece .win-meta {
-  font-family: "Courier New", Courier, monospace;
+.void-top a {
+  color: #3a3a3a;
+  text-decoration: none;
 }
 
-.piece-body {
-  padding: 20px 26px 6px;
-  font: 14px/1.75 "Courier New", Courier, monospace;
-  color: #d6d6d6;
-  overflow-wrap: break-word;
+.void-text {
+  max-width: 360px;
+  margin: 110px auto 60px;
+  padding: 0 16px;
 }
 
-.piece-body p {
+.void-text p {
   margin-bottom: 14px;
 }
 
-.piece-end {
-  text-align: center;
-  padding: 10px 0 18px;
-  font: 12px "Courier New", Courier, monospace;
+.void-text form {
+  margin-top: 22px;
+}
+
+.btn95 {
+  font: 11px Arial, Helvetica, sans-serif;
+  color: #000;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #fff #404040 #404040 #fff;
+  box-shadow: 1px 1px 0 #000;
+  padding: 3px 12px;
+  cursor: pointer;
+}
+
+.btn95:active {
+  border-color: #404040 #fff #fff #404040;
+}
+
+.void-list {
+  max-width: 320px;
+  margin: 60px auto;
+  padding: 0 16px;
+}
+
+.void-list ol {
+  list-style: none;
+  font: 13px/1.9 "Courier New", Courier, monospace;
+}
+
+.void-piece {
+  max-width: 560px;
+  margin: 60px auto;
+  padding: 0 16px;
+  font: 14px/1.85 "Courier New", Courier, monospace;
+  overflow-wrap: break-word;
+}
+
+.void-piece h1 {
+  font: inherit;
+  color: #3a3a3a;
+  margin-bottom: 24px;
+}
+
+.void-piece p {
+  margin-bottom: 16px;
 }
 
 /* --- About and PGP: info windows --- */
@@ -1051,36 +974,34 @@ code {
   overflow-x: auto;
 }
 
-/* --- Misc: a terminal session --- */
+/* --- Misc: commands to run yourself --- */
 
-.session {
-  font-size: 13px;
-  line-height: 1.5;
-  padding: 12px 14px;
-  overflow-x: auto;
+.commands {
+  padding: 12px 16px;
 }
 
-.ls {
+.commands > p {
+  margin-bottom: 10px;
+}
+
+.command {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px 18px;
+  justify-content: space-between;
+  gap: 2px 12px;
+  align-items: baseline;
+  padding: 4px 0;
+  border-bottom: 1px dotted #333;
 }
 
-.prompt {
+.command code {
+  font-size: 13px;
   color: #fff;
 }
 
-.cursor {
-  display: inline-block;
-  width: 8px;
-  height: 14px;
-  background: #e8e8e8;
-  vertical-align: -2px;
-  animation: blink 1s steps(1) infinite;
-}
-
-@keyframes blink {
-  50% { background: transparent; }
+.command dd {
+  font-size: 11px;
+  color: #8c8c8c;
 }
 
 /* --- Colophon --- */
@@ -1123,7 +1044,102 @@ code {
   margin-bottom: 0;
 }
 
-/* --- Small screens and reduced motion --- */
+/* --- The live frame: Now Spinning and Fahad's Mac (src/pages/now-playing.astro) --- */
+
+.live {
+  display: block;
+  width: 100%;
+  height: 278px;
+  border: 0;
+  margin-bottom: 12px;
+}
+
+/* Inside the frame: no page around the two windows, and nothing to scroll. */
+body.frame {
+  overflow: hidden;
+  padding: 0 3px 3px 0;
+}
+
+.spin-title,
+.spin-artist {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Reading: the left column beside an open post (src/components/Reading.astro) --- */
+
+.logo-link,
+.logo-link:hover {
+  display: block;
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+}
+
+.logo-link:hover .logo {
+  color: #8c8c8c;
+}
+
+.term p {
+  margin-top: 4px;
+}
+
+.tbar .close {
+  display: block;
+  flex: 0 0 11px;
+  height: 11px;
+  border: 1px solid #e8e8e8;
+  background: #000;
+  outline: 1px solid #000;
+}
+
+.tbar .close:hover {
+  background: #e8e8e8;
+}
+
+.shelf {
+  display: grid;
+  gap: 1px;
+  padding: 6px;
+}
+
+.shelf a {
+  display: flex;
+  gap: 8px;
+  padding: 2px 6px;
+  text-decoration: none;
+  font: 13px/1.35 "Times New Roman", Times, serif;
+}
+
+.shelf .n {
+  flex: 0 0 18px;
+  font: 10px/1.9 Geneva, Verdana, sans-serif;
+  color: #8c8c8c;
+}
+
+.shelf a[aria-current="page"],
+.shelf a[aria-current="page"] .n {
+  background: #fff;
+  color: #000;
+}
+
+.shelf .locked {
+  font-family: "Courier New", Courier, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.reading .main {
+  min-width: 0;
+}
+
+.reading .article {
+  max-width: none;
+}
+
+/* --- Small screens --- */
 
 @media (max-width: 480px) {
   .wrap {
@@ -1135,19 +1151,8 @@ code {
   .article-title {
     font-size: 22px;
   }
-  .piece-body {
-    padding: 16px;
-  }
-  .static-room {
-    padding: 40px 10px 30px;
+  .void-text {
+    margin-top: 60px;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .static::before,
-  .static::after,
-  .hf,
-  .cursor {
-    animation: none;
-  }
-}
