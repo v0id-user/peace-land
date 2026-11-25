@@ -27,15 +27,15 @@ Today, I fully embrace agentic coding. From implementation to reviews to optimiz
 
 ## Big O?
 
-Something interesting happened in the months following that article.
+I bought that course, and genuinely, I don't give a fuck about it. Nothing changed in the next four months of my work.
 
-I became one of the people bringing up time complexity in discussions at work. *Guys, this doesn't feel right, there's a nested loop here, let's think about the time complexity.*
+Instead, I became one of the people bringing up time complexity in discussions at work. *Guys, this doesn't feel right, there's a nested loop here, let's think about the time complexity.*
 
 And we think about it together. If someone knows it on the spot, great. If nobody does, we paste it into Claude, read the output together, and discuss whether what it's saying is bullshit or not.
 
 This has become increasingly common in how I work.
 
-What matters to me is understanding that my code has a time complexity, that there are trade-offs to the algorithms I choose, and that the size of my input matters.
+Your code runs on a time complexity. You need to understand that conceptually, not deeply, or your code is fucked. There are trade-offs to your algorithms, your for loops, your while loops.
 
 Do I need to spend hours studying different algorithms and implementing them by hand to understand this? I don't think so.
 
@@ -49,15 +49,13 @@ These are things I need to understand conceptually because they influence what I
 
 ## Knowing what exists
 
-Over the past few months, I've been building some fairly complex systems with agents. [Cubepals](/posts/building-cubepals/) is probably the biggest example, with all its moving parts, background jobs, infrastructure, and the different ways things can fail.
+Over the past few months, I've been building some fairly complex systems with agents. [Cubepals](/posts/building-cubepals/) is probably the biggest example. Minecraft servers that sleep when nobody is on and wake up when someone joins, an edge that holds the player while their server boots, Bedrock players joining Java servers, one Fly app per server, cron jobs, and a lot of parts that can fail.
 
 I'm also currently building Pryx, where one of the things I wanted was to enforce network restrictions on processes at the kernel level using eBPF.
 
 Do I know much about eBPF? No, I don't.
 
 But I know it exists. I know what I want out of it, and that's why I directed my agent to look into it.
-
-How would I even consider this approach if I didn't know such a thing existed?
 
 I think this is one of the most important things when working with agents. You need to know what you want to tell your agent, and a lot of that comes from what you understand conceptually and what you know is possible.
 
@@ -77,7 +75,7 @@ But I don't feel the necessity to read it. There's a difference between me wanti
 
 And what do I actually want to get out of it? Do I want to understand every single thing discussed in that book in depth? Not necessarily.
 
-There is a lot of value in just being exposed to concepts. Your agent can go into ridiculous amounts of detail on a particular subject for you, but you need to know what you're looking for in the first place.
+Reading is still important, but not because you need to understand the depth of the depths. Let your agent do that. Your agent can extract the bullshit for you. But you need to know what you're looking for, and I think a lot of tech leads and people actually innovating in this space still point to this.
 
 ## So?
 
@@ -87,10 +85,6 @@ You want to build something in Rust, so you go on Udemy, buy a course, and start
 
 I hate that this mindset stuck with me for as long as it did, even in April of this year.
 
-Get your hands on things. Build something. Get stuck on problems. Get to a point where something forces you to reconsider what you thought you understood.
+Get your hands on things. Build something. Get stuck on problems. There, where you have to rethink everything you know.
 
 That's where you learn.
-
-And with agents, the sheer number of problems you can expose yourself to, the things you can build, and the concepts you can encounter without spending months preparing yourself for them is ridiculous.
-
-Why would I deliberately restrict that?
