@@ -71,7 +71,7 @@ That you still need to understand things deeply, that you still need to read, th
 
 I've always said that depth is a luxury, and you don't always have that luxury. Sometimes you barely have the mental energy to allocate to the things you're already doing, let alone spend hours understanding the internals of something.
 
-I'm still an advocate for reading. I genuinely want to read *Domain-Driven Design*. I've read a little of it, and within the first ten pages I had already learned something.
+I'm still an advocate for reading. I genuinely want to read *Designing Data-Intensive Applications*. I've read a little of it, and within the first ten pages I had already learned something.
 
 But I don't feel the necessity to read it. There's a difference between me wanting to read that book and me feeling that I need to read that book.
 
