@@ -17,7 +17,7 @@ Earlier this year, I wrote two articles:
 - [Big O and Why I Finally Stopped Ignoring It](/posts/big-o-and-why-i-finally-stopped-ignoring-it/)
 - [Relearning rust in a world that codes for you](/posts/relearning-rust-in-a-world-that-codes-for-you/)
 
-What's funny is that it didn't even take me three months to change my perspective on a lot of what I wrote.
+What's funny is that it didn't take me long to change my perspective on a lot of what I wrote.
 
 I bought an entire course on data structures and algorithms to understand Big O notation. I wanted to deliberately restrict my usage of AI, disable autocompletion, and force myself to write Rust by hand.
 
@@ -27,7 +27,7 @@ Today, I fully embrace agentic coding. From implementation to reviews to optimiz
 
 ## Big O?
 
-I bought that course, and genuinely, I don't give a fuck about it. Nothing changed in the next four months of my work.
+I bought that course, and genuinely, I don't give a fuck about it. Nothing changed in my work in the months after.
 
 Instead, I became one of the people bringing up time complexity in discussions at work. *Guys, this doesn't feel right, there's a nested loop here, let's think about the time complexity.*
 
