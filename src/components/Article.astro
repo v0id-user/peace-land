@@ -1,5 +1,6 @@
 ---
 import Win from './Win.astro';
+import { readMinutes } from '../lib/posts';
 
 // A post or test page: one reading window titled like a file, with an info strip,
 // the article, and links to the neighbours.
@@ -18,11 +19,9 @@ interface Props {
 }
 
 const { slug, title, date, body, back, newer, older } = Astro.props;
-const size = `${Math.max(1, Math.round((body?.length ?? 0) / 1024))}K`;
-const minutes = Math.max(1, Math.round((body ?? '').split(/\s+/).length / 220));
 ---
 
-<Win title={`${slug}.txt`} as="article" class="article" closeHref={back.href} meta={[`${size} · ${minutes} min read`, date.toISOString().slice(0, 10)]}>
+<Win title={`${slug}.txt`} as="article" class="article" closeHref={back.href} meta={[`${readMinutes(body)} min read`, date.toISOString().slice(0, 10)]}>
   <div class="article-body">
     <p class="article-back"><a href={back.href}>← {back.title}</a></p>
     <h1 class="article-title">{title}</h1>
