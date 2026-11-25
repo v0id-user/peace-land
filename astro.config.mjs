@@ -13,6 +13,10 @@ export default defineConfig({
     filter: (page) => !['/now-playing', '/human/', '/test/', '/cv'].some((path) => new URL(page).pathname.startsWith(path)),
   })],
   adapter: cloudflare(),
+  // The post's first URL, from before it was renamed.
+  redirects: {
+    '/posts/reconsidering-how-i-learn-software-engineering': '/posts/whats-worth-knowing-in-depth/',
+  },
   // Astro's check refuses form posts without a matching Origin header, which blocks
   // `curl -d ... v0id.me/guestbook`. The guestbook checks Origin itself instead, and
   // is the only route that takes form posts.

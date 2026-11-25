@@ -1,7 +1,7 @@
 ---
-title: Reconsidering how I learn software engineering
+title: What's worth knowing in depth
 date: 2026-11-25
-slug: reconsidering-how-i-learn-software-engineering
+slug: whats-worth-knowing-in-depth
 draft: false
 description: I no longer feel I need to understand something in depth before building with it. Concepts, knowing what exists, and the consequences of my decisions matter more.
 ---
