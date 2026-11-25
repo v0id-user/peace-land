@@ -5,7 +5,7 @@ import Logo from '../components/Logo.astro';
 import Live from '../components/Live.astro';
 import { env } from 'cloudflare:workers';
 import { getVisits } from '../lib/visits';
-import { publishedPosts } from '../lib/posts';
+import { publishedPosts, readMinutes } from '../lib/posts';
 import { APPROVED, listEntries } from '../lib/guestbook';
 
 // Rendered per request for the visit count, the guestbook count and for terminals
@@ -20,7 +20,6 @@ const [visits, posts, signed] = await Promise.all([
 ]);
 
 const num = (n: number) => String(n).padStart(2, '0');
-const size = (body: string | undefined) => `${Math.max(1, Math.round((body?.length ?? 0) / 1024))}K`;
 const souls = visits === null ? null : String(visits).padStart(6, '0');
 ---
 
@@ -38,7 +37,7 @@ const souls = visits === null ? null : String(visits).padStart(6, '0');
           <li>
             <span class="n">{num(i + 1)}</span>
             <a class="t" href={`/posts/${post.data.slug}/`}>{post.data.title}</a>
-            <span class="s">{size(post.body)}</span>
+            <span class="s">{readMinutes(post.body)} min</span>
           </li>
         ))}
         <li class="locked">
