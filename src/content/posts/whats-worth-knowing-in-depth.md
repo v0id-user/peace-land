@@ -49,7 +49,7 @@ These are things I need to understand conceptually because they influence what I
 
 ## Knowing what exists
 
-Over the past few months, I've been building some fairly complex systems with agents. [Cubepals](/posts/building-cubepals/) is probably the biggest example. Minecraft servers that sleep when nobody is on and wake up when someone joins, an edge that holds the player while their server boots, Bedrock players joining Java servers, one Fly app per server, cron jobs, and a lot of parts that can fail.
+Over the past few months, I've been building some fairly complex systems with agents. [Cubepals](/posts/building-cubepals/) is probably the biggest example: Minecraft servers that sleep when nobody is on and wake up when someone joins, an edge that holds the player while their server boots, Bedrock players joining Java servers, one Fly app per server, cron jobs, and a lot of parts that can fail.
 
 I'm also currently building Pryx, where one of the things I wanted was to enforce network restrictions on processes at the kernel level using eBPF.
 
@@ -63,9 +63,7 @@ I think this is one of the most important things when working with agents. You n
 
 Yes.
 
-Although I'm not entirely sure if I'm saying this because I genuinely believe it or because I feel obligated to say it.
-
-That you still need to understand things deeply, that you still need to read, that there are certain things you still need to learn yourself.
+Although I'm not entirely sure if I'm saying this because I genuinely believe it or because I feel obligated to say it: that you still need to understand things deeply, that you still need to read, that there are certain things you still need to learn yourself.
 
 I've always said that depth is a luxury, and you don't always have that luxury. Sometimes you barely have the mental energy to allocate to the things you're already doing, let alone spend hours understanding the internals of something.
 
